@@ -33,7 +33,7 @@ module "vpc" {
 
 resource "aws_launch_configuration" "terramino" {
   name_prefix     = "learn-terraform-aws-asg-"
-  image_id        = "ami-0568773882d492fc8" 
+  image_id        = "ami-01529018e3919dace"     
   instance_type   = "t2.micro"
   user_data       = file("user-data.sh")
   security_groups = [aws_security_group.terramino_instance.id]
