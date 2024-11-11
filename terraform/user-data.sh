@@ -1,19 +1,24 @@
 #!/bin/bash
-# Copyright (c) HashiCorp, Inc.
-# SPDX-License-Identifier: MPL-2.0
 
-yum update -y
-yum -y remove httpd
-yum -y remove httpd-tools
-yum install -y httpd24 php72 mysql57-server php72-mysqlnd
-service httpd start
-chkconfig httpd on
 
-usermod -a -G apache ec2-user
-chown -R ec2-user:apache /var/www
-chmod 2775 /var/www
-find /var/www -type d -exec chmod 2775 {} \;
-find /var/www -type f -exec chmod 0664 {} \;
-cd /var/www/html
-curl http://169.254.169.254/latest/meta-data/instance-id -o index.html
-curl https://raw.githubusercontent.com/hashicorp/learn-terramino/master/index.php -O
+aws ec2-instance-connect send-ssh-public-key \
+    --region us-east-2 \
+    --availability-zone us-east-2a \
+    --instance-id i-04b5f873b6970ccb1 \
+    --instance-os-user ec2-user \
+    --ssh-public-key file://my_key.pub
+
+aws ec2-instance-connect send-ssh-public-key \
+    --region us-east-2 \
+    --availability-zone us-east-2c \
+    --instance-id i-0544a021c5d7d5640  \
+    --instance-os-user ec2-user \
+    --ssh-public-key file://my_key.pub
+
+aws ec2-instance-connect send-ssh-public-key \
+    --region us-east-2 \
+    --availability-zone us-east-2b \
+    --instance-id i-0ee8c90aabe3cabb8  \
+    --instance-os-user ec2-user \
+    --ssh-public-key file://my_key.pub
+
