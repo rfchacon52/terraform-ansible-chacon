@@ -1,8 +1,8 @@
 #!/bin/bash
 
-export TF_LOG=DEBUG
+#export TF_LOG=DEBUG
 
-ech " "
+echo " "
  echo "Running terraform init"
  terraform init
 
