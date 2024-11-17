@@ -17,7 +17,7 @@ variable "vpc_cider_block" {
 variable "am_id" {
   description = "AMI to use"
   type        = string
-  default     = "ami-0aa8fc2422063977a"
+  default     = "ami-0c5ebd68eb61ff68d"
 }
 variable "instance_type" {
   description = "Instance type "
