@@ -39,16 +39,16 @@ resource "aws_launch_template" "terramino" {
   instance_type = var.instance_type
   #  user_data       = file("user-data.sh")
   # security_groups = [aws_security_group.terramino_instance.id]
-  lifecycle {
-    create_before_destroy = true
-  }
+#  lifecycle {
+#    create_before_destroy = true
+#  }
 }
 
 #-----------------------------
 resource "aws_autoscaling_group" "terramino" {
   name             = "terramino"
   min_size         = 1
-  max_size         = 3
+  max_size         = 2
   desired_capacity = 2
   launch_template {
     id      = aws_launch_template.terramino.id
