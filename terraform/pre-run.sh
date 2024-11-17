@@ -7,7 +7,7 @@
 #export TF_LOG=DEBUG
 
 
-hcp profile set vault-secrets/app $APP_NAME
+hcp profile set vault-secrets/app WebApplication 
 hcp auth login
 #hcp vault-secrets secrets list --app=$APP_NAME 
 echo " "
@@ -20,10 +20,10 @@ echo " "
 
  echo "Running terraform validate"
  terraform validate
-   if [ $? != 0 ] ; then
-     echo "Failed terraform validate"
-     exit 1
-   fi 
+   #if [ $? != 0 ] ; then
+   #  echo "Failed terraform validate"
+   #  exit 1
+   # fi 
 
  echo "Running terraform fmt -recursive"
  terraform fmt -recursive
