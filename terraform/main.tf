@@ -39,9 +39,7 @@ resource "aws_launch_template" "terramino" {
   instance_type = var.instance_type
   #  user_data       = file("user-data.sh")
   # security_groups = [aws_security_group.terramino_instance.id]
-#  lifecycle {
-#    create_before_destroy = true
-#  }
+
 }
 
 #-----------------------------
@@ -73,6 +71,14 @@ resource "aws_lb" "terramino" {
 }
 
 #-----------------------------
+resource "aws_lb_target_group" "terramino" {
+  name     = "learn-asg-terramino"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = module.vpc.vpc_id
+}
+
+#-----------------------------
 resource "aws_lb_listener" "terramino" {
   load_balancer_arn = aws_lb.terramino.arn
   port              = "80"
@@ -84,13 +90,6 @@ resource "aws_lb_listener" "terramino" {
   }
 }
 
-#-----------------------------
-resource "aws_lb_target_group" "terramino" {
-  name     = "learn-asg-terramino"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = module.vpc.vpc_id
-}
 #-----------------------------
 resource "aws_autoscaling_attachment" "terramino" {
   autoscaling_group_name = aws_autoscaling_group.terramino.id
