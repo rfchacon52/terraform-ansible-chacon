@@ -3,12 +3,12 @@ pipeline {
     agent any
     
     environment {
-        AWS_ACCESS_KEY_ID = credentials(‘jenkins_aws_access_key_id’)
-        AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_secret_access_key')
-        TF_TOKEN_app_terraform_io = credentials('jenkins_tf_token_app_terraform')
+        AWS_ACCESS_KEY_ID=credentials(‘jenkins_aws_access_key_id’)
+        AWS_SECRET_ACCESS_KEY=credentials('jenkins_aws_secret_access_key')
+        TF_TOKEN_app_terraform_io=credentials('jenkins_tf_token_app_terraform')
         AWS_DEFAULT_REGION='us-west-1'
-        HCP_CLIENT_ID = credentials('jenkins_hcp_client_id')
-        HCP_CLIENT_SECRET = credentials('jenkins_hcp_client_secret')
+        HCP_CLIENT_ID=credentials('jenkins_hcp_client_id')
+        HCP_CLIENT_SECRET=credentials('jenkins_hcp_client_secret')
         APP_NAME='WebApplication'
     }    
     options {
