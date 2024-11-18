@@ -4,11 +4,11 @@ pipeline {
     
     environment {
         AWS_ACCESS_KEY_ID='AKIA3FLD3ICKGOBBOCYL' 
-        AWS_SECRET_ACCESS_KEY=('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')
-        TF_TOKEN_app_terraform_io='IYdR4DFOAeTttw.atlasv1.ZIOP8NeGyFfiQ5bQYWj6TUV3jw4yCp3314lKW9U3EeRsn3qCzYUW3hPpPtRyEPjyg5M'
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS-KEY') 
+        TF_TOKEN_app_terraform_io = credentials('TF_TOKEN')
         AWS_DEFAULT_REGION='us-west-1'
         HCP_CLIENT_ID='p8eCxXiBVC41ZPxGd6WGtkjJ7bB1y6hw'
-        HCP_CLIENT_SECRET='5c3_AkyAFY57LM8jYMwP9dyp6DHQHk7GW3XmN0olokoNm-hVcuO_xbGNSR_aL5ky'
+        HCP_CLIENT_SECRET = credentials('HCP_CLIENT_SECRET')
         APP_NAME='WebApplication'
     }    
     options {
