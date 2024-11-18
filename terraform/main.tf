@@ -39,6 +39,35 @@ resource "aws_launch_template" "terramino" {
   instance_type = var.instance_type
   #  user_data       = file("user-data.sh")
   # security_groups = [aws_security_group.terramino_instance.id]
+  block_device_mappings {
+    device_name = "/dev/sda1"
+
+    ebs {
+      # Size of the EBS volume in GB
+      volume_size = 20
+
+      # Type of EBS volume (General Purpose SSD in this case)
+      volume_type = "gp2"
+    }
+  }
+  network_interfaces {
+    # Associates a public IP address with the instance
+    associate_public_ip_address = true
+
+    # Security groups to associate with the instance
+    security_groups = [aws_security_group.terramino_instance.id]
+  }
+
+  # Tag specifications for the instance
+  tag_specifications {
+    # Specifies the resource type as "instance"
+    resource_type = "instance"
+
+    # Tags to apply to the instance
+    tags = {
+      Name = "aws_launch_template"
+    }
+  }
 
 }
 
