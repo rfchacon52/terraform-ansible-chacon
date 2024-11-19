@@ -37,7 +37,8 @@ resource "aws_launch_template" "terramino" {
   name_prefix   = "learn-terraform-aws-asg-"
   image_id      = var.am_id
   instance_type = var.instance_type
-  key_name    = "deployer-key" 
+  key_name      = "deployer-key"
+  user_data     = filebase64("user-data.sh")
   block_device_mappings {
     device_name = "/dev/sda1"
 
@@ -68,9 +69,8 @@ resource "aws_launch_template" "terramino" {
     }
   }
 
-user_data = filebase64("user-data.sh")
-
 }
+
 
 #-----------------------------
 resource "aws_autoscaling_group" "terramino" {

@@ -1,15 +1,15 @@
 pipeline {
 
-agent none
-
+agent any
+    
     environment {
-        AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
-        AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
-        TF_TOKEN_app_terraform_io = credentials('jenkins-tf-token-app-terraform-io')
-        AWS_DEFAULT_REGION = 'us-west-1'
-        HCP_CLIENT_ID = credentials('jenkins_hcp_client_id')
-        HCP_CLIENT_SECRET = credentials('jenkins_hcp_client_secret')
-        APP_NAME = 'WebApplication'
+        AWS_ACCESS_KEY_ID='AKIA3FLD3ICKGOBBOCYL'
+        AWS_SECRET_ACCESS_KEY='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'
+        TF_TOKEN_app_terraform_io='UbwGqwda1YZtvw.atlasv1.LKPc42ejh5zCtg6fHuGj9gdDmnEXzzRcPyAAQdBtDDTlc0J0Z33I6YAZDQjb3D0yUAk'
+        AWS_DEFAULT_REGION='us-west-1'
+        HCP_CLIENT_ID='p8eCxXiBVC41ZPxGd6WGtkjJ7bB1y6hw'
+        HCP_CLIENT_SECRET='5c3_AkyAFY57LM8jYMwP9dyp6DHQHk7GW3XmN0olokoNm-hVcuO_xbGNSR_aL5ky'
+        APP_NAME='WebApplication'
     }    
     options {
         // This is required if you want to clean before build
@@ -37,13 +37,13 @@ agent none
                 hcp profile set vault-secrets/app WebApplication 
                 hcp auth login 
                 echo "Running terraform init"
-                terraform init -input=false -no-color
+                terraform init -no-color
                 echo "Running terraform fmt -recursive"
                 terraform fmt -recursive
                 echo "Running terraform validate"
                 terraform validate -no-color
                 echo "Run terraform init again"
-                terraform init -input=false -no-color
+                terraform init -no-color
                 sh '''
             }
         }
@@ -51,7 +51,7 @@ agent none
 
             steps {
 
-                sh 'cd terraform; terraform plan -out=tfplan -input=false -no-color'
+                sh 'cd terraform; terraform plan -out=tfplan -no-color'
 
             }
 
@@ -61,7 +61,7 @@ agent none
 
             steps {
 
-                sh 'cd terraform; terraform apply -input=false tfplan  -no-color'
+                sh 'cd terraform; terraform apply tfplan -no-color'
 
             }
 
