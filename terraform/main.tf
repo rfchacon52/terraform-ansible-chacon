@@ -37,8 +37,7 @@ resource "aws_launch_template" "terramino" {
   name_prefix   = "learn-terraform-aws-asg-"
   image_id      = var.am_id
   instance_type = var.instance_type
-  #  user_data       = file("user-data.sh")
-  # security_groups = [aws_security_group.terramino_instance.id]
+  key_name    = "deployer-key" 
   block_device_mappings {
     device_name = "/dev/sda1"
 
@@ -69,12 +68,7 @@ resource "aws_launch_template" "terramino" {
     }
   }
 
-user_data = filebase64("./user-data.sh")
-
-import {
-  to = aws_key_pair.deployer
-  id = "deployer-key"
-}
+user_data = filebase64("user-data.sh")
 
 }
 
