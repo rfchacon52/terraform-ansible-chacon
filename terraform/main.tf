@@ -70,10 +70,13 @@ resource "aws_launch_template" "terramino" {
   }
 
 user_data = filebase64("./user-data.sh")
+
 import {
   to = aws_key_pair.deployer
   id = "deployer-key"
-}}
+}
+
+}
 
 #-----------------------------
 resource "aws_autoscaling_group" "terramino" {
