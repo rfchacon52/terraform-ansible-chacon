@@ -37,7 +37,7 @@ agent any
                 sh '''
               #  source /var/local/env_settings
                 cd terraform
-                vault secrets enable -path=aws aws
+              #  vault secrets enable -path=aws aws
                # hcp auth login 
                 echo "Running terraform init"
                 terraform init -no-color
