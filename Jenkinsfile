@@ -37,7 +37,8 @@ agent any
                 sh '''
               #  source /var/local/env_settings
                 cd terraform
-                hcp auth login 
+                vault secrets enable -path=aws aws
+               # hcp auth login 
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
