@@ -11,13 +11,13 @@ terraform {
 
   required_version = ">= 1.5.0"
 }
-terraform {
-  cloud {
-    organization = "Chacon_Dev"
+#terraform {
+#  cloud {
+#    organization = "Chacon_Dev"
 
-    workspaces {
-      name = "chacon-ws2"
-    }
-  }
-}
+#    workspaces {
+#      name = "chacon-ws2"
+#    }
+#  }
+#}
 
