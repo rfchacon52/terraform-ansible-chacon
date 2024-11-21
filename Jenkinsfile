@@ -28,7 +28,7 @@ agent any
         stage('Terraform Init') {
             steps {
                 sh '''
-                source /root/.env_settings
+                source /var/local/env_settings
                 cd terraform
                 hcp profile set vault-secrets/app WebApplication 
                 hcp auth login 
