@@ -89,6 +89,9 @@ resource "aws_autoscaling_group" "terramino" {
     value               = "HashiCorp Learn ASG - Terramino"
     propagate_at_launch = true
   }
+lifecycle {
+    create_before_destroy = true
+  }
 }
 
 #-----------------------------
