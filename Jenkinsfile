@@ -35,9 +35,9 @@ agent any
         stage('Terraform Init') {
             steps {
                 sh '''
-                source /var/local/env_settings
+              #  source /var/local/env_settings
                 cd terraform
-                hcp auth login token=admin 
+                hcp auth login 
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
