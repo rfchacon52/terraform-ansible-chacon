@@ -38,7 +38,7 @@ resource "aws_launch_template" "terramino" {
   image_id      = var.am_id
   instance_type = var.instance_type
   key_name      = "deployer-key"
-  user_data     = filebase64("user-data.sh")
+  # user_data     = filebase64("user-data.sh")
   block_device_mappings {
     device_name = "/dev/sda1"
 
@@ -50,27 +50,7 @@ resource "aws_launch_template" "terramino" {
       volume_type = "gp2"
     }
   }
-  network_interfaces {
-    # Associates a public IP address with the instance
-    associate_public_ip_address = true
-
-    # Security groups to associate with the instance
-    security_groups = [aws_security_group.terramino_instance.id]
   }
-
-  # Tag specifications for the instance
-  tag_specifications {
-    # Specifies the resource type as "instance"
-    resource_type = "instance"
-
-    # Tags to apply to the instance
-    tags = {
-      Name = "aws_launch_template"
-    }
-  }
-
-}
-
 
 #-----------------------------
 resource "aws_autoscaling_group" "terramino" {
@@ -78,7 +58,6 @@ resource "aws_autoscaling_group" "terramino" {
   min_size         = 1
   max_size         = 2
   desired_capacity = 2
-  force_delete     = true
   launch_template {
     id      = aws_launch_template.terramino.id
     version = "$Latest"
@@ -90,7 +69,7 @@ resource "aws_autoscaling_group" "terramino" {
     value               = "HashiCorp Learn ASG - Terramino"
     propagate_at_launch = true
   }
-lifecycle {
+  lifecycle {
     create_before_destroy = true
   }
 }
@@ -106,10 +85,10 @@ resource "aws_lb" "terramino" {
 
 #-----------------------------
 resource "aws_lb_target_group" "terramino" {
-  name_prefix  = "aws-tg"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = module.vpc.vpc_id
+  name_prefix = "aws-tg"
+  port        = 80
+  protocol    = "HTTP"
+  vpc_id      = module.vpc.vpc_id
 }
 
 #-----------------------------
