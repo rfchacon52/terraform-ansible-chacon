@@ -34,7 +34,7 @@ module "vpc" {
 }
 #-----------------------------
 resource "aws_launch_template" "terramino" {
-  name_prefix   = "learn-terraform-aws-asg-"
+  name_prefix   = "aws-lt"
   image_id      = var.am_id
   instance_type = var.instance_type
   key_name      = "deployer-key"
@@ -74,7 +74,7 @@ resource "aws_launch_template" "terramino" {
 
 #-----------------------------
 resource "aws_autoscaling_group" "terramino" {
-  name_prefix      = "learn-terramino-asg-"
+  name_prefix      = "aws-asg"
   min_size         = 1
   max_size         = 2
   desired_capacity = 2
@@ -97,7 +97,7 @@ lifecycle {
 
 #-----------------------------
 resource "aws_lb" "terramino" {
-  name_prefix        = "learn-asg-terramino-lb-"
+  name_prefix        = "aws-lb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.terramino_lb.id]
@@ -106,7 +106,7 @@ resource "aws_lb" "terramino" {
 
 #-----------------------------
 resource "aws_lb_target_group" "terramino" {
-  name_prefix  = "learn-asg-terramino-tg-"
+  name_prefix  = "aws-tg"
   port     = 80
   protocol = "HTTP"
   vpc_id   = module.vpc.vpc_id
