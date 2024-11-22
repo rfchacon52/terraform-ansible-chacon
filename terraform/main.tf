@@ -54,7 +54,6 @@ resource "aws_launch_template" "terramino" {
 
 #-----------------------------
 resource "aws_autoscaling_group" "terramino" {
-  name_prefix      = "aws-asg"
   min_size         = 1
   max_size         = 2
   desired_capacity = 2
@@ -68,9 +67,6 @@ resource "aws_autoscaling_group" "terramino" {
     key                 = "Name"
     value               = "HashiCorp Learn ASG - Terramino"
     propagate_at_launch = true
-  }
-  lifecycle {
-    create_before_destroy = true
   }
 }
 
