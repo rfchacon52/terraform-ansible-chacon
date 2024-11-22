@@ -19,9 +19,6 @@ resource "aws_security_group" "terramino_instance" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  lifecycle {
-    create_before_destroy = true
-  }
 
   vpc_id = module.vpc.vpc_id
 }
@@ -47,9 +44,6 @@ resource "aws_security_group" "terramino_lb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  lifecycle {
-    create_before_destroy = true
-  }
 
   vpc_id = module.vpc.vpc_id
 }
