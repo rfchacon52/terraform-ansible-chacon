@@ -16,7 +16,7 @@ terraform {
     organization = "Chacon_Dev"
 
     workspaces {
-      name = "chacon-ws2"
+      name = "chacon-ws3"
     }
   }
 }

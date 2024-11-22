@@ -34,11 +34,11 @@ module "vpc" {
 }
 #-----------------------------
 resource "aws_launch_template" "terramino" {
-  name_prefix   = "aws-lt"
+  name   = "Chacon-launch-template"
   image_id      = var.am_id
   instance_type = var.instance_type
   key_name      = "deployer-key"
-  # user_data     = filebase64("user-data.sh")
+  user_data     = filebase64("user-data.sh")
   block_device_mappings {
     device_name = "/dev/sda1"
 
@@ -55,7 +55,7 @@ resource "aws_launch_template" "terramino" {
 #-----------------------------
 resource "aws_autoscaling_group" "terramino" {
   min_size         = 1
-  max_size         = 2
+  max_size         = 3
   desired_capacity = 2
   launch_template {
     id      = aws_launch_template.terramino.id
@@ -72,7 +72,7 @@ resource "aws_autoscaling_group" "terramino" {
 
 #-----------------------------
 resource "aws_lb" "terramino" {
-  name_prefix        = "aws-lb"
+  name        = "Chacon-lb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.terramino_lb.id]
@@ -81,7 +81,7 @@ resource "aws_lb" "terramino" {
 
 #-----------------------------
 resource "aws_lb_target_group" "terramino" {
-  name_prefix = "aws-tg"
+  name = "Chacon-aws-lb-tg"
   port        = 80
   protocol    = "HTTP"
   vpc_id      = module.vpc.vpc_id
