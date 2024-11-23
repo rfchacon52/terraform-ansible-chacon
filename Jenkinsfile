@@ -2,7 +2,7 @@ pipeline {
 
 agent any
 
-    prarameters {
+    parameters {
         choice(
             name: 'CHOICE',
             choices: ['Build_Deploy', 'Destroy'],
