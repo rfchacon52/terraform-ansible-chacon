@@ -40,6 +40,7 @@ resource "aws_launch_template" "terramino" {
   instance_type = var.instance_type
   key_name      = "deployer-key"
   user_data     = filebase64("user-data.sh")
+  vpc_security_group_ids = [aws_security_group.terramino_lb.id]
   block_device_mappings {
     device_name = "/dev/sda1"
 
