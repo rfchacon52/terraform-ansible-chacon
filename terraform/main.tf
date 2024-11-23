@@ -4,7 +4,8 @@
 #--------------------------------
 provider "aws" {
   region = var.aws_region
-  shared_credentials_file = "/root/.aws/credentials"
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
   default_tags {
     tags = {
       site-name = "Chacon-west-1"
