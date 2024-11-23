@@ -2,11 +2,11 @@ pipeline {
 
 agent any
 
-    parameters {
+    rarameters {
         choice(
             name: 'CHOICE',
             choices: ['Build_Deploy', 'Destroy'],
-            description: ' Select [ Build_Deploy or Destroy ]:'
+            description: ' Select [ Build_Deploy to run (Terraform Plan/Apply) or Destroy to run (Terraform Destroy) ]'
         )
     }
     
