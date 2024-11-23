@@ -66,7 +66,7 @@ agent any
              expression { params.CHOICE == "Destroy" }  
            }
             steps {
-                sh  'cd terraform; terraform destroy -no-color'
+                sh  'cd terraform; terraform apply -destroy -auto-approve -no-color'
             }
 
         }
