@@ -3,7 +3,9 @@ pipeline {
 agent any
     
  environment {
- TF_LOG="DEBUG"
+  TF_LOG="DEBUG"
+  TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
+  TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
     }    
     options {
         // This is required if you want to clean before build
