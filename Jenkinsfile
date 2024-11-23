@@ -6,7 +6,13 @@ agent any
         choice(
             name: 'CHOICE',
             choices: ['Build_Deploy', 'Destroy'],
-            description: ''
+            description: '
+
+    Select [ Build_Deploy or Destroy]:
+
+  - Build_Deploy executes: terraform init, plan, apply
+  - Destroy executes: terraform destroy
+'
         )
     }
     
