@@ -4,7 +4,7 @@
 #--------------------------------
 provider "aws" {
   region = var.aws_region
-  shared_credentials_files = ["/var/lib/jenkins/.aws/credentials"] 
+#  shared_credentials_files = ["/var/lib/jenkins/.aws/credentials"] 
   default_tags {
     tags = {
       site-name = "Chacon-west-1"
@@ -55,9 +55,11 @@ resource "aws_launch_template" "terramino" {
 
 #-----------------------------
 resource "aws_autoscaling_group" "terramino" {
+  name = "Chacon-auto-scaling-group"
   min_size         = 1
   max_size         = 3
   desired_capacity = 2
+  force_delete     = true 
   launch_template {
     id      = aws_launch_template.terramino.id
     version = "$Latest"
