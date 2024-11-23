@@ -1,14 +1,6 @@
 pipeline {
 
 agent any
-
-    parameters {
-        choice(
-            name: 'CHOICE',
-            choices: ['Build_Deploy', 'Destroy'],
-            description: ''
-        )
-    }
     
  environment {
   TF_LOG="DEBUG"
@@ -47,27 +39,17 @@ agent any
                 sh '''
             }
         }
-        stage('Terraform Plan & Apply') {
-           when {
-             expression { params.CHOICE == "Build_Deploy" }  
-           }
+        stage('Terraform Plan') {
+
             steps {
-                sh '''
-                echo "Executing terraform plan"                 
-                cd terraform; terraform plan -out=tfplan -no-color
-                sh '''
-                sh '''
-                echo "Executing terraform apply"                 
-                cd terraform; terraform apply tfplan  -no-color
-                sh '''
+                  
+                 sh 'cd terraform; terraform plan -out=tfplan -no-color'
             }
         }
-        stage('Terraform Destroy') {
-           when {
-             expression { params.CHOICE == "Destroy" }  
-           }
+        stage('Terraform Apply') {
+
             steps {
-                sh  'cd terraform; terraform destroy -no-color'
+                sh  'cd terraform; terraform apply tfplan -no-color'
             }
 
         }
