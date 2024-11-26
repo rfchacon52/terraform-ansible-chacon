@@ -77,6 +77,8 @@ docker ps | awk '{print $1;}' | xargs  docker inspect --format='{{.Config.Image}
 Create Docker image:
 
   
+    docker run -p 38282:8080 -e APP_COLOR=blue -d kodekloud/simple-webappa
+   docker run -p 38282:8080 --name blue-app -e APP_COLAR='blue'  kodekloud/simple-webappa 
 
 
 
