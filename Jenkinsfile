@@ -39,7 +39,7 @@ agent any
            }
             steps {
                 sh '''
-                cd docker
+                cd docker/vote
                 docker build . -t voting-app 
                 sh '''
             }
