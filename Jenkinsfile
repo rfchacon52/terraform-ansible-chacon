@@ -5,8 +5,8 @@ agent any
     parameters {
         choice(
             name: 'CHOICE',
-            choices: ['Build_Deploy', 'Destroy', 'Build_Docker'],
-            description: 'Select [ Build_Deploy  or Destroy or Build_Docker ]'
+            choices: ['Build_Deploy', 'Destroy'],
+            description: 'Select [ Build_Deploy  or Destroy ]'
         )
     }
     
@@ -32,17 +32,6 @@ agent any
             }
 
         }
-
-        stage('Build Docker') {
-           when {
-             expression { params.CHOICE == "Build_Docker" }  
-           }
-            steps {
-                sh '''
-                cd docker/vote
-                docker build . -t voting-app 
-                sh '''
-            }
         stage('Terraform Init') {
            when {
              expression { params.CHOICE == "Build_Deploy" }  
