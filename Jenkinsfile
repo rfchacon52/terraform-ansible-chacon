@@ -2,11 +2,11 @@ pipeline {
 
 agent any
 
-    parameters {
+    parameters {Bu
         choice(
             name: 'CHOICE',
-            choices: ['Build_Deploy', 'Destroy'],
-            description: 'Select [ Build_Deploy  or Destroy ]'
+            choices: ['Build_Deploy_EC2','Build_Deploy_K8','Destroy_EC2','Destroy_K8'],
+            description: 'Select [ *_EC2 for EC2 and *_K8 for K8 ]'
         )
     }
     
@@ -35,19 +35,26 @@ agent any
         stage('Terraform Init') {
             steps {
                 sh '''
-                cd terraform
+                if [ $params.CHOICE == "Build_Deploy_EC2" ]; then
+                   cd terraform
+                elif [ $params.CHOICE == "Build_Deploy_K8" ]; then
+                   cd terraformk8
+                else
+                    echo "Error: parms.CHOICE is not set"
+                    exit 1
+               fi
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
                 terraform fmt -recursive
                 echo "Running terraform validate"
                 terraform validate -no-color
-                sh '''
+               sh '''
             }
         }
-        stage('Terraform Plan & Apply') {
+        stage('Terraform EC2 Plan & Apply') {
            when {
-             expression { params.CHOICE == "Build_Deploy" }  
+             expression { params.CHOICE == "Build_Deploy_EC2" }  
            }
             steps {
                 sh '''
@@ -60,9 +67,35 @@ agent any
                 sh '''
             }
         }
-        stage('Terraform Destroy') {
+
+        stage('Terraform K8 Plan & Apply') {
            when {
-             expression { params.CHOICE == "Destroy" }  
+             expression { params.CHOICE == "Build_Deploy_K8" }  
+           }
+            steps {
+                sh '''
+                echo "Executing terraform plan"                 
+                cd terraformk8; terraform plan -out=tfplan -no-color
+                sh '''
+                sh '''
+                echo "Executing terraform apply"                 
+                cd terraformk8; terraform apply tfplan  -no-color
+                sh '''
+            }
+        }
+
+        stage('Terraform K8 Destroy') {
+           when {
+             expression { params.CHOICE == "Destroy_K8" }  
+           }
+            steps {
+                sh  'cd terraformk8; terraform apply -destroy -auto-approve -no-color'
+            }
+        }
+
+        stage('Terraform EC2 Destroy') {
+           when {
+             expression { params.CHOICE == "Destroy_EC2" }  
            }
             steps {
                 sh  'cd terraform; terraform apply -destroy -auto-approve -no-color'
