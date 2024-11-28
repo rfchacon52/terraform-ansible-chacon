@@ -6,7 +6,7 @@ agent any
         choice(
             name: 'CHOICE',
             choices: ['Build_Deploy_EC2','Build_Deploy_K8','Destroy_EC2','Destroy_K8'],
-            description: 'Select [ *_EC2 for EC2 and *_K8 for K8 ]'
+            description:'Select [ Build_Deploy_EC2 or Build_Deploy_K8 or Destroy_EC2 or Destroy_K8 ]'
         )
     }
     
