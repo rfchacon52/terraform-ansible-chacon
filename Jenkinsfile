@@ -32,17 +32,13 @@ agent any
             }
 
         }
-        stage('Terraform Init') {
+        stage('Terraform EC2  Init') {
+           when {
+             expression { params.CHOICE == "Build_Deploy_EC2" }  
+           }
             steps {
                 sh '''
-                if [ "${params.CHOICE}" = "Build_Deploy_EC2" ]; then
-                   cd terraform
-                elif [ "${params.CHOICE}" = "Build_Deploy_K8" ]; then
-                   cd terraformk8
-                else
-                    echo "Error: parms.CHOICE is not set"
-                    exit 1
-               fi
+                cd terraform
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
@@ -52,6 +48,24 @@ agent any
                sh '''
             }
         }
+
+        stage('Terraform K8 Init') {
+           when {
+             expression { params.CHOICE == "Build_Deploy_K8" }  
+           }
+            steps {
+                sh '''
+                cd terraformk8
+                echo "Running terraform init"
+                terraform init -no-color
+                echo "Running terraform fmt -recursive"
+                terraform fmt -recursive
+                echo "Running terraform validate"
+                terraform validate -no-color
+               sh '''
+            }
+        }
+
         stage('Terraform EC2 Plan & Apply') {
            when {
              expression { params.CHOICE == "Build_Deploy_EC2" }  
