@@ -35,9 +35,9 @@ agent any
         stage('Terraform Init') {
             steps {
                 sh '''
-                if [ $params.CHOICE == "Build_Deploy_EC2" ]; then
+                if [ ${params.CHOICE} == "Build_Deploy_EC2" ]; then
                    cd terraform
-                elif [ $params.CHOICE == "Build_Deploy_K8" ]; then
+                elif [ ${params.CHOICE} == "Build_Deploy_K8" ]; then
                    cd terraformk8
                 else
                     echo "Error: parms.CHOICE is not set"
