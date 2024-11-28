@@ -33,9 +33,6 @@ agent any
 
         }
         stage('Terraform Init') {
-           when {
-             expression { params.CHOICE == "Build_Deploy" }  
-           }
             steps {
                 sh '''
                 cd terraform
