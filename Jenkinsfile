@@ -2,7 +2,7 @@ pipeline {
 
 agent any
 
-    parameters {Bu
+    parameters {
         choice(
             name: 'CHOICE',
             choices: ['Build_Deploy_EC2','Build_Deploy_K8','Destroy_EC2','Destroy_K8'],
