@@ -13,8 +13,6 @@ parameters {
  environment {
   TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
   TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
-  EC2_DIR = "terraform"
-  K8_DIR = "terraformk8" 
     }    
     options {
         // This is required if you want to clean before build
@@ -34,16 +32,14 @@ parameters {
             }
 
         }
-        stage('Terraform EC2  Init') {
+        
+        stage('Terraform EC2 Init & Plan & Apply') {
            when {
              expression { params.CHOICE == "Build_Deploy_EC2" }  
            }
             steps {
-                if ( parms.CHOICE == "Build_Deploy_EC2") {
-                def mydir = "terraform" 
-                }
+                
                 sh '''
-                echo " my dir is $my_dir" 
                 cd terraform
                 echo "Running terraform init"
                 terraform init -no-color
@@ -51,11 +47,20 @@ parameters {
                 terraform fmt -recursive
                 echo "Running terraform validate"
                 terraform validate -no-color
-               sh '''
+                sh '''
+
+                sh '''
+                echo "Executing terraform plan"                 
+                cd terraform; terraform plan -out=tfplan -no-color
+                sh '''
+                sh '''
+                echo "Executing terraform apply"                 
+                cd terraform; terraform apply tfplan -no-color
+                sh '''
             }
         }
 
-        stage('Terraform K8 Init') {
+        stage('Terraform K8  Init &Plan & Apply') {
            when {
              expression { params.CHOICE == "Build_Deploy_K8" }  
            }
@@ -68,31 +73,7 @@ parameters {
                 terraform fmt -recursive
                 echo "Running terraform validate"
                 terraform validate -no-color
-               sh '''
-            }
-        }
-
-        stage('Terraform EC2 Plan & Apply') {
-           when {
-             expression { params.CHOICE == "Build_Deploy_EC2" }  
-           }
-            steps {
                 sh '''
-                echo "Executing terraform plan"                 
-                cd terraform; terraform plan -out=tfplan -no-color
-                sh '''
-                sh '''
-                echo "Executing terraform apply"                 
-                cd terraform; terraform apply tfplan  -no-color
-                sh '''
-            }
-        }
-
-        stage('Terraform K8 Plan & Apply') {
-           when {
-             expression { params.CHOICE == "Build_Deploy_K8" }  
-           }
-            steps {
                 sh '''
                 echo "Executing terraform plan"                 
                 cd terraformk8; terraform plan -out=tfplan -no-color
@@ -109,7 +90,19 @@ parameters {
              expression { params.CHOICE == "Destroy_K8" }  
            }
             steps {
-                sh  'cd terraformk8; terraform apply -destroy -auto-approve -no-color'
+                sh '''
+                cd terraformk8
+                echo "Running terraform init"
+                terraform init -no-color
+                echo "Running terraform fmt -recursive"
+                terraform fmt -recursive
+                echo "Running terraform validate"
+                terraform validate -no-color
+                sh '''
+                sh '''
+                echo "Executing Terraform K8 Destroy"
+                cd terraformk8; terraform apply -destroy -auto-approve -no-color
+                sh '''
             }
         }
 
@@ -118,7 +111,19 @@ parameters {
              expression { params.CHOICE == "Destroy_EC2" }  
            }
             steps {
-                sh  'cd terraform; terraform apply -destroy -auto-approve -no-color'
+                sh '''
+                cd terraform
+                echo "Running terraform init"
+                terraform init -no-color
+                echo "Running terraform fmt -recursive"
+                terraform fmt -recursive
+                echo "Running terraform validate"
+                terraform validate -no-color
+                sh '''
+                sh '''
+                echo "Executing Terraform EC2 Destroy"
+                cd terraform; terraform apply -destroy -auto-approve -no-color
+                sh '''
             }
 
         }
