@@ -13,6 +13,8 @@ parameters {
  environment {
   TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
   TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
+  EC2_DIR = "terraform"
+  K8_DIR = "terraformk8" 
     }    
     options {
         // This is required if you want to clean before build
@@ -39,14 +41,11 @@ parameters {
             steps {
                 script {
                 if (${parms.CHOICE} == "Build_Deploy_EC2") {
-                environment {
-                  TFD = "terraform"
-                 }
-
+                def mydir = env.EC2_DIR
           }
          }
                 sh '''
-                echo "${env.TFD}"
+                echo " my dir is $my_dir" 
                 cd terraform
                 echo "Running terraform init"
                 terraform init -no-color
