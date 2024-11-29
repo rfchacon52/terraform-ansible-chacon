@@ -40,10 +40,10 @@ parameters {
            }
             steps {
                 script {
-                if (${parms.CHOICE} == "Build_Deploy_EC2") {
-                def mydir = env.EC2_DIR
-          }
-         }
+                if ( parms.CHOICE == "Build_Deploy_EC2") {
+                def mydir = "terraform" 
+                }
+              }       
                 sh '''
                 echo " my dir is $my_dir" 
                 cd terraform
