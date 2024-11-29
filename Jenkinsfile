@@ -38,6 +38,7 @@ parameters {
            }
             steps {
                 sh '''
+                echo ${parms.CHOICE}
                 cd terraform
                 echo "Running terraform init"
                 terraform init -no-color
