@@ -37,8 +37,10 @@ parameters {
              expression { params.CHOICE == "Build_Deploy_EC2" }  
            }
             steps {
-               echo "params.CHOICE: ${params.CHOICE}"
+                echo "params.CHOICE: ${params.CHOICE}"
+                env.choice=${parms.CHOICE} 
                 sh '''
+                echo "${env.choice}"
                 cd terraform
                 echo "Running terraform init"
                 terraform init -no-color
