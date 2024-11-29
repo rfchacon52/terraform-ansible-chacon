@@ -37,10 +37,14 @@ parameters {
              expression { params.CHOICE == "Build_Deploy_EC2" }  
            }
             steps {
-                if ( ${parms.CHOICE} == "Build_Deploy_EC2" ) 
+                script {
+                if (${parms.CHOICE} == "Build_Deploy_EC2") {
                 environment {
                   TFD = "terraform"
                  }
+
+          }
+         }
                 sh '''
                 echo "${env.TFD}"
                 cd terraform
