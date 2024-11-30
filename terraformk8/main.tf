@@ -25,7 +25,7 @@ data "aws_availability_zones" "available" {
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.15.0"
-  name    = "k8s-${var.cluster_name}-vpc"
+  name    = "${var.cluster_name}-vpc"
   cidr    = "172.16.0.0/16"
   azs                     = data.aws_availability_zones.available.names
   private_subnets      = ["172.16.1.0/24", "172.16.2.0/24", "172.16.3.0/24"]
@@ -50,7 +50,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "18.30.3" 
 
-  cluster_name    = "eks-${var.cluster_name}"
+  cluster_name    = var.cluster_name
   cluster_version = "1.24"
   subnet_ids        = module.vpc.private_subnets
   vpc_id = module.vpc.vpc_id
@@ -107,6 +107,6 @@ resource "helm_release" "ingress" {
   }
   set {
     name  = "clusterName"
-    value = "var.cluster_name}"
+    value = var.cluster_name
   }
 }
