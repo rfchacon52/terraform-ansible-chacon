@@ -3,7 +3,7 @@ pipeline {
 agent any
 
 parameters {
-  choice choices: ['Build_Deploy_EC2', 'Build_Deploy_K8', 'Destroy_EC2', 'Destroy_K8 '], description: '''Select [  Build_Deploy_EC2 to build EC2
+  choice choices: ['Build_Deploy_EC2', 'Build_Deploy_K8', 'Destroy_EC2', 'Destroy_K8'], description: '''Select [  Build_Deploy_EC2 to build EC2
                Build_Deploy_K8 to build EKS
                Destroy_EC2 to remove EC2
                Destroy_K8 to remove EKS ]''', name: 'CHOICE'

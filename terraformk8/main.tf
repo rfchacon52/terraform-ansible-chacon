@@ -48,17 +48,17 @@ module "vpc" {
 #-----------------------------
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "18.30.3"
+  version = "~> 20.0"
 
   cluster_name    = "eks-${var.cluster_name}"
-  cluster_version = "1.24"
+  cluster_version = "1.31"
   subnet_ids        = module.vpc.private_subnets
   vpc_id = module.vpc.vpc_id
 
   eks_managed_node_groups = {
     first = {
       desired_capacity = 1
-      max_capacity     = 10
+      max_capacity     = 10 
       min_capacity     = 1
 
       instance_type = var.instance_type
@@ -107,6 +107,6 @@ resource "helm_release" "ingress" {
   }
   set {
     name  = "clusterName"
-    value = var.cluster_name
+    value = "eks-${var.cluster_name}"
   }
 }
