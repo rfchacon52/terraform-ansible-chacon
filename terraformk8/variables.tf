@@ -22,3 +22,5 @@ variable "instance_type" {
 variable "cluster_name" {
   default = "eks-learnk8s"
 }
+
+
