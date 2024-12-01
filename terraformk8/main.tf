@@ -14,10 +14,11 @@ provider "aws" {
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_id
 }
-
+#---------------------------
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_id
 }
+#---------------------------
 data "aws_availability_zones" "available" {
   state = "available"
 }
@@ -57,8 +58,8 @@ module "eks" {
 
   eks_managed_node_groups = {
     first = {
-      desired_capacity = 1
-      max_capacity     = 10 
+      desired_capacity = 2
+      max_capacity     = 5 
       min_capacity     = 1
 
       instance_type = var.instance_type
@@ -91,22 +92,3 @@ resource "aws_iam_role_policy_attachment" "additional" {
 }
 
 
-resource "helm_release" "ingress" {
-  name       = "ingress"
-  chart      = "aws-load-balancer-controller"
-  repository = "https://aws.github.io/eks-charts"
-  version    = "1.4.6"
-
-  set {
-    name  = "autoDiscoverAwsRegion"
-    value = "true"
-  }
-  set {
-    name  = "autoDiscoverAwsVpcID"
-    value = "true"
-  }
-  set {
-    name  = "clusterName"
-    value = var.cluster_name
-  }
-}

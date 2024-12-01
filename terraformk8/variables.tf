@@ -9,11 +9,6 @@ variable "aws_region" {
   default     = "us-west-1"
 }
 
-variable "vpc_cider_block" {
-  description = "vpc cider block"
-  type        = string
-  default     = "10.0.0.0/16"
-}
 variable "am_id" {
   description = "AMI to use"
   type        = string
@@ -25,5 +20,5 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 variable "cluster_name" {
-  default = "learnk8s"
+  default = "eks-learnk8s"
 }
