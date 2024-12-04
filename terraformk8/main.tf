@@ -79,9 +79,6 @@ module "eks" {
     eks-pod-identity-agent = {}
     kube-proxy             = {}
     vpc-cni                = {}
-#    aws-ebs-csi-driver = {
- #     service_account_role_arn = module.irsa-ebs-csi.iam_role_arn
-#    }
   }
 
   vpc_id      = module.vpc.vpc_id
@@ -102,16 +99,6 @@ module "eks" {
     }
   }
 
-  node_security_group_additional_rules = {
-    ingress_allow_access_from_control_plane = {
-      type                          = "ingress"
-      protocol                      = "tcp"
-      from_port                     = 9443
-      to_port                       = 9443
-      source_cluster_security_group = true
-      description                   = "Allow access from control plane to webhook port of AWS load balancer controller"
-    }
-  }
 }
 
 resource "aws_iam_policy" "worker_policy" {
