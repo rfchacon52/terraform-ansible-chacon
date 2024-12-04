@@ -79,9 +79,9 @@ module "eks" {
     eks-pod-identity-agent = {}
     kube-proxy             = {}
     vpc-cni                = {}
-    aws-ebs-csi-driver = {
-      service_account_role_arn = module.irsa-ebs-csi.iam_role_arn
-    }
+#    aws-ebs-csi-driver = {
+ #     service_account_role_arn = module.irsa-ebs-csi.iam_role_arn
+#    }
   }
 
   vpc_id      = module.vpc.vpc_id
