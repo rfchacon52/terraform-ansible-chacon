@@ -31,10 +31,10 @@ provider "kubernetes" {
 #---------------------------
 module "eks-kubeconfig" {
   source     = "hyperbadger/eks-kubeconfig/aws"
-  version    = "1.0.0"
+  version    = "2.0.0"
 
   depends_on = [module.eks]
-  cluster_id =  module.eks.cluster_id
+  name =  module.eks.cluster_name
   }
 #---------------------------
 resource "local_file" "kubeconfig" {
