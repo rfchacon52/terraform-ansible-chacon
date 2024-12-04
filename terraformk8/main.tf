@@ -34,7 +34,7 @@ module "eks-kubeconfig" {
   version    = "2.0.0"
 
   depends_on = [module.eks]
-  name =  module.eks.cluster_name
+  cluster_name =  module.eks.cluster_name
   }
 #---------------------------
 resource "local_file" "kubeconfig" {
