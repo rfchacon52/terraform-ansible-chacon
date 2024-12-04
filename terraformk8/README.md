@@ -7,3 +7,5 @@ conifguration files for you to use to learn how to configure and scale an Auto S
 Fix kubectl after creation of new cluster
 
 aws eks update-kubeconfig --region $region-code --name $my-cluster
+
+aws eks update-kubeconfig --region us-west-1 --name eks-learnk8s 

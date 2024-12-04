@@ -1,7 +1,7 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
-#--------------------------------
+#------------------------------------
 provider "aws" {
   region = var.aws_region
   default_tags {
@@ -10,25 +10,25 @@ provider "aws" {
     }
   }
 }
-#-----------------------------
+#---------------------------------
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_id
 }
-#---------------------------
+#-------------------------------
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_id
 }
-#---------------------------
+#-------------------------------
 data "aws_availability_zones" "available" {
   state = "available"
 }
-#--------------------------
+#------------------------------
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   token                  = data.aws_eks_cluster_auth.cluster.token
 }
-#------------------------
+#---------------------------
 module "eks-kubeconfig" {
   source     = "hyperbadger/eks-kubeconfig/aws"
   version    = "1.0.0"
@@ -36,7 +36,7 @@ module "eks-kubeconfig" {
   depends_on = [module.eks]
   cluster_id =  module.eks.cluster_id
   }
-#------------------------
+#---------------------------
 resource "local_file" "kubeconfig" {
   content  = module.eks-kubeconfig.kubeconfig
   filename = "kubeconfig_${var.cluster_name}"
@@ -68,18 +68,37 @@ module "vpc" {
 #-----------------------------
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "18.30.3" 
+  version = "20.30.1" 
   cluster_name    = var.cluster_name
-  cluster_version = "1.24"
-  subnet_ids      = module.vpc.private_subnets
-  vpc_id = module.vpc.vpc_id
+  cluster_version = "1.31"
+  cluster_endpoint_public_access           = true
+  enable_cluster_creator_admin_permissions = true
 
-  eks_managed_node_groups = {
-    first = {
-      desired_capacity = 1
-      max_capacity     = 10 
-      min_capacity     = 1
-     instance_type = var.instance_type
+ cluster_addons = {
+    coredns                = {}
+    eks-pod-identity-agent = {}
+    kube-proxy             = {}
+    vpc-cni                = {}
+    aws-ebs-csi-driver = {
+      service_account_role_arn = module.irsa-ebs-csi.iam_role_arn
+    }
+  }
+
+  vpc_id      = module.vpc.vpc_id
+  subnet_ids  = module.vpc.private_subnets
+
+ eks_managed_node_group_defaults = {
+     ami_type = "AL2_x86_64"
+ }
+
+
+ eks_managed_node_groups = {
+    one  = {
+      name = "node=group-1"
+      instance_types = ["t3.small"]
+      min_size = 2
+      max_size = 5
+     desired_size = 2 
     }
   }
 
