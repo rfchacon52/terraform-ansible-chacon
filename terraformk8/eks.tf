@@ -34,8 +34,8 @@ eks_managed_node_groups = {
   }
 }  
 data "aws_eks_cluster" "cluster" {
-  name = module.ek.cluster_id
+  name = module.ek.cluster_name
 }
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.ek.cluster_id
+  name = module.ek.cluster_name
 }
