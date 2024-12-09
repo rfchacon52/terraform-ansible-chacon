@@ -20,6 +20,7 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 variable "cluster_name" {
+  type        = string
   default = "eks-learnk8s"
 }
 
