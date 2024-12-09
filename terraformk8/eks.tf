@@ -1,9 +1,9 @@
 #----------------------------
 # EKS 
 #---------------------------
-module "eks" {
+module "ek_al2023" {
   source          = "terraform-aws-modules/eks/aws"
-  version         = "20.31"
+  version         = "~> 20.0"
   cluster_name    = local.cluster_name
   cluster_version = "1.31"
   cluster_endpoint_public_access           = true
@@ -19,27 +19,20 @@ module "eks" {
   subnets         = module.vpc.private_subnets
   vpc_id          = module.vpc.vpc_id
 
-workers_group_defaults = {
-    root_volume_type = "gp2"
-  }
+eks_managed_node_groups = {
+    node_grp1 = {
+      # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
+      instance_types = ["t2.small"]
+      ami_type       = "AL2_x86_64"
+      min_size = 2
+      max_size = 5
+      # This value is ignored after the initial creation
+      # https://github.com/bryantbiggs/eks-desired-size-hack
+      desired_size = 2
 
-worker_groups = [
-    {
-      name                          = "worker-group-1"
-      instance_type                 = "t2.micro"
-      additional_userdata           = "echo foo bar"
-      additional_security_group_ids = [aws_security_group.worker_group_mgmt_one.id]
-      asg_desired_capacity          = 2
-    },
-    {
-      name                          = "worker-group-2"
-      instance_type                 = "t2.micro"
-      additional_userdata           = "echo foo bar"
-      additional_security_group_ids = [aws_security_group.worker_group_mgmt_two.id]
-      asg_desired_capacity          = 1
-    },
-  ]
-}
+    }
+  }
+}  
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_id
 }
