@@ -16,7 +16,7 @@ module "ek_al2023" {
     vpc-cni                = {}
   }
 
-  subnets         = module.vpc.private_subnets
+  subnet_ids =  module.vpc.private_subnets
   vpc_id          = module.vpc.vpc_id
 
 eks_managed_node_groups = {
