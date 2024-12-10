@@ -1,5 +1,5 @@
 #----------------------------
-# EKS
+# EKS auto-enable
 #---------------------------
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
