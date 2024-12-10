@@ -1,56 +1,26 @@
-#----------------------------
-# EKS 
-#---------------------------
 module "eks" {
-  source          = "terraform-aws-modules/eks/aws"
-  version         = "20.31.1" 
-  cluster_name    = local.cluster_name
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 20.31"
+
+  cluster_name    = "example"
   cluster_version = "1.31"
-  cluster_endpoint_public_access           = true
+
+  # Optional
+  cluster_endpoint_public_access = true
+
+  # Optional: Adds the current caller identity as an administrator via cluster access entry
   enable_cluster_creator_admin_permissions = true
 
-
-cluster_addons = {
-    coredns = {
-      most_recent = true
-    }
-    kube-proxy = {
-      most_recent = true
-    }
-    vpc-cni = {
-      most_recent = true
-    }
-    aws-ebs-csi-driver = {
-      most_recent = true
-    }
-  }
-
-
-cluster_compute_config = {
-    enabled    = false 
+  cluster_compute_config = {
+    enabled    = true
     node_pools = ["general-purpose"]
   }
 
+  vpc_id     = "vpc-1234556abcdef"
+  subnet_ids = ["subnet-abcde012", "subnet-bcde012a", "subnet-fghi345a"]
 
-
-
-  subnet_ids =  module.vpc.private_subnets
-  vpc_id          = module.vpc.vpc_id
-
-eks_managed_node_groups = {
-    node_grp1 = {
-      # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
-      instance_types = ["t2.small"]
-      ami_type       = "AL2_x86_64"
-      min_size = 2
-      max_size = 5
-      # This value is ignored after the initial creation
-      # https://github.com/bryantbiggs/eks-desired-size-hack
-      desired_size = 2
-# Needed by the aws-ebs-csi-driver
-      iam_role_additional_policies = {
-        AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-    }
-   }
+  tags = {
+    Environment = "dev"
+    Terraform   = "true"
   }
 }
