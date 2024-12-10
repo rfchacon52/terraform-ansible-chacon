@@ -26,6 +26,14 @@ cluster_addons = {
   }
 
 
+cluster_compute_config = {
+    enabled    = false 
+    node_pools = ["general-purpose"]
+  }
+
+
+
+
   subnet_ids =  module.vpc.private_subnets
   vpc_id          = module.vpc.vpc_id
 
