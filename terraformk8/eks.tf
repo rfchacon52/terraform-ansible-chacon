@@ -42,7 +42,7 @@ eks_managed_node_groups = {
       max_size = 5
       # This value is ignored after the initial creation
       # https://github.com/bryantbiggs/eks-desired-size-hack
-      desired_size = 1 
+      desired_size = 1
 # Needed by the aws-ebs-csi-driver
       iam_role_additional_policies = {
         AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
