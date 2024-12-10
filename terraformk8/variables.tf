@@ -18,5 +18,10 @@ variable "instance_type" {
   type        = string
   default     = "t2.micro"
 }
+variable "cluster_name" {
+ escription = "Cluster name"
+  type        = string
+  default     = "EKS-DEV"
+}
 
 
