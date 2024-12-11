@@ -4,7 +4,7 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.31"
-  cluster_name    = "EKS-DEV"
+  cluster_name    = var,cluster_name"
   cluster_version = "1.31"
   cluster_endpoint_public_access           = true
   enable_cluster_creator_admin_permissions = true
@@ -13,6 +13,7 @@ module "eks" {
     coredns                = {}
     eks-pod-identity-agent = {}
     kube-proxy             = {}
+    aws-ebs-csi-driver = { most_recent = true }
   }
 
   vpc_id      = module.vpc.vpc_id
@@ -28,7 +29,8 @@ eks_managed_node_groups = {
       # This value is ignored after the initial creation
       # https://github.com/bryantbiggs/eks-desired-size-hack
       desired_size = 2
-# Needed by the aws-ebs-csi-driver
+
+      # Needed by the aws-ebs-csi-driver
       iam_role_additional_policies = {
         AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
     }
