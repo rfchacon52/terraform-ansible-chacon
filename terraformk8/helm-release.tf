@@ -21,7 +21,7 @@ resource "helm_release" "nginx" {
   }
 
   values = [
-    templatefile("${path.module}/helm-chart/nginx/values.yaml", {
+    templatefile("./helm-chart/nginx/values.yaml", {
       NAME_OVERRIDE   = var.release_name
     }
   )]
