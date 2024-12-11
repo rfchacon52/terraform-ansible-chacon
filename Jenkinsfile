@@ -101,7 +101,8 @@ parameters {
                 sh '''
                 sh '''
                 echo "Executing Terraform K8 Destroy"
-                cd terraformk8; terraform apply -destroy -refresh=false -auto-approve -no-color
+                export KUBE_CONFIG_PATH=~/.kube/config
+                cd terraformk8; terraform apply -destroy -auto-approve -no-color
                 sh '''
             }
         }
