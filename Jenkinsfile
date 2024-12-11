@@ -67,7 +67,7 @@ parameters {
            }
             steps {
                 sh '''
-                export KUBE_CONFIG_PATH  = "~/.kube/config"
+                export KUBE_CONFIG_PATH=~/.kube/config
                 cd terraformk8
                 echo "Running terraform init"
                 terraform init -no-color
@@ -93,7 +93,7 @@ parameters {
            }
             steps {
                 sh '''
-                export KUBE_CONFIG_PATH  = "~/.kube/config"
+                export KUBE_CONFIG_PATH=~/.kube/config
                 cd terraformk8
                 echo "Running terraform init"
                 terraform init -no-color
