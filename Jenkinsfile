@@ -13,6 +13,7 @@ parameters {
  environment {
   TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
   TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
+  KUBE_CONFIG_PATH      = '~/.kube/config'
     }    
     options {
         // This is required if you want to clean before build
@@ -66,6 +67,7 @@ parameters {
            }
             steps {
                 sh '''
+                export KUBE_CONFIG_PATH  = "~/.kube/config"
                 cd terraformk8
                 echo "Running terraform init"
                 terraform init -no-color
@@ -91,6 +93,7 @@ parameters {
            }
             steps {
                 sh '''
+                export KUBE_CONFIG_PATH  = "~/.kube/config"
                 cd terraformk8
                 echo "Running terraform init"
                 terraform init -no-color
@@ -101,7 +104,6 @@ parameters {
                 sh '''
                 sh '''
                 echo "Executing Terraform K8 Destroy"
-                export KUBE_CONFIG_PATH=~/.kube/config
                 cd terraformk8; terraform apply -destroy -auto-approve -no-color
                 sh '''
             }
