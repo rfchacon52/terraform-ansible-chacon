@@ -25,3 +25,44 @@ variable "cluster_name" {
 }
 
 
+variable "release_name" {
+  type        = string
+  default     = "nginx"
+  description = "The name of our release."
+}
+
+variable "chart_repository_url" {
+  type        = string
+  default     = "https://charts.bitnami.com/bitnami"
+  description = "The chart repository url."
+}
+
+variable "chart_name" {
+  type        = string
+  default     = "nginx"
+  description = "The name of of our chart that we want to install from the repository."
+}
+
+variable "chart_version" {
+  type        = string
+  default     = "13.2.20"
+  description = "The version of our chart."
+}
+
+variable "namespace" {
+  type        = string
+  default     = "apps"
+  description = "The namespace where our release should be deployed into."
+}
+
+variable "create_namespace" {
+  type        = bool
+  default     = true
+  description = "If it should create the namespace if it doesnt exist."
+}
+
+variable "atomic" {
+  type        = bool
+  default     = false
+  description = "If it should wait until release is deployed."
+}
