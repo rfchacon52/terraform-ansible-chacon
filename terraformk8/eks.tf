@@ -8,8 +8,6 @@ module "eks" {
   cluster_version = "1.31"
   cluster_endpoint_public_access           = true
   enable_cluster_creator_admin_permissions = true
-
-bootstrap_self_managed_addons = false
   cluster_addons = {
     vpc-cni                = {} 
     coredns                = {}
@@ -26,7 +24,7 @@ eks_managed_node_groups = {
       # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
       instance_types = ["t2.small"]
       ami_type       = "AL2023_x86_64_STANDARD"
-      min_size = 2
+      min_size = 1
       max_size = 10 
       # This value is ignored after the initial creation
       # https://github.com/bryantbiggs/eks-desired-size-hack
