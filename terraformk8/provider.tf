@@ -37,6 +37,7 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.cluster.token
 }
 #---------------------------
+/**
 provider "helm" {
   kubernetes {
     host                   = data.aws_eks_cluster.cluster.endpoint
@@ -48,3 +49,4 @@ provider "helm" {
     }
   }
 }
+ **/
