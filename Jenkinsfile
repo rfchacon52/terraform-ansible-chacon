@@ -87,6 +87,21 @@ parameters {
             }
         }
 
+        stage('Configure Kubectl acceess') {
+           when {
+             expression { params.CHOICE == "Build_Deploy_K8" }  
+           }
+            steps {
+                sh '''
+                export KUBE_CONFIG_PATH=~/.kube/config
+                echo "Executing update-kubeconfig on cluster EKS-DE region us-west-1V"
+                aws eks update-kubeconfig --region us-west-1 --name EKS-DEV 
+                echo "Executing Get all pods"
+                kubectl get pods -A -o wide
+                sh '''
+            }
+        }
+
         stage('Terraform K8 Destroy') {
            when {
              expression { params.CHOICE == "Destroy_K8" }  
