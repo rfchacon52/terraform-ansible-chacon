@@ -93,11 +93,14 @@ parameters {
            }
             steps {
                 sh '''
+                cd terraformk8
                 export KUBE_CONFIG_PATH=~/.kube/config
                 echo "Executing update-kubeconfig on cluster EKS-DE region us-west-1V"
                 aws eks update-kubeconfig --region us-west-1 --name EKS-DEV 
                 echo "Executing Get all pods"
                 kubectl get pods -A -o wide
+                echo "Creating storageclass"  
+                kubectl apply -f k8-storage-class.yml 
                 sh '''
             }
         }
@@ -110,6 +113,8 @@ parameters {
                 sh '''
                 export KUBE_CONFIG_PATH=~/.kube/config
                 cd terraformk8
+                echo "Destroying storageclass"  
+                kubectl delete -f k8-storage-class.yml 
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
