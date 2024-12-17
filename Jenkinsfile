@@ -104,6 +104,8 @@ parameters {
                 echo "Installing ARGOCD on cluster EKS-DEV"
                 kubectl create namespace argocd --context EKS-DEV 
                 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml --context EKS-DEV 
+               kubectl config set-context EKS-DEV --namespace=argocd 
+               kubectl port-forward svc/argocd-server 8080:443 --context EKS-DEV 
                 sh '''
             }
         }
