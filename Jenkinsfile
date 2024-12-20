@@ -87,7 +87,7 @@ parameters {
             }
         }
 
-        stage('Configure Kubectl, Create Storage-Class and Install ArgoCD ') {
+        stage('Configure Kubectl, Create Storage-Class') {
            when {
              expression { params.CHOICE == "Build_Deploy_K8" }  
            }
@@ -102,10 +102,11 @@ parameters {
                 echo "Creating storageclass"  
                 kubectl apply -f k8-storage-class.yml 
                 echo "Installing ARGOCD on cluster EKS-DEV"
-                kubectl create namespace argocd --context EKS-DEV 
-                kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml --context EKS-DEV 
-               kubectl config set-context EKS-DEV --namespace=argocd 
-               kubectl port-forward svc/argocd-server 8080:443 --context EKS-DEV 
+               # kubectl create namespace argocd --context EKS-DEV 
+               #  kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml --context EKS-DEV 
+       #        kubectl config set-context EKS-DEV --namespace=argocd 
+       # 
+       #        kubectl port-forward svc/argocd-server 8080:443 --context EKS-DEV 
                 sh '''
             }
         }
