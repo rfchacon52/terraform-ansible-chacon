@@ -61,7 +61,7 @@ parameters {
             }
         }
 
-        stage('Terraform K8  Init &Plan & Apply') {
+        stage('Terraform K8  Init & Plan & Apply') {
            when {
              expression { params.CHOICE == "Build_Deploy_K8" }  
            }
@@ -101,7 +101,7 @@ parameters {
                 kubectl get pods -A -o wide
                 echo "Creating storageclass"  
                 kubectl apply -f k8-storage-class.yml 
-                echo "Installing ARGOCD on cluster EKS-DEV"
+              #  echo "Installing ARGOCD on cluster EKS-DEV"
                # kubectl create namespace argocd --context EKS-DEV 
                #  kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml --context EKS-DEV 
        #        kubectl config set-context EKS-DEV --namespace=argocd 
