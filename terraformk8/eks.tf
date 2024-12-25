@@ -36,16 +36,5 @@ eks_managed_node_groups = {
   repository = "https://aws.github.io/eks-charts"
   version    = "1.4.6"
 
-  set {
-    name  = "autoDiscoverAwsRegion"
-    value = "true"
-  }
-  set {
-    name  = "autoDiscoverAwsVpcID"
-    value = "true"
-  }
-  set {
-    name  = "clusterName"
-    value = local.cluster_name
   }
 }                                                              
