@@ -62,10 +62,13 @@ parameters {
             }
         }
 
-        stage('Terraform K8  Init & Plan & Apply') {
+        stage('Terraform build/deploy K8 Infra') {
+          stages {
            when {
              expression { params.CHOICE == "Build_Deploy_K8" }  
            }
+         
+          stage('Terraform Init, Plan, Apply EKS Cluster') { 
             steps {
                 sh '''
                 export KUBE_CONFIG_PATH=~/.kube/config
@@ -102,15 +105,40 @@ parameters {
                 kubectl get pods -A -o wide
                 echo "Creating storageclass"  
                 kubectl apply -f k8-storage-class.yml 
-              #  echo "Installing ARGOCD on cluster EKS-DEV"
-               # kubectl create namespace argocd --context EKS-DEV 
-               #  kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml --context EKS-DEV 
-       #        kubectl config set-context EKS-DEV --namespace=argocd 
-       # 
-       #        kubectl port-forward svc/argocd-server 8080:443 --context EKS-DEV 
                 sh '''
             }
         }
+
+        stage('Helm Deploy NGINX Ingress Controller') {
+           when {
+             expression { params.CHOICE == "Build_Deploy_K8" }  
+           }
+            steps {
+                sh '''
+                cd terraformk8
+                export KUBE_CONFIG_PATH=~/.kube/config
+                echo "Installing creds" 
+                kubectl apply -f https://raw.githubusercontent.com/nginxinc/kubernetes-ingress/v4.0.0/deploy/crds.yaml 
+                echo "Executing helm install NGINX_INGRESS_CONTROLLER"
+                helm install NGINX_INGRESS_CONTROLLER oci://ghcr.io/nginxinc/charts/nginx-ingress --version 2.0.0
+                echo "Checking helm status"
+                helm status NGINX_INGRESS_CONTROLLER
+                echo "Executing Get all pods"
+                kubectl get pods -A -o wide
+                sh '''
+            }
+        }
+   }
+
+
+
+
+
+        stage('Terraform K8 Destroy') {
+           when {
+
+
+
 
         stage('Terraform K8 Destroy') {
            when {
