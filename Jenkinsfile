@@ -63,13 +63,10 @@ parameters {
         }
 
         stage('Terraform build/deploy K8 Infra') {
-          stages {
            when {
              expression { params.CHOICE == "Build_Deploy_K8" }  
            }
-         
-          stage('Terraform Init, Plan, Apply EKS Cluster') { 
-            steps {
+             steps {
                 sh '''
                 export KUBE_CONFIG_PATH=~/.kube/config
                 cd terraformk8
@@ -128,8 +125,6 @@ parameters {
                 sh '''
             }
         }
-   }
-
 
         stage('Terraform K8 Destroy') {
            when {
