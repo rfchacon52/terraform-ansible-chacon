@@ -131,15 +131,6 @@ parameters {
    }
 
 
-
-
-
-        stage('Terraform K8 Destroy') {
-           when {
-
-
-
-
         stage('Terraform K8 Destroy') {
            when {
              expression { params.CHOICE == "Destroy_K8" }  
