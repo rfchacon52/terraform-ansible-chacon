@@ -29,13 +29,6 @@ eks_managed_node_groups = {
       # This value is ignored after the initial creation
       # https://github.com/bryantbiggs/eks-desired-size-hack
       desired_size = 2
-
-      # Needed by the aws-ebs-csi-driver
-      iam_name       = "ingress"
-      chart      = "aws-load-balancer-controller"
-      repository = "https://aws.github.io/eks-charts"
-      version    = "1.4.6"
-
   }
-}                                                              
+ }                                                              
 }
