@@ -76,12 +76,8 @@ parameters {
                 terraform fmt -recursive
                 echo "Running terraform validate"
                 terraform validate -no-color
-                sh '''
-                sh '''
                 echo "Executing terraform plan"                 
                 cd terraformk8; terraform plan -out=tfplan -no-color
-                sh '''
-                sh '''
                 echo "Executing terraform apply"                 
                 cd terraformk8; terraform apply tfplan  -no-color
                 sh '''
@@ -120,8 +116,6 @@ parameters {
                 terraform fmt -recursive
                 echo "Running terraform validate"
                 terraform validate -no-color
-                sh '''
-                sh '''
                 echo "Executing Terraform K8 Destroy"
                 cd terraformk8; terraform apply -destroy -auto-approve -no-color
                 sh '''
