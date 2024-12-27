@@ -77,9 +77,9 @@ parameters {
                 echo "Running terraform validate"
                 terraform validate -no-color
                 echo "Executing terraform plan"                 
-                cd terraformk8; terraform plan -out=tfplan -no-color
+                terraform plan -out=tfplan -no-color
                 echo "Executing terraform apply"                 
-                cd terraformk8; terraform apply tfplan  -no-color
+                terraform apply tfplan  -no-color
                 sh '''
             }
         }
@@ -117,7 +117,7 @@ parameters {
                 echo "Running terraform validate"
                 terraform validate -no-color
                 echo "Executing Terraform K8 Destroy"
-                cd terraformk8; terraform apply -destroy -auto-approve -no-color
+                terraform apply -destroy -auto-approve -no-color
                 sh '''
             }
         }
