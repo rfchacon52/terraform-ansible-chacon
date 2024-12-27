@@ -1,4 +1,4 @@
-resource "helm_release" "nginx" {
+resource "helm_release" "ingress-nginx" {
   name             = var.release_name
   version          = var.chart_version
   namespace        = var.namespace
@@ -10,18 +10,8 @@ resource "helm_release" "nginx" {
   force_update      = true
   atomic              = var.atomic
 
-  set {
-    name  = "image.tag"
-    value = "1.23.3-debian-11-r3"
-  }
-
-  set {
-    name  = "service.type"
-    value = "ClusterIP"
-  }
-
   values = [
-    templatefile("./helm-chart/nginx/values.yaml", {
+    templatefile("./nginx-ingress-values.yam", {
       NAME_OVERRIDE   = var.release_name
     }
   )]

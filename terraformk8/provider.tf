@@ -2,12 +2,19 @@
 # SPDX-License-Identifier: MPL-2.0
 terraform {
   required_providers {
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.8.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.17.0"
+    }
     aws = {
       source  = "hashicorp/aws"
       version = ">= 5.75.0"
     }
   }
-
   required_version = ">= 1.5.0"
 }
 
