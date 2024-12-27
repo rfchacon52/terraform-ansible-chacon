@@ -106,26 +106,6 @@ parameters {
             }
         }
 
-        stage('Helm Deploy NGINX Ingress Controller') {
-           when {
-             expression { params.CHOICE == "Build_Deploy_K8" }  
-           }
-            steps {
-                sh '''
-                cd terraformk8
-                export KUBE_CONFIG_PATH=~/.kube/config
-                echo "Installing creds" 
-                kubectl apply -f https://raw.githubusercontent.com/nginxinc/kubernetes-ingress/v4.0.0/deploy/crds.yaml 
-                echo "Executing helm install NGINX_INGRESS_CONTROLLER"
-                helm install NGINX_INGRESS_CONTROLLER oci://ghcr.io/nginxinc/charts/nginx-ingress --version 2.0.0
-                echo "Checking helm status"
-                helm status NGINX_INGRESS_CONTROLLER
-                echo "Executing Get all pods"
-                kubectl get pods -A -o wide
-                sh '''
-            }
-        }
-
         stage('Terraform K8 Destroy') {
            when {
              expression { params.CHOICE == "Destroy_K8" }  
