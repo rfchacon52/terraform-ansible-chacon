@@ -11,7 +11,7 @@ resource "helm_release" "ingress-nginx" {
   atomic              = var.atomic
 
   values = [
-    templatefile("./nginx-ingress-values.yam", {
+    templatefile("./nginx-ingress-values.yaml", {
       NAME_OVERRIDE   = var.release_name
     }
   )]
