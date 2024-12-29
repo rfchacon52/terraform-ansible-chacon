@@ -12,7 +12,7 @@ module "eks" {
   vpc_id      = module.vpc.vpc_id
   subnet_ids  =  module.vpc.private_subnets
 
-  bootstrap_self_managed_addons = true
+  bootstrap_self_managed_addons = false 
   cluster_compute_config = {
     enabled    = true
     node_pools = ["general-purpose"]
