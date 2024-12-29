@@ -24,7 +24,7 @@ module "eks" {
  eks_managed_node_groups = {
     node_grp1 = {
       instance_types = ["t2.small"]
-      ami_type       = "ami-056dab2ff7f384cef"
+      ami_type       = "AL2_x86_64"
       min_size = 1
       max_size = 3 
       desired_size = 2
