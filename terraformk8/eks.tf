@@ -8,6 +8,12 @@ module "eks" {
   cluster_version = "1.31"
   cluster_endpoint_public_access           = true
   enable_cluster_creator_admin_permissions = true
+
+  cluster_compute_config = {
+    enabled    = true
+    node_pools = ["general-purpose"]
+  }
+
   cluster_addons = {
     vpc-cni                = {} 
     coredns                = {}
@@ -19,7 +25,7 @@ module "eks" {
   vpc_id      = module.vpc.vpc_id
   subnet_ids  =  module.vpc.private_subnets
 
-eks_managed_node_groups = {
+ eks_managed_node_groups = {
     node_grp1 = {
       # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
       instance_types = ["t2.small"]
