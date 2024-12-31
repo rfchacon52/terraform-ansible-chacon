@@ -11,10 +11,10 @@ module "eks" {
 
 
   cluster_addons = {
-    vpc-cni                = {} 
-    coredns                = {}
-    eks-pod-identity-agent = {}
-    kube-proxy             = {}
+    vpc-cni                = {most_recent = true} 
+    coredns                = {most_recent = true}
+    eks-pod-identity-agent = {most_recent = true}
+    kube-proxy             = {most_recent = true}
     aws-ebs-csi-driver = { most_recent = true }
   }
 
@@ -35,11 +35,6 @@ module "eks" {
     }
    }
   }
-
-
-
-
-
 
 
   tags = {
