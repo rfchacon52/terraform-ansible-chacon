@@ -77,7 +77,6 @@ provider "kubernetes" {
 host = module.eks_cluster_creation.cluster_endpoint
 cluster_ca_certificate = base64decode(module.eks_cluster_creation.cluster_certificate_authority_data)
 token = data.aws_eks_cluster_auth.default.token
-}
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     args        = ["eks", "get-token", "--cluster-name", "EKS-DEV"]
