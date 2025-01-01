@@ -48,40 +48,4 @@ module "eks" {
    }
 
 
-#manage_aws_auth_configmap = true
-#  aws_auth_roles = [
-#    {
-#      rolearn  = module.eks_admins_iam_role.iam_role_arn
-#      username = module.eks_admins_iam_role.iam_role_name
-#      groups   = ["system:masters"]
-#    },
-#  ]
-
-  node_security_group_additional_rules = {
-    ingress_allow_access_from_control_plane = {
-      type                          = "ingress"
-      protocol                      = "tcp"
-      from_port                     = 9443
-      to_port                       = 9443
-      source_cluster_security_group = true
-      description                   = "Allow access from control plane to webhook port of AWS load balancer controller"
-    }
-  }
-
-  tags = {
-    Environment = "staging"
-  }
-}
-
-provider "kubernetes" {
-host = module.eks_cluster_creation.cluster_endpoint
-cluster_ca_certificate = base64decode(module.eks_cluster_creation.cluster_certificate_authority_data)
-token = data.aws_eks_cluster_auth.default.token
-}
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    args        = ["eks", "get-token", "--cluster-name", "EKS-DEV"]
-    command     = "aws"
-  }
-}
 
