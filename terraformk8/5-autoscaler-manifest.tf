@@ -10,6 +10,7 @@ provider "kubectl" {
   }
 }
 
+
 resource "kubectl_manifest" "service_account" {
   yaml_body = <<-EOF
 apiVersion: v1

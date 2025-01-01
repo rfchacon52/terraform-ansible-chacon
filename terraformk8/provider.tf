@@ -2,10 +2,6 @@
 # SPDX-License-Identifier: MPL-2.0
 terraform {
   required_providers {
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.17.0"
-    }
    helm = {
       source  = "hashicorp/helm"
       version = ">= 2.14.0"
@@ -32,4 +28,16 @@ terraform {
   }
 }
 
+data "aws_eks_cluster" "default" {
+  name = var.cluster_name
+}
 
+data "aws_eks_cluster_auth" "default" {
+  name = var.cluster_name
+}
+
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.default.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.default.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.default.token
+}
