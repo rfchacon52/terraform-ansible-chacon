@@ -3,9 +3,9 @@
 #---------------------------
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.31.6"
+  version = "~> 20.31.5"
   cluster_name = "EKS-DEV" 
-  cluster_version = "1.31"
+  cluster_version = "1.32"
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access = true
   enable_irsa = true
@@ -18,33 +18,20 @@ module "eks" {
     aws-ebs-csi-driver     = {most_recent = true}
   }
 
-bootstrap_self_managed_addons = false
-
-
   vpc_id      = module.vpc.vpc_id
   subnet_ids  =  module.vpc.private_subnets
-
-
  eks_managed_node_group_defaults = {
     disk_size = 50
   }
-
  eks_managed_node_groups = {
     node_grp1 = {
-      instance_types = ["t2.small"]
-      ami_type       = "AL2_x86_64"
+      instance_types = ["t3.small"]
+      ami_type       = "amazon-eks-node-1.31-v20241225"
       min_size = 1
-      max_size = 5 
+      max_size = 10 
       desired_size = 2
-      
-     labels = {
-        role = "general"
-      }
-
     }
    }
-
-
   tags = {
     Environment = "Dev"
   }
