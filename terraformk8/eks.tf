@@ -34,9 +34,8 @@ bootstrap_self_managed_addons = false
       instance_types = ["t2.small"]
       ami_type       = "AL2_x86_64"
       min_size = 1
-      max_size = 3 
-      desired_size = 1
-      capacity_type  = "ON_DEMAND"
+      max_size = 5 
+      desired_size = 2
       
      labels = {
         role = "general"
