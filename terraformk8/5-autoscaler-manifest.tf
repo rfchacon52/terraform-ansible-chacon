@@ -1,6 +1,6 @@
 provider "kubectl" {
   apply_retry_count      = 15
-  host                   = data.aws_eks_cluster.cluster.endpointt
+  host                   = data.aws_eks_cluster.cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   load_config_file       = false
 
