@@ -3,9 +3,9 @@
 #---------------------------
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "18.29.0"
+  version = "~> 20.31.6"
   cluster_name    = var.cluster_name
-  cluster_version = "1.23"
+  cluster_version = "1.31"
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access = true
   enable_irsa = true
@@ -17,6 +17,9 @@ module "eks" {
     kube-proxy             = {most_recent = true}
     aws-ebs-csi-driver     = {most_recent = true}
   }
+
+bootstrap_self_managed_addons = false
+
 
   vpc_id      = module.vpc.vpc_id
   subnet_ids  =  module.vpc.private_subnets
