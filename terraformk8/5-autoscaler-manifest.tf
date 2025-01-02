@@ -1,7 +1,7 @@
 provider "kubectl" {
   apply_retry_count      = 15
-  host                   = var.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(var.eks_cluster_ca)
+  host                   = module.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_cluster_ca)
   load_config_file       = false
 
   exec {
@@ -14,6 +14,7 @@ provider "kubectl" {
     ]
   }
 }
+
 
 resource "kubectl_manifest" "service_account" {
   yaml_body = <<-EOF
