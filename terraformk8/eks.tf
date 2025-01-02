@@ -8,6 +8,7 @@ module "eks" {
   cluster_version = "1.31"
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access = true
+  enable_cluster_creator_admin_permissions = true
   enable_irsa = true
 
   cluster_addons = {
@@ -20,15 +21,17 @@ module "eks" {
 
   vpc_id      = module.vpc.vpc_id
   subnet_ids  =  module.vpc.private_subnets
+
  eks_managed_node_group_defaults = {
     disk_size = 50
   }
+
  eks_managed_node_groups = {
     node_grp1 = {
-      instance_types = ["t3.small"]
+      instance_types = ["t2.small"]
       ami_type       = "AL2_x86_64"
       min_size = 1
-      max_size = 10 
+      max_size = 3 
       desired_size = 2
     }
    }
@@ -37,7 +40,6 @@ module "eks" {
   }
 }
 
-/**
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_name
 }
@@ -50,4 +52,3 @@ provider "kubernetes" {
     token = data.aws_eks_cluster_auth.cluster.token
     cluster_ca_certificate = base64encode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
 }
-**/
