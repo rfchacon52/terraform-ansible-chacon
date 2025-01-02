@@ -4,7 +4,7 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.31.6"
-  cluster_name = local.cluster_name
+  cluster_name = EKS-DEV 
   cluster_version = "1.31"
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access = true
@@ -51,7 +51,7 @@ bootstrap_self_managed_addons = false
 }
 
 data "aws_eks_cluster" "cluster" {
-  name = module.eks.cluster_id
+  name = module.eks.cluster_name
 }
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_id
