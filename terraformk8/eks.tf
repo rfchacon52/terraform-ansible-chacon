@@ -3,9 +3,9 @@
 #---------------------------
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.31.5"
+  version = "~> 20.31"
   cluster_name = "EKS-DEV" 
-  cluster_version = "1.32"
+  cluster_version = "1.31"
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access = true
   enable_irsa = true
