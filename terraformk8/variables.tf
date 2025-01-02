@@ -16,7 +16,7 @@ variable "am_id" {
 variable "instance_type" {
   description = "Instance type "
   type        = string
-  default     = "t2.micro"
+  default     = "t2.small"
 }
 variable "cluster_name" {
  description = "Cluster name"

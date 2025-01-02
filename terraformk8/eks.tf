@@ -3,12 +3,11 @@
 #---------------------------
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.31"
+  version = "18.29.0"
   cluster_name    = var.cluster_name
-  cluster_version = "1.31"
+  cluster_version = "1.23"
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access = true
-  enable_cluster_creator_admin_permissions = true
   enable_irsa = true
 
   cluster_addons = {
@@ -48,14 +47,15 @@ module "eks" {
    }
 
 
-#manage_aws_auth_configmap = true
+
+manage_aws_auth_configmap = true
 #  aws_auth_roles = [
-#    {
-#      rolearn  = module.eks_admins_iam_role.iam_role_arn
-#      username = module.eks_admins_iam_role.iam_role_name
-#      groups   = ["system:masters"]
-#    },
-#  ]
+ #   {
+ #     rolearn  = module.eks_admins_iam_role.iam_role_arn
+ #     username = module.eks_admins_iam_role.iam_role_name
+ #     groups   = ["system:masters"]
+  #  },
+ # ]
 
   node_security_group_additional_rules = {
     ingress_allow_access_from_control_plane = {
@@ -69,6 +69,6 @@ module "eks" {
   }
 
   tags = {
-    Environment = "staging"
+    Environment = "Dev"
   }
 }
