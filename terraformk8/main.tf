@@ -32,7 +32,7 @@ locals {
   region              = var.aws_region
   vpc_cidr            = var.vpc_cidr
   num_of_subnets      = min(length(data.aws_availability_zones.available.names), 3)
-#  azs                 = slice(data.aws_availability_zones.available.names, 0, local.num_of_subnets)
+  azs                 = slice(data.aws_availability_zones.available.names, 0, local.num_of_subnets)
   eks_admin_role_name = var.eks_admin_role_name
   tags = {
     Blueprint  = local.name
@@ -48,7 +48,7 @@ module "vpc" {
   version         = "~> 5.15.0"
   name            = "eks_vpc"
   cidr            = var.vpc_cidr
-  azs             = data.aws_availability_zones.available.names
+  azs             =  local.azs
   private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"] 
 
