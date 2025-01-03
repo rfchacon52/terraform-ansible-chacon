@@ -7,7 +7,7 @@ variable "environment_name" {
 variable "aws_region" {
   description = "AWS Region"
   type        = string
-  default     = "us-west-1"
+  default     = "us-west-2"
 }
 
 variable "vpc_cidr" {
@@ -19,5 +19,5 @@ variable "vpc_cidr" {
 variable "eks_admin_role_name" {
   type        = string
   description = "Additional IAM role to be admin in the cluster"
-  default     = "allow-eks-access"
+  default     = ""
 }
