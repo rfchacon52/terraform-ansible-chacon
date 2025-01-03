@@ -112,7 +112,8 @@ module "eks" {
     }
    }
 
-  manage_aws_auth_configmap = true
+/**
+#  manage_aws_auth_configmap = true
   aws_auth_roles = flatten([
     {
       # The ARN of the IAM role  
@@ -134,6 +135,7 @@ module "eks" {
     }
   ])
 
+**/
   tags = merge(local.tags, {
     # NOTE - if creating multiple security groups with this module, only tag the
     # security group that Karpenter should utilize with the following tag
