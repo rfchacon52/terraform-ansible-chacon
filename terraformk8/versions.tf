@@ -1,6 +1,4 @@
-versions.tferraform {
-  required_version = ">= 1.5.0"
-
+tferraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -28,6 +26,7 @@ versions.tferraform {
     }
   }
   
+  required_version = ">= 1.5.0"
 }
 
 terraform {
