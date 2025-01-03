@@ -22,15 +22,12 @@ module "eks_blueprints_addons" {
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
 
-  enable_aws_load_balancer_controller    = true
-  enable_cluster_proportional_autoscaler = true
-  enable_karpenter                       = false 
-  enable_kube_prometheus_stack           = true
-  enable_metrics_server                  = true
-  enable_external_dns                    = true
-  enable_cert_manager                    = true
-  cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
-
+  enable_aws_load_balancer_controller = true
+  enable_metrics_server               = true
+  enable_karpenter = true
+  karpenter = {
+    repository_username = data.aws_ecrpublic_authorization_token.token.user_name
+    repository_password = data.aws_ecrpublic_authorization_token.token.password
   }
 
   tags = local.tags
