@@ -14,7 +14,7 @@ provider "kubernetes" {
 }
 
 data "aws_availability_zones" "available" {
-state = "available
+state = "available"
 }
 
 # Find the user currently in use by AWS
