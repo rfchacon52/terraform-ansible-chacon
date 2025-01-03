@@ -40,6 +40,7 @@ module "eks" {
   }
 }
 
+/**
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_name
 }
@@ -52,3 +53,4 @@ provider "kubernetes" {
     token = data.aws_eks_cluster_auth.cluster.token
     cluster_ca_certificate = base64encode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
 }
+**/
