@@ -82,10 +82,9 @@ module "vpc" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.31.0"
-
+  version = "~> 19.15"
   cluster_name                   = local.name
-  cluster_version                = "1.31"
+  cluster_version                = "1.27"
   cluster_endpoint_public_access = true
 
   # EKS Addons
@@ -112,8 +111,7 @@ module "eks" {
     }
    }
 
-/**
-#  manage_aws_auth_configmap = true
+  manage_aws_auth_configmap = true
   aws_auth_roles = flatten([
     {
       # The ARN of the IAM role  
@@ -135,7 +133,6 @@ module "eks" {
     }
   ])
 
-**/
   tags = merge(local.tags, {
     # NOTE - if creating multiple security groups with this module, only tag the
     # security group that Karpenter should utilize with the following tag
