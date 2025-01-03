@@ -32,7 +32,7 @@ locals {
   region              = var.aws_region
   vpc_cidr            = var.vpc_cidr
   num_of_subnets      = min(length(data.aws_availability_zones.available.names), 3)
-  azs                 = slice(data.aws_availability_zones.available.names, 0, local.num_of_subnets)
+#  azs                 = slice(data.aws_availability_zones.available.names, 0, local.num_of_subnets)
   eks_admin_role_name = var.eks_admin_role_name
   tags = {
     Blueprint  = local.name
@@ -45,12 +45,12 @@ locals {
 ################################################################################
 module "vpc" {
   source          = "terraform-aws-modules/vpc/aws"
-  version         = "~> 5.0.0"
+  version         = "~> 5.15.0"
   name            = "eks_vpc"
   cidr            = var.vpc_cidr
-  azs             = local.azs
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 6, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 6, k + 10)]
+  azs             = data.aws_availability_zones.available.names
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"] 
 
   enable_nat_gateway   = true
   create_igw           = true
@@ -82,10 +82,10 @@ module "vpc" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.15"
+  version = "20.31.0"
 
   cluster_name                   = local.name
-  cluster_version                = "1.27"
+  cluster_version                = "1.31"
   cluster_endpoint_public_access = true
 
   # EKS Addons
