@@ -15,7 +15,7 @@ parameters {
   TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
   TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
   KUBE_CONFIG_PATH      = '~/.kube/config'
-  TF_LOG                = "DEBUG"
+  TF_LOG                = "INFO"
     }    
     options {
         // This is required if you want to clean before build
