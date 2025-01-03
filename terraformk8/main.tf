@@ -72,7 +72,7 @@ module "vpc" {
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb"               = 1
     "kubernetes.io/cluster/${var.environment_name}" = "owned"
-    "karpenter.sh/discovery"                        = local.name
+  #  "karpenter.sh/discovery"                        = local.name
   }
 }
 
@@ -82,24 +82,26 @@ module "vpc" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.15"
+  version = "20.31"
   cluster_name                   = local.name
-  cluster_version                = "1.27"
+  cluster_version                = "1.31"
   cluster_endpoint_public_access = true
+  cluster_endpoint_private_access = true
+  cluster_endpoint_public_access = true
+  enable_cluster_creator_admin_permissions = true
+  enable_irsa = true
 
-  # EKS Addons
-  cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
-    aws-ebs-csi-driver   = {
-      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
-    }
+cluster_addons = {
+    vpc-cni                = {most_recent = true}
+    coredns                = {most_recent = true}
+    eks-pod-identity-agent = {most_recent = true}
+    kube-proxy             = {most_recent = true}
+    aws-ebs-csi-driver     = {most_recent = true}
   }
+
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
-
 
   eks_managed_node_groups = {
     node_grp1 = {
@@ -111,6 +113,9 @@ module "eks" {
     }
    }
 
+  tags = local.tags
+}
+/**
   manage_aws_auth_configmap = true
   aws_auth_roles = flatten([
     {
@@ -140,7 +145,7 @@ module "eks" {
     "karpenter.sh/discovery" = local.name
   })
 }
-
+**/
 module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.20"
@@ -156,6 +161,4 @@ module "ebs_csi_driver_irsa" {
       namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
     }
   }
-
-  tags = local.tags
 }
