@@ -1,4 +1,4 @@
-terraform {
+versions.tferraform {
   required_version = ">= 1.5.0"
 
   required_providers {
@@ -29,3 +29,15 @@ terraform {
   }
   
 }
+
+terraform {
+  cloud {
+    organization = "Chacon_Dev"
+
+    workspaces {
+      name = "chacon-ws4"
+    }
+  }
+}
+
+
