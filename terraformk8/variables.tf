@@ -19,5 +19,5 @@ variable "vpc_cidr" {
 variable "eks_admin_role_name" {
   type        = string
   description = "Additional IAM role to be admin in the cluster"
-  default     = "terraform"
+  default     = ""
 }
