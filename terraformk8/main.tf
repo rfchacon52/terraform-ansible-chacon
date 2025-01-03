@@ -49,9 +49,8 @@ module "vpc" {
   name            = "eks_vpc"
   cidr            = var.vpc_cidr
   azs             =  local.azs
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"] 
-
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 6, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 6, k + 10)]
   enable_nat_gateway   = true
   create_igw           = true
   enable_dns_hostnames = true
