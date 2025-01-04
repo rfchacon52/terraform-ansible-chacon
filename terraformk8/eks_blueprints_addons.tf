@@ -37,13 +37,13 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller    = true
   enable_cluster_proportional_autoscaler = true
-  enable_karpenter                       = false 
+  enable_karpenter                       = true 
   enable_kube_prometheus_stack           = false 
   enable_metrics_server                  = true
   enable_external_dns                    = true
   enable_cert_manager                    = true
   cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
  tags = {
-    Environment = "dev"
+    local.tags 
   }
 }
