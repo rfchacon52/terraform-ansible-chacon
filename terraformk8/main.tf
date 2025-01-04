@@ -86,7 +86,6 @@ module "eks" {
   cluster_version                = "1.27"
   cluster_endpoint_public_access = true
   cluster_endpoint_private_access = true
-  enable_cluster_creator_admin_permissions = true
   enable_irsa = true
 
 
@@ -106,8 +105,6 @@ module "eks" {
   eks_managed_node_groups = {
     initial = {
       instance_types = ["t2.small"]
-      ami_type       = "AL2_x86_64"
-
       min_size     = 1
       max_size     = 5
       desired_size = 2
