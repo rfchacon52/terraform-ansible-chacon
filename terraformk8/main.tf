@@ -13,9 +13,7 @@ provider "kubernetes" {
   }
 }
 
-data "aws_availability_zones" "available" {
-state = "available"
-}
+data "aws_availability_zones" "available" {}
 
 # Find the user currently in use by AWS
 data "aws_caller_identity" "current" {}
@@ -45,12 +43,13 @@ locals {
 ################################################################################
 module "vpc" {
   source          = "terraform-aws-modules/vpc/aws"
-  version         = "~> 5.15.0"
+  version         = "~> 5.0.0"
   name            = "eks_vpc"
   cidr            = var.vpc_cidr
-  azs             =  local.azs
+  azs             = local.azs
   public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 6, k)]
   private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 6, k + 10)]
+
   enable_nat_gateway   = true
   create_igw           = true
   enable_dns_hostnames = true
@@ -71,7 +70,7 @@ module "vpc" {
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb"               = 1
     "kubernetes.io/cluster/${var.environment_name}" = "owned"
-  #  "karpenter.sh/discovery"                        = local.name
+    "karpenter.sh/discovery"                        = local.name
   }
 }
 
@@ -81,39 +80,35 @@ module "vpc" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.31"
+  version = "~> 19.15"
+
   cluster_name                   = local.name
-  cluster_version                = "1.31"
+  cluster_version                = "1.27"
   cluster_endpoint_public_access = true
-  cluster_endpoint_private_access = true
-  enable_cluster_creator_admin_permissions = true
-  enable_irsa = true
 
-cluster_addons = {
-    vpc-cni                = {most_recent = true}
-    coredns                = {most_recent = true}
-    eks-pod-identity-agent = {most_recent = true}
-    kube-proxy             = {most_recent = true}
-    aws-ebs-csi-driver     = {most_recent = true}
+  # EKS Addons
+  cluster_addons = {
+    coredns    = {}
+    kube-proxy = {}
+    vpc-cni    = {}
+    aws-ebs-csi-driver   = {
+      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
+    }
   }
-
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_groups = {
-    node_grp1 = {
+    initial = {
       instance_types = ["t2.small"]
-      ami_type       = "AL2_x86_64"
-      min_size = 1
-      max_size = 3
+
+      min_size     = 1
+      max_size     = 5
       desired_size = 2
     }
-   }
+  }
 
-  tags = local.tags
-}
-/**
   manage_aws_auth_configmap = true
   aws_auth_roles = flatten([
     {
@@ -143,7 +138,7 @@ cluster_addons = {
     "karpenter.sh/discovery" = local.name
   })
 }
-**/
+
 module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.20"
@@ -159,4 +154,6 @@ module "ebs_csi_driver_irsa" {
       namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
     }
   }
+
+  tags = local.tags
 }
