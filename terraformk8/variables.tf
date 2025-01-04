@@ -1,7 +1,7 @@
 variable "environment_name" {
   description = "The name of environment."
   type        = string
-  default     = "eks_blueprints"
+  default     = "EKS-DEV"
 }
 
 variable "aws_region" {
@@ -19,5 +19,5 @@ variable "vpc_cidr" {
 variable "eks_admin_role_name" {
   type        = string
   description = "Additional IAM role to be admin in the cluster"
-  default     = ""
+  default     = "eks-admin"
 }
