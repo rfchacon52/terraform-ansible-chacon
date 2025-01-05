@@ -64,6 +64,8 @@ eks_managed_node_groups = {
    }
 }
 
+
+/**
   # aws-auth configmap
   manage_aws_auth_configmap = true
 
@@ -81,3 +83,4 @@ eks_managed_node_groups = {
   }
 }
 
+**/
