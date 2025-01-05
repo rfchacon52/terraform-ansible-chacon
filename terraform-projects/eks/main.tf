@@ -4,8 +4,6 @@
 
 module "vpc" {
   source = "./modules/vpc"
-
-  main-region = var.aws_region
 }
 
 ################################################################################
@@ -15,8 +13,6 @@ module "vpc" {
 module "eks" {
   source = "./modules/eks-cluster"
 
-  main-region = var.aws_region
-  profile     = var.profile
   rolearn     = var.rolearn
 
   vpc_id          = module.vpc.vpc_id
@@ -30,7 +26,6 @@ module "eks" {
 module "aws_alb_controller" {
   source = "./modules/aws-alb-controller"
 
-  main-region  = var.aws_region
   env_name     = var.env_name
   cluster_name = var.cluster_name
 
