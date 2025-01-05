@@ -23,13 +23,13 @@ module "eks" {
 # AWS ALB Controller
 ################################################################################
 
-module "aws_alb_controller" {
-  source = "./modules/aws-alb-controller"
+#module "aws_alb_controller" {
+#  source = "./modules/aws-alb-controller"
 
-  env_name     = var.env_name
-  cluster_name = var.cluster_name
+#  env_name     = var.env_name
+#  cluster_name = var.cluster_name
 
-  vpc_id            = module.vpc.vpc_id
-  oidc_provider_arn = module.eks.oidc_provider_arn
-}
+#  vpc_id            = module.vpc.vpc_id
+#  oidc_provider_arn = module.eks.oidc_provider_arn
+#}
 
