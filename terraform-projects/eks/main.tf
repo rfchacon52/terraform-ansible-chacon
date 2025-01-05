@@ -6,7 +6,6 @@ module "vpc" {
   source = "./modules/vpc"
 
   main-region = var.aws_region
-  profile     = var.profile
 }
 
 ################################################################################
