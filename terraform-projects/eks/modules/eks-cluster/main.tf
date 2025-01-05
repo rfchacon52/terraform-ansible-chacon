@@ -14,7 +14,6 @@ provider "aws" {
 data "aws_availability_zones" "available" {
   state = "available"
 
-  cluster_name = var.cluster_name 
 
 #--------------------------
 #  module for eks
@@ -46,14 +45,12 @@ module "eks" {
 
  eks_managed_node_group_defaults = {
     disk_size = 50
-  }
 
-  # EKS Managed Node Group(s)
-  eks_managed_node_group_defaults = {
     iam_role_additional_policies = {
       AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
     }
   }
+
 
 
 eks_managed_node_groups = {
@@ -65,9 +62,6 @@ eks_managed_node_groups = {
       desired_size = 2
     }
    }
-  tags = {
-    Environment = "Dev"
-  }
 }
 
   # aws-auth configmap
