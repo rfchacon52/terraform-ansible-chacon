@@ -16,7 +16,6 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-  cluster_name = var.cluster_name 
 
 #--------------------------
 # vpc module for eks
@@ -49,7 +48,4 @@ private_subnet_tags = {
     "kubernetes.io/role/internal-elb"             = "1"
   }
   
-tags = {
-    Environment = "dev"
-  }
 }
