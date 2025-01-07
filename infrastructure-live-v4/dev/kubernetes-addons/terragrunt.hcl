@@ -25,7 +25,7 @@ dependency "eks" {
   config_path = "../eks"
 
   mock_outputs = {
-    eks_name            = "demo"
+    eks_name            = "dev-demo"
     openid_provider_arn = "arn:aws:iam::123456789012:oidc-provider"
   }
 }
@@ -36,11 +36,11 @@ generate "helm_provider" {
   contents  = <<EOF
 
 data "aws_eks_cluster" "eks" {
-    name = var.eks_name
+    name = "dev-demo" 
 }
 
 data "aws_eks_cluster_auth" "eks" {
-    name = var.eks_name
+    name = "dev-demo" 
 }
 
 provider "helm" {
