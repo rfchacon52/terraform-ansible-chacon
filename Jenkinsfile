@@ -72,13 +72,13 @@ parameters {
                 export KUBE_CONFIG_PATH=~/.kube/config
                 cd infrastructure-live-v4 
                 echo "Running terragrunt init"
-                terragrunt run-all init -no-color
+                terragrunt init -no-color
                 echo "Running terragrunt validate"
-                terragrunt run-all  validate -no-color
+                terragrunt  validate -no-color
                 echo "Executing terragrunt plan"                 
-                terragrunt run-all plan -no-color
+                terragrunt  plan -no-color
                 echo "Executing terragrunt apply"                 
-                terragrunt run-all  apply -auto-approve  -no-color
+                terragrunt  apply -auto-approve  -no-color
                 sh '''
             }
         }
