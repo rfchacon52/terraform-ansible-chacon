@@ -106,12 +106,12 @@ parameters {
             steps {
                 sh '''
                 cd infrastructure-live-v4
-                echo "Running tarragrunt init"
-                tarragrunt init -no-color
-                echo "Running tarragrunt validate"
-                tarragrunt validate -no-color
+                echo "Running terragrunt init"
+                terragrunt init -no-color
+                echo "Running terragrunt validate"
+                terragrunt validate -no-color
                 echo "Executing Terraform K8 Destroy"
-                tarragrunt apply -destroy -auto-approve -no-color
+                terragrunt apply -destroy -auto-approve -no-color
                 sh '''
             }
         }
