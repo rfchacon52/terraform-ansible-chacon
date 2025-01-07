@@ -63,24 +63,22 @@ parameters {
             }
         }
 
-        stage('Terraform build/deploy K8 Infra') {
+        stage('Terragrunt build/deploy K8 Infra') {
            when {
              expression { params.CHOICE == "Build_Deploy_K8" }  
            }
              steps {
                 sh '''
                 export KUBE_CONFIG_PATH=~/.kube/config
-                cd terraform-projects/eks 
-                echo "Running terraform init"
-                terraform init -no-color
-                echo "Running terraform fmt -recursive"
-                terraform fmt -recursive
-                echo "Running terraform validate"
-                terraform validate -no-color
-                echo "Executing terraform plan"                 
-                terraform plan -out=tfplan -no-color
-                echo "Executing terraform apply"                 
-                terraform apply tfplan  -no-color
+                cd infrastructure-live-v4 
+                echo "Running terragrunt run-all init"
+                terragrunt run-all init -no-color
+                echo "Running terragrunt run-all validate"
+                terragrunt run-all validate -no-color
+                echo "Executing terragrunt run-all plan"                 
+                terragrunt run-all plan -out=tfplan -no-color
+                echo "Executing terragrunt run-all apply"                 
+                terragrunt run-all apply tfplan -no-color
                 sh '''
             }
         }
@@ -94,11 +92,9 @@ parameters {
                 cd terraform-projects/eks 
                 export KUBE_CONFIG_PATH=~/.kube/config
                 echo "Executing update-kubeconfig on cluster EKS-DE region us-west-1V"
-                aws eks update-kubeconfig --region us-west-1 --name EKS-DEV 
+                #aws eks update-kubeconfig --region us-west-1 --name EKS-DEV 
                 echo "Executing Get all pods"
-                kubectl get pods -A -o wide
-                echo "Creating storageclass"  
-                kubectl apply -f k8-storage-class.yml 
+              #  kubectl get pods -A -o wide
                 sh '''
             }
         }
