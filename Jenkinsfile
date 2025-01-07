@@ -73,11 +73,11 @@ parameters {
                 cd infrastructure-live-v4 
                 echo "Running terragrunt init"
                 terragrunt init -no-color
-                echo "Running terragrunt run-all validate"
+                echo "Running terragrunt validate"
                 terragrunt  validate -no-color
-                echo "Executing terragrunt run-all plan"                 
+                echo "Executing terragrunt plan"                 
                 terragrunt  plan -no-color
-                echo "Executing terragrunt run-all apply"                 
+                echo "Executing terragrunt apply"                 
                 terragrunt apply -auto-approve  -no-color
                 sh '''
             }
@@ -89,12 +89,12 @@ parameters {
            }
             steps {
                 sh '''
-                cd terraform-projects/eks 
+                cd infrastructure-live-v4 
                 export KUBE_CONFIG_PATH=~/.kube/config
-                echo "Executing update-kubeconfig on cluster EKS-DE region us-west-1V"
-                #aws eks update-kubeconfig --region us-west-1 --name EKS-DEV 
+                echo "Executing update-kubeconfig on cluster dev-demo region us-west-1"
+                aws eks update-kubeconfig --region us-west-1 --name dev-demo 
                 echo "Executing Get all pods"
-              #  kubectl get pods -A -o wide
+                kubectl get pods -A -o wide
                 sh '''
             }
         }
