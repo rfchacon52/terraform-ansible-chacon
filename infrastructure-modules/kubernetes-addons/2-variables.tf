@@ -1,11 +1,13 @@
 variable "env" {
   description = "Environment name."
   type        = string
+  default   = "dev"
 }
 
 variable "eks_name" {
   description = "Name of the cluster."
   type        = string
+  default = "demo"
 }
 
 variable "enable_cluster_autoscaler" {

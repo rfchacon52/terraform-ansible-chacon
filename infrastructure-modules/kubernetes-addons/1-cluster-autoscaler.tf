@@ -88,6 +88,6 @@ resource "helm_release" "cluster_autoscaler" {
 
   set {
     name  = "autoDiscovery.clusterName"
-    value = var.eks_name
+    value = ${var.env}-${var.eks_name}
   }
 }
