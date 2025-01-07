@@ -111,7 +111,7 @@ parameters {
                 echo "Running terragrunt validate"
                 terragrunt run-all validate -no-color
                 echo "Executing Terraform K8 Destroy"
-                terragrunt run-all  apply -destroy -auto-approve -no-color
+                terragrunt  apply -destroy -auto-approve -no-color
                 sh '''
             }
         }
