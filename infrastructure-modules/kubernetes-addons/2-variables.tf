@@ -7,7 +7,7 @@ variable "env" {
 variable "eks_name" {
   description = "Name of the cluster."
   type        = string
-  default = "demo"
+  default = "dev-demo"
 }
 
 variable "enable_cluster_autoscaler" {

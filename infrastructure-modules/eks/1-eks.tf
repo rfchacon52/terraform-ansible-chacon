@@ -23,7 +23,7 @@ resource "aws_iam_role_policy_attachment" "eks" {
 }
 
 resource "aws_eks_cluster" "this" {
-  name     = "${var.env}-${var.eks_name}"
+  name     = "dev-demo""
   version  = var.eks_version
   role_arn = aws_iam_role.eks.arn
 
