@@ -25,7 +25,7 @@ dependency "eks" {
   config_path = "../eks"
 
   mock_outputs = {
-    eks_name            = "EKS-Chacon"
+    eks_name            = "demo"
     openid_provider_arn = "arn:aws:iam::123456789012:oidc-provider"
   }
 }
