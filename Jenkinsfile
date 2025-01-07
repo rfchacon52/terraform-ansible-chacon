@@ -71,14 +71,14 @@ parameters {
                 sh '''
                 export KUBE_CONFIG_PATH=~/.kube/config
                 cd infrastructure-live-v4 
-                echo "Running terragrunt run-all init"
-                terragrunt run-all init -no-color
+                echo "Running terragrunt init"
+                terragrunt init -no-color
                 echo "Running terragrunt run-all validate"
-                terragrunt run-all  validate -no-color
+                terragrunt  validate -no-color
                 echo "Executing terragrunt run-all plan"                 
-                terragrunt run-all plan -no-color
+                terragrunt  plan -no-color
                 echo "Executing terragrunt run-all apply"                 
-                terragrunt apply run-all -auto-approve  -no-color
+                terragrunt apply -auto-approve  -no-color
                 sh '''
             }
         }
@@ -105,14 +105,13 @@ parameters {
            }
             steps {
                 sh '''
-                export KUBE_CONFIG_PATH=~/.kube/config
-                cd terraform-projects/eks 
-                echo "Running terraform init"
-                terraform init -no-color
-                echo "Running terraform validate"
-                terraform validate -no-color
+                cd infrastructure-live-v4
+                echo "Running tarragrunt init"
+                tarragrunt init -no-color
+                echo "Running tarragrunt validate"
+                tarragrunt validate -no-color
                 echo "Executing Terraform K8 Destroy"
-                terraform apply -destroy -auto-approve -no-color
+                tarragrunt apply -destroy -auto-approve -no-color
                 sh '''
             }
         }
