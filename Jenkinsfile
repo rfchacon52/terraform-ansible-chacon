@@ -77,7 +77,7 @@ parameters {
                 echo "Running terraform validate"
                 terraform  validate -no-color
                 echo "Executing terraform plan"                 
-                terraform plan -out tfplan -no-color
+                terraform plan -out=tfplan -no-color
                 echo "Executing terraform apply"                 
                 terraform apply tfplan -auto-approve -no-color
                 sh '''
