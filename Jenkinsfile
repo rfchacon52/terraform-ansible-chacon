@@ -79,7 +79,7 @@ parameters {
                 echo "Executing terraform plan"                 
                 terraform plan -out=tfplan -no-color
                 echo "Executing terraform apply"                 
-                terraform apply tfplan -auto-approve -no-color
+                terraform apply tfplan -no-color
                 sh '''
             }
         }
