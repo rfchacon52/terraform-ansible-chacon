@@ -72,12 +72,14 @@ parameters {
                 cd 112/terraform 
                 echo "Running terraform init"
                 terraform init -no-color
+                echo "Running terraform fmt -recursive"
+                terraform fmt -recursive
                 echo "Running terraform validate"
                 terraform  validate -no-color
                 echo "Executing terraform plan"                 
-                terraform  plan -no-color
+                terraform plan -out tfplan -no-color
                 echo "Executing terraform apply"                 
-                terraform apply -auto-approve -no-color
+                terraform apply tfplan -auto-approve -no-color
                 sh '''
             }
         }
@@ -107,6 +109,8 @@ parameters {
                 cd 112/terraform 
                 echo "Running terraform init"
                 terraform init -no-color
+                echo "Running terraform fmt -recursive"
+                terraform fmt -recursive
                 echo "Running terraform validate"
                 terraform  validate -no-color
                 echo "Executing Terraform K8 Destroy"
