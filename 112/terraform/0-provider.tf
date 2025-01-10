@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "5.83.1"
     }
+   kubernetes = {
+      source = "hashicorp/kubernetes"
+      version = "2.35.1"
+    }
   }
 }
 
@@ -15,6 +19,13 @@ variable "cluster_name" {
   default = "demo2"
 }
 
-variable "cluster_version" {
-  default = "1.22"
+terraform {
+  cloud {
+    organization = "Chacon_Dev"
+
+    workspaces {
+      name = "chacon-ws4"
+    }
+  }
 }
+
