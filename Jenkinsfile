@@ -63,22 +63,22 @@ parameters {
             }
         }
 
-        stage('Terragrunt build/deploy K8 Infra') {
+        stage('TerraForm build/deploy K8 Infra') {
            when {
              expression { params.CHOICE == "Build_Deploy_K8" }  
            }
              steps {
                 sh '''
                 export KUBE_CONFIG_PATH=~/.kube/config
-                cd infrastructure-live-v4 
-                echo "Running terragrunt init"
-                terragrunt run-all init -no-color
-                echo "Running terragrunt validate"
-                terragrunt run-all  validate -no-color
-                echo "Executing terragrunt plan"                 
-                terragrunt run-all  plan -no-color
-                echo "Executing terragrunt apply"                 
-                terragrunt run-all apply -auto-approve  -no-color
+                cd 112/terraform 
+                echo "Running terraform init"
+                terraform init -no-color
+                echo "Running terraform validate"
+                terraform  validate -no-color
+                echo "Executing terraform plan"                 
+                terraform  plan -no-color
+                echo "Executing terraform apply"                 
+                terraform apply -auto-approve -no-color
                 sh '''
             }
         }
@@ -89,10 +89,10 @@ parameters {
            }
             steps {
                 sh '''
-                cd infrastructure-live-v4 
+                cd 112/terraform 
                 export KUBE_CONFIG_PATH=~/.kube/config
                 echo "Executing update-kubeconfig on cluster dev-demo region us-west-1"
-                aws eks update-kubeconfig --region us-west-1 --name dev-demo 
+                aws eks update-kubeconfig --region us-east-1 --name demo 
                 echo "Executing Get all pods"
                 kubectl get pods -A -o wide
                 sh '''
@@ -106,12 +106,12 @@ parameters {
             steps {
                 sh '''
                 cd infrastructure-live-v4
-                echo "Running terragrunt init"
-                terragrunt run-all init -no-color
-                echo "Running terragrunt validate"
-                terragrunt run-all validate -no-color
+                echo "Running terraform init"
+                terraform run-all init -no-color
+                echo "Running terraform validate"
+                terraform run-all validate -no-color
                 echo "Executing Terraform K8 Destroy"
-                terragrunt  apply -destroy -auto-approve -no-color
+                terraform apply -destroy -auto-approve -no-color
                 sh '''
             }
         }
