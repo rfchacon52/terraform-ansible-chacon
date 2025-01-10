@@ -104,11 +104,11 @@ parameters {
            }
             steps {
                 sh '''
-                cd infrastructure-live-v4
+                cd 112/terraform 
                 echo "Running terraform init"
-                terraform run-all init -no-color
+                terraform init -no-color
                 echo "Running terraform validate"
-                terraform run-all validate -no-color
+                terraform  validate -no-color
                 echo "Executing Terraform K8 Destroy"
                 terraform apply -destroy -auto-approve -no-color
                 sh '''
