@@ -28,9 +28,6 @@ resource "aws_iam_role_policy_attachment" "amazon-ec2-container-registry-read-on
   role       = aws_iam_role.nodes.name
 }
 
-eks_managed_node_group_defaults = {
-    disk_size = 50
-  }
 
 
 resource "aws_eks_node_group" "private-nodes" {
@@ -38,7 +35,7 @@ resource "aws_eks_node_group" "private-nodes" {
   version         = var.cluster_version
   node_group_name = "private-nodes"
   node_role_arn   = aws_iam_role.nodes.arn
-
+  disk_size = 60
   subnet_ids = [
     aws_subnet.private-us-east-1a.id,
     aws_subnet.private-us-east-1b.id
