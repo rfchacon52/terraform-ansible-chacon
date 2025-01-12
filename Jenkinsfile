@@ -69,7 +69,7 @@ parameters {
              steps {
                 sh '''
                 export KUBE_CONFIG_PATH=~/.kube/config
-                cd 112/terraform 
+                cd 156/terraform 
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
@@ -90,10 +90,10 @@ parameters {
            }
             steps {
                 sh '''
-                cd 112/terraform 
+                cd 156/terraform 
                 export KUBE_CONFIG_PATH=~/.kube/config
-                echo "Executing update-kubeconfig on cluster dev-demo region us-west-1"
-                aws eks update-kubeconfig --region us-east-1 --name demo2 
+                echo "Executing update-kubeconfig on cluster EKS-DE region us-east-1"
+                aws eks update-kubeconfig --region us-east-1 --name EKS-DEV 
                 echo "Executing Get all pods"
                 kubectl get pods -A -o wide
                 sh '''
