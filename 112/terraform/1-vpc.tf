@@ -1,14 +1,5 @@
 # terraform/vpc.tf
 
-provider "aws" {
-  region = var.aws_region
-  default_tags {
-    tags = {
-      site-name = "Chacon-west-1"
-    }
-  }
-}
-
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
