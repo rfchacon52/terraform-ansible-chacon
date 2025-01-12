@@ -28,6 +28,11 @@ resource "aws_iam_role_policy_attachment" "amazon-ec2-container-registry-read-on
   role       = aws_iam_role.nodes.name
 }
 
+eks_managed_node_group_defaults = {
+    disk_size = 50
+  }
+
+
 resource "aws_eks_node_group" "private-nodes" {
   cluster_name    = aws_eks_cluster.cluster.name
   version         = var.cluster_version
@@ -40,10 +45,10 @@ resource "aws_eks_node_group" "private-nodes" {
   ]
 
   capacity_type  = "ON_DEMAND"
-  instance_types = ["t3.small"]
+  instance_types = ["t2.medium"]
 
   scaling_config {
-    desired_size = 2
+    desired_size = 1
     max_size     = 5
     min_size     = 1
   }
