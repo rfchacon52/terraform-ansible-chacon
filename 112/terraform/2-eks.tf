@@ -10,15 +10,15 @@ module "eks" {
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access  = true
   enable_cluster_creator_admin_permissions = true
+  create_cloudwatch_log_group = true 
   authentication_mode = "API_AND_CONFIG_MAP"
   enable_irsa = true
 
   bootstrap_self_managed_addons = false
    cluster_addons = {
-     coredns                = {}
-     eks-pod-identity-agent = {}
-     kube-proxy             = {}
-     vpc-cni                = {}
+     coredns                = {most_recent = true}
+     kube-proxy             = {most_recent = true}
+     vpc-cni                = {most_recent = true}
   }
 
   vpc_id     = module.vpc.vpc_id
