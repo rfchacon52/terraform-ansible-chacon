@@ -8,6 +8,15 @@ terraform {
       source = "hashicorp/kubernetes"
       version = "2.35.1"
     }
+  kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.14.0"
+    }
+  helm = {
+      source  = "hashicorp/helm"
+      version = ">= 2.17.0"
+    }
+
   }
 }
 
@@ -16,7 +25,7 @@ provider "aws" {
 }
 
 variable "cluster_name" {
-  default = "demo2"
+  default = "EKS-DEV"
 }
 variable "cluster_version" {
   default = "1.31"
