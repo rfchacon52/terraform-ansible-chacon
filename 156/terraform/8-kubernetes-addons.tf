@@ -10,11 +10,11 @@ module "kubernetes_addons" {
   enable_aws_efs_csi_driver = true
 
   # Optional aws_efs_csi_driver_helm_config
-  aws_efs_csi_driver_helm_config = {
-    repository = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
-    version    = "2.4.0"
-    namespace  = "kube-system"
-  }
+#  aws_efs_csi_driver_helm_config = {
+ #   repository = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
+ #   version    = "2.4.0"
+ #   namespace  = "kube-system"
+#  }
 
   enable_aws_load_balancer_controller = true
 
