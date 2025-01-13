@@ -1,50 +1,82 @@
-module "eks_blueprints" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1"
+module "eks_blueprints_addons" {
+  source = "aws-ia/eks-blueprints-addons/aws"
+  version = "1.19.0" #ensure to update this to the latest/desired version
 
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  eks_addons = {
+    aws-ebs-csi-driver = {
+      most_recent = true
+    }
+    coredns = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+  }
+
+  enable_aws_load_balancer_controller    = true
+  enable_aws_cloudwatch_metrics          = true
+  enable_cluster_proportional_autoscaler = true
+  enable_karpenter                       = true
+  enable_kube_prometheus_stack           = true
+  enable_metrics_server                  = true
+  enable_external_dns                    = true
+  enable_cert_manager                    = true
+  cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/*"]
+
+  tags = {
+    Environment = "dev"
+  }
+}
+
+module "eks" {
+  source = "terraform-aws-modules/eks/aws"
+  version = "~> 20.31"
   cluster_name    = var.cluster_name 
   cluster_version = var.cluster_version 
-  enable_irsa     = true
-
-  map_roles = [
-    {
-      rolearn  = module.karpenter.role_arn
-      username = "system:node:{{EC2PrivateDNSName}}"
-      groups = [
-        "system:bootstrappers",
-        "system:nodes",
-      ]
-    },
-    {
-      rolearn  = aws_iam_role.developer.arn
-      username = "developer"
-      groups   = ["reader"]
-    },
-  ]
+  cluster_endpoint_private_access = true
+  cluster_endpoint_public_access = true
+  enable_cluster_creator_admin_permissions = true
+  enable_irsa = true
 
 
-  vpc_id = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
+  vpc_id      = module.vpc.vpc_id
+  subnet_ids  =  module.vpc.private_subnets
 
-  managed_node_groups = {
-    role = {
-      capacity_type   = "ON_DEMAND"
-      node_group_name = "general"
+ eks_managed_node_group_defaults = {
+    disk_size = 60
+  }
+
+ eks_managed_node_groups = {
+    node_grp1 = {
       instance_types = ["t3.medium"]
-      desired_size    = "1"
-      max_size        = "5"
-      min_size        = "1"
+      min_size = 1
+      max_size = 3 
+      desired_size = 2
+    }
+   }
+  tags = {
+    Environment = "Dev"
+  }
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", var.cluster_name]
+      command     = "aws"
     }
   }
 }
 
-provider "kubernetes" {
-  host                   = module.eks_blueprints.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id]
-  }
-}
