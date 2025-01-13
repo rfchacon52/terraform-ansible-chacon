@@ -8,39 +8,22 @@ module "eks_blueprints_addons" {
   oidc_provider_arn = module.eks.oidc_provider_arn
 
 eks_addons = {
-      kube-proxy = {
-        addon_version     = "v1.24.17-eksbuild.4"
-        resolve_conflicts = "OVERWRITE"
-      }
-      coredns = {
-        addon_version     = "v1.9.3-eksbuild.10"
-        resolve_conflicts = "OVERWRITE"
-      }
-      aws-ebs-csi-driver = {
-        addon_version            = "v1.26.0-eksbuild.1"
-        resolve_conflicts        = "OVERWRITE"
-        service_account_role_arn = "arn:aws:iam::767397937300:role/AmazonEKS_EBS_CSI_DriverRole"
-      }
-      snapshot-controller = {
-        addon_version     = "v6.3.2-eksbuild.1"
-        resolve_conflicts = "OVERWRITE"
-      }
-      vpc-cni = {
-        addon_version = "v1.15.5-eksbuild.1"
-        preserve      = true
-        # terraform not happy with PRESERVE
-        resolve_conflicts        = "NONE"
-        service_account_role_arn = "arn:aws:iam::767397937300:role/AmazonEKSVPCCNIRole"
-        configuration_values = jsonencode({
-          env = {
-            AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG = "true"
-            ENI_CONFIG_LABEL_DEF               = "failure-domain.beta.kubernetes.io/zone"
-          }
-        })
-      }
+    aws-ebs-csi-driver = {
+      most_recent = true
+    }
+    coredns = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
   }
 
-#  enable_aws_load_balancer_controller    = true
+
+  enable_aws_load_balancer_controller    = true
 #  enable_aws_cloudwatch_metrics          = true
 #  enable_cluster_proportional_autoscaler = true
 #  enable_karpenter                       = true
