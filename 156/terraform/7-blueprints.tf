@@ -19,7 +19,7 @@ eks_addons = {
       aws-ebs-csi-driver = {
         addon_version            = "v1.26.0-eksbuild.1"
         resolve_conflicts        = "OVERWRITE"
-        service_account_role_arn = "arn:aws:iam::${aws-account-id}:role/AmazonEKS_EBS_CSI_DriverRole"
+        service_account_role_arn = "arn:aws:iam::767397937300:role/AmazonEKS_EBS_CSI_DriverRole"
       }
       snapshot-controller = {
         addon_version     = "v6.3.2-eksbuild.1"
@@ -30,7 +30,7 @@ eks_addons = {
         preserve      = true
         # terraform not happy with PRESERVE
         resolve_conflicts        = "NONE"
-        service_account_role_arn = "arn:aws:iam::${aws-accounts-id}:role/AmazonEKSVPCCNIRole"
+        service_account_role_arn = "arn:aws:iam::767397937300:role/AmazonEKSVPCCNIRole"
         configuration_values = jsonencode({
           env = {
             AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG = "true"
