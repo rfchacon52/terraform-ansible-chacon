@@ -22,6 +22,15 @@ module "eks_blueprints_addons" {
     }
   }
 
+  enable_aws_load_balancer_controller    = true
+  enable_aws_cloudwatch_metrics          = true
+  enable_cluster_proportional_autoscaler = true
+  enable_karpenter                       = true
+#  enable_kube_prometheus_stack           = true
+  enable_metrics_server                  = true
+  enable_external_dns                    = true
+  enable_cert_manager                    = true
+  cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/*"]
 
   tags = {
     Environment = "dev"
@@ -59,4 +68,15 @@ module "eks" {
   }
 }
 
+provider "helm" {
+  kubernetes {
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", var.cluster_name]
+      command     = "aws"
+    }
+  }
+}
 
