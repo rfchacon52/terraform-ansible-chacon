@@ -1,4 +1,4 @@
-module "eks" {
+module "eks1" {
   source = "aws-ia/eks-blueprints-addons/aws"
   version = "1.19.0" #ensure to update this to the latest/desired version
 
