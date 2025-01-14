@@ -3,14 +3,11 @@
 
 data "aws_eks_cluster" "this" {
   name = var.cluster_name 
-
-depends_on = [aws_eks_cluster.name]
 }
 
 data "aws_eks_cluster_auth" "this" {
   name = var.cluster_name 
 
-depends_on = [aws_eks_cluster.name]
 }
 provider "kubernetes" {
   host = data.aws_eks_cluster.this.endpoint
