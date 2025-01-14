@@ -1,4 +1,4 @@
-module "eks_blueprints_addons" {
+module "eks" {
   source = "aws-ia/eks-blueprints-addons/aws"
   version = "1.19.0" #ensure to update this to the latest/desired version
 
@@ -9,9 +9,7 @@ module "eks_blueprints_addons" {
 
 eks_addons = {
 
-    aws-ebs-csi-driver = {
-          most_recent              = true
-          service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
+    aws-ebs-csi-driver = { most_recent = true
         }
     coredns = {
       most_recent = true
@@ -33,7 +31,7 @@ eks_addons = {
   enable_metrics_server                  = true
   enable_external_dns                    = true
   enable_cert_manager                    = true
-#  cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/*"]
+  cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/*"]
 
   tags = {
     Environment = "dev"
