@@ -12,15 +12,11 @@ module "eks_blueprints_addons" {
     
    aws-ebs-csi-driver = {
       most_recent       = true
-      before_compute    = true
-      resolve_conflicts = "OVERWRITE"
       service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
     }
 
     coredns = {
       most_recent      = true
-      before_compute    = true
-      resolve_conflicts = "OVERWRITE"
       timeouts = {
         create = "25m"
         delete = "10m"
@@ -29,14 +25,10 @@ module "eks_blueprints_addons" {
 
     vpc-cni = {
       most_recent      = true
-      before_compute    = true
-      resolve_conflicts = "OVERWRITE"
       service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
     }
 
     kube-proxy = {
-    before_compute    = true
-    resolve_conflicts = "OVERWRITE"
     most_recent   = true
     }
  }
