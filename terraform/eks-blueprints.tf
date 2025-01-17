@@ -7,29 +7,49 @@ module "eks_blueprints_addons" {
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
 
-eks_addons = {
-    aws-ebs-csi-driver = {
-      most_recent = true
+
+ eks_addons = {
+    
+   aws-ebs-csi-driver = {
+      most_recent       = true
+      before_compute    = true
+      resolve_conflicts = "OVERWRITE"
+      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
     }
+
     coredns = {
-      most_recent = true
+      most_recent      = true
+      before_compute    = true
+      resolve_conflicts = "OVERWRITE"
+      timeouts = {
+        create = "25m"
+        delete = "10m"
+      }
     }
+
     vpc-cni = {
-      most_recent = true
+      most_recent      = true
+      before_compute    = true
+      resolve_conflicts = "OVERWRITE"
+      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
     }
+
     kube-proxy = {
-      most_recent = true
+    before_compute    = true
+    resolve_conflicts = "OVERWRITE"
+    most_recent   = true
     }
-  }
+ }
 
 
-  enable_aws_load_balancer_controller    = true
-  enable_aws_cloudwatch_metrics          = true
+
+#  enable_aws_load_balancer_controller    = true
+#  enable_aws_cloudwatch_metrics          = true
 #  enable_cluster_proportional_autoscaler = true
 #  enable_karpenter                       = true
 #  enable_kube_prometheus_stack           = true
-  enable_metrics_server                  = true
-  enable_external_dns                    = true
+#  enable_metrics_server                  = true
+#  enable_external_dns                    = true
   enable_cert_manager                    = true
   cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/*"]
 

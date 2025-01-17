@@ -69,7 +69,7 @@ parameters {
              steps {
                 sh '''
                 export KUBE_CONFIG_PATH=~/.kube/config
-                cd 156/terraform
+                cd terraform
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
@@ -90,7 +90,7 @@ parameters {
            }
             steps {
                 sh '''
-                cd 156/terraform
+                cd terraform
                 export KUBE_CONFIG_PATH=~/.kube/config
                 echo "Executing update-kubeconfig on cluster EKS-DE region us-east-1"
                 aws eks update-kubeconfig --region us-east-1 --name EKS-DEV 
@@ -106,7 +106,7 @@ parameters {
            }
             steps {
                 sh '''
-                cd 156/terraform
+                cd terraform
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform validate"
@@ -143,7 +143,7 @@ parameters {
            }
             steps {
                 sh '''
-                cd terraform
+                cd terraform1
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
