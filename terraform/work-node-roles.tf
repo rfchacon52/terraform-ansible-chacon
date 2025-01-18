@@ -11,7 +11,7 @@
 //For the latest required policy, see the EKS User Guide.
 
 resource "aws_iam_role" "EKSNodeRole" {
-  name = "eks-${local.cluster_name}-node-role"
+  name = "eks-${var.cluster_name}-node-role"
 
   assume_role_policy = <<POLICY
 {
@@ -46,7 +46,7 @@ resource "aws_iam_role_policy_attachment" "eks-node-AmazonEC2ContainerRegistryRe
 }
 
 resource "aws_iam_instance_profile" "eks-node-instance-profile" {
-  name = "${var.CLUSTER_NAME}-instance-profile"
+  name = "${var.cluster_name}-instance-profile"
   role = aws_iam_role.EKSNodeRole.name
 }
 
@@ -54,8 +54,8 @@ resource "aws_iam_instance_profile" "eks-node-instance-profile" {
 //This security group controls networking access to the Kubernetes worker nodes.
 
 resource "aws_security_group" "eks-nodes-sg" {
-  name        = "${local.cluster_name}-nodes-sg"
-  description = "Security group for all nodes in the cluster [${var.CLUSTER_NAME}] "
+  name        = "${var.cluster_name}-nodes-sg"
+  description = "Security group for all nodes in the cluster [${var.cluster_name}] "
   vpc_id      = aws_vpc.cluster.id
 
   //    ingress {
@@ -82,7 +82,7 @@ resource "aws_security_group" "eks-nodes-sg" {
   }
 
   tags = {
-    "Name"                                        = "${local.cluster_name}-nodes-sg"
+    "Name"                                        = "${var.cluster_name}-nodes-sg"
     "kubernetes.io/cluster/${local.cluster_name}" = "owned"
   }
 }
