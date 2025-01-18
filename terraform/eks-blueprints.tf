@@ -12,7 +12,6 @@ module "eks_blueprints_addons" {
     
    aws-ebs-csi-driver = {
       most_recent       = true
-      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
     }
 
     coredns = {
@@ -25,14 +24,12 @@ module "eks_blueprints_addons" {
 
     vpc-cni = {
       most_recent      = true
-      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
     }
 
     kube-proxy = {
     most_recent   = true
     }
  }
-
 
 
 #  enable_aws_load_balancer_controller    = true
