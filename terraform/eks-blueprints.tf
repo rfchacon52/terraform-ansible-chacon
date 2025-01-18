@@ -70,7 +70,6 @@ resource "kubernetes_storage_class" "this" {
 module "eks" {
   source = "terraform-aws-modules/eks/aws"
   version = "~> 20.31"
-  role_arn = aws_iam_role.EKSClusterRole.arn
   cluster_name    = var.cluster_name 
   cluster_version = var.cluster_version 
   cluster_endpoint_private_access = true
@@ -97,9 +96,6 @@ module "eks" {
   tags = {
     Environment = "Dev"
   }
-depends_on = [
-  aws_iam_role.EKSClusterRole,
- ]
 }
 
 
