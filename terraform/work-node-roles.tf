@@ -56,7 +56,7 @@ resource "aws_iam_instance_profile" "eks-node-instance-profile" {
 resource "aws_security_group" "eks-nodes-sg" {
   name        = "${var.cluster_name}-nodes-sg"
   description = "Security group for all nodes in the cluster [${var.cluster_name}] "
-  vpc_id      = aws_vpc.cluster.id
+  vpc_id      = module.vpc.vpc_id 
 
   //    ingress {
   //      from_port       = 0
