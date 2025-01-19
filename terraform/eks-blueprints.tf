@@ -100,26 +100,17 @@ module "eks" {
 
 #--------------------------------
 
-resource "null_resource" "previous" {}
-
-resource "time_sleep" "wait_30_seconds" {
-  depends_on = [null_resource.previous]
-
-  create_duration = "30s"
-}
-
-
-resource "null_resource" "next" {
-  depends_on = [time_sleep.wait_30_seconds]
 }
 
 
 data "aws_eks_cluster" "this" {
   name = var.cluster_name 
+  depends_on = [data.aws_eks_cluster.this]
 }
 
 data "aws_eks_cluster_auth" "this" {
   name = var.cluster_name 
+ depends_on = [data.aws_eks_cluster.this]
 
 }
 provider "kubernetes" {
