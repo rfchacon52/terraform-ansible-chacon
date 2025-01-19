@@ -1,6 +1,11 @@
 # Dependent on aws_eks_cluster.name"
 #
 
+resource "null_resource" "next" {
+  depends_on = [time_sleep.wait_30_seconds]
+}
+
+
 data "aws_eks_cluster" "this" {
   name = var.cluster_name 
 }
