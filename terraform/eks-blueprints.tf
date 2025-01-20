@@ -32,7 +32,7 @@ module "eks_blueprints_addons" {
  }
 
 
-  enable_aws_load_balancer_controller    = true
+#  enable_aws_load_balancer_controller    = true
   enable_aws_cloudwatch_metrics          = true
 #  enable_cluster_proportional_autoscaler = true
 #  enable_karpenter                       = true
