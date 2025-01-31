@@ -17,4 +17,4 @@ terraform {
       name = "chacon-ws3"
     }
   }
-
+}
