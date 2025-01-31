@@ -3,10 +3,12 @@ pipeline {
 agent any
 
 parameters {
-  choice choices: ['Build_Deploy_EC2', 'Build_Deploy_K8', 'Destroy_EC2', 'Destroy_K8', 'Fix_state'], description: '''Select [  Build_Deploy_EC2 to build EC2
-               Build_Deploy_K8 to build EKS
-               Destroy_EC2 to remove EC2
-               Destroy_K8 to remove EKS
+  choice choices: ['Build_Deploy_ASG', 'Build_Deploy_K8', 'Destroy_ASG', 'Destroy_K8', 'Fix_state'], description: '''Select [  Build_Deploy_EC2 to build EC2
+               
+               1. Build_Deploy_ASG
+               2. Build_Deploy_K8 to build full EKS 
+               3. Destroy_ASG to destroy ASG 
+               4. Destroy_K8 to destroy EKS
                Fix_state to run state commands  ]''', name: 'CHOICE'
 }
  
@@ -35,29 +37,24 @@ parameters {
 
         }
         
-        stage('Terraform EC2 Init & Plan & Apply') {
+        stage('Terraform ASG Init & Plan & Apply') {
            when {
-             expression { params.CHOICE == "Build_Deploy_EC2" }  
+             expression { params.CHOICE == "Build_Deploy_ASG" }  
            }
             steps {
                 
                 sh '''
-                cd terraform
+                cd terraform-asg
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
                 terraform fmt -recursive
                 echo "Running terraform validate"
                 terraform validate -no-color
-                sh '''
-
-                sh '''
                 echo "Executing terraform plan"                 
-                cd terraform; terraform plan -out=tfplan -no-color
-                sh '''
-                sh '''
+                terraform plan -out=tfplan -no-color
                 echo "Executing terraform apply"                 
-                cd terraform; terraform apply tfplan -no-color
+                terraform apply tfplan -no-color
                 sh '''
             }
         }
@@ -137,23 +134,21 @@ parameters {
             }
         }
 
-        stage('Terraform EC2 Destroy') {
+        stage('Terraform ASG Destroy') {
            when {
-             expression { params.CHOICE == "Destroy_EC2" }  
+             expression { params.CHOICE == "Destroy_ASG" }  
            }
             steps {
                 sh '''
-                cd terraform1
+                cd terraform-asg
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
                 terraform fmt -recursive
                 echo "Running terraform validate"
                 terraform validate -no-color
-                sh '''
-                sh '''
                 echo "Executing Terraform EC2 Destroy"
-                cd terraform; terraform apply -destroy -auto-approve -no-color
+                terraform apply -destroy -auto-approve -no-color
                 sh '''
             }
 
