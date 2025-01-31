@@ -19,19 +19,10 @@ module "vpc" {
   enable_dns_support   = true
 }
 
-data "aws_ami" "amazon-linux" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["amzn-ami-hvm-*-x86_64-ebs"]
-  }
-}
 
 resource "aws_launch_configuration" "terramino" {
   name_prefix     = "learn-terraform-aws-asg-"
-  image_id        = data.aws_ami.amazon-linux.id
+  image_id        = "ami-0c614dee691cbbf37" 
   instance_type   = "t2.micro"
   user_data       = file("user-data.sh")
   security_groups = [aws_security_group.terramino_instance.id]
