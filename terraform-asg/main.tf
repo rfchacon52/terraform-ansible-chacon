@@ -17,6 +17,10 @@ module "vpc" {
   public_subnets       = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
   enable_dns_hostnames = true
   enable_dns_support   = true
+  create_igw             = true
+  enable_nat_gateway     = true
+  single_nat_gateway     = true
+  one_nat_gateway_per_az = false
 }
 
 
@@ -47,13 +51,13 @@ resource "aws_launch_template" "first-template" {
   }
 
   # Network interface configuration
-  network_interfaces {
+#  network_interfaces {
     # Associates a public IP address with the instance
-    associate_public_ip_address = true
+#    associate_public_ip_address = true
 
     # Security groups to associate with the instance
-    security_groups = ["sg-88dadcb3"]
-  }
+#    security_groups = ["sg-88dadcb3"]
+#  }
 
   # Tag specifications for the instance
   tag_specifications {
