@@ -7,7 +7,7 @@ module "ec2_instance" {
   key_name               = "deployer-key"
   monitoring             = true
   vpc_security_group_ids = [aws_security_group.terra_SG.id] 
-  subnet_id              = "subnet-078810eb46c7f5754"
+  subnet_id              = module.vpc.public_subnets[0]
 
   tags = {
     Terraform   = "true"
