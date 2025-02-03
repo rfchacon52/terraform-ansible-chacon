@@ -4,7 +4,7 @@ module "ec2_instance" {
   name = "ec2-1"
 
   instance_type          = "t2.micro"
-  key_name               = "deployer"
+  key_name               = "deployer.key"
   monitoring             = true
   vpc_security_group_ids = [aws_security_group.terra_SG.id] 
   subnet_id              = module.vpc.public_subnets[0]
