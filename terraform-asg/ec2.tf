@@ -14,7 +14,7 @@ locals {
 
 resource "aws_instance" "my_app_eg1" {
   for_each = local.web_servers
-  ami           = "ami-07309549f34230bcd"
+  ami           = "ami-0c7af5fe939f2677f"
   instance_type = each.value.machine_type
   key_name      = "deployer.key"
   subnet_id     = each.value.subnet_id
