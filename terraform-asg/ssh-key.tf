@@ -1,4 +1,4 @@
-resource "aws_key_pair" "deployer" {
+resource "aws_key_pair" "2025-jan" {
   key_name   = "2025-jan"
   public_key = "ssh-rsa MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt8a5S5f1DsRkeWnEUhkAWNAwBvg0heaAgipYLke1OgV8txN71d10663MQhkIZqb4lGqbSTrT2otzZOLYOjEtY1MrR56glBU7aVZ38ZIvkJHUkJt6JMdvRgFbNiQ0Y0lviB6HR53aGsZxwRXVgREkXTb1023hPKHPxQj8nlAeGi/mxwC/g5tRK++6xqLwh00Y0OBDNHlzi04VnqTBfPpbpeWvJUO6k7N+fDUMLMNjbUQNi90oZWaxxokvz8rqItSsOcEv+t7PhL2NNGHYmW/ZcK18Ya3qqadQnb0bQeXz6zZJC5lYXedC8+w9vnCWIX7ylQtj1z+qsNXIVZRV5wz9EQIDAQAB"
 }
