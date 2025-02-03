@@ -4,7 +4,7 @@ module "ec2_instance" {
   name = "ec2-1"
 
   instance_type          = "t2.micro"
-  key_name               = "2025-jan"
+  key_name               = "my-2025-jan"
   monitoring             = true
   vpc_security_group_ids = [aws_security_group.terra_SG.id] 
   subnet_id              = module.vpc.public_subnets[0]
