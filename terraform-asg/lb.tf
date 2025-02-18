@@ -5,11 +5,7 @@ resource "aws_lb" "app-lb" {
     load_balancer_type = "application"
     internal = false
     security_groups = [aws_security_group.alb-sg.id]
-    subnets =  [module.vpc.public_subnets[0]]
-    # count = length(module.vpc.public_subnets)
-
-  # ...
- # subnet_id = module.vpc.private_subnets[count.index]
+    subnets =  [module.vpc.public_subnets[0], module.vpc.public_subnets[1]]
 }
   
 
@@ -41,8 +37,7 @@ resource "aws_lb_listener" "alb-listener" {
 # Launch Template
 resource "aws_launch_template" "ec2-launch-template" {
     name = "ws-launch-template"
-
-    image_id = "ami-013e83f579886baeb"
+    image_id  = "ami-0c7af5fe939f2677f"
     instance_type = "t2.micro"
       
     network_interfaces {
