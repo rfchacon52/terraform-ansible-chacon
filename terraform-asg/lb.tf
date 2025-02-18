@@ -64,7 +64,7 @@ resource "aws_autoscaling_group" "ec2-sg" {
   min_size = 1
   desired_capacity = 2
   target_group_arns = [aws_lb_target_group.alb-ec2-tg.arn]
-  vpc_zone_identifier = module.vpc.private_subnets.id
+  vpc_zone_identifier = [module.vpc.private_subnets[0]]
   
   launch_template {
     id = aws_launch_template.ec2-launch-template.id
