@@ -5,12 +5,12 @@ resource "aws_lb" "app-lb" {
     load_balancer_type = "application"
     internal = false
     security_groups = [aws_security_group.alb_sg.id]
-    subnets = [aws.subnet.public_subnet[*]]
+    subnets = [module.vpc.public_subnet[*]]
   
 }
 
 # Target Group for ALB
-resource "aws_lb_target_group" "alb_ec2_tg" {
+resource "aws_lb_target_group" "alb-ec2-tg" {
     name = "aws_lb_tg"
     port = "80"
     protocol = "HTTP"
@@ -60,9 +60,12 @@ resource "aws_autoscaling_group" "ec2_sg" {
   min_size = 1
   desired_capacity = 2
   target_group_arns = [aws_lb_target_group.alb_ec2_tg.arn]
-  vpc_zone_identifier = aws_subnet.private_subnet[*].id
+  vpc_zone_identifier = module.vpc.private_subnet[*].id
   
   launch_template {
-    id = aws_launch_template.ec2_launch_template
+    id = aws_launch_template.ec2_launch_template.id
+    version = "$Latest"
   }
+    health_check_type = "EC2"
+
 }
