@@ -4,8 +4,8 @@ resource "aws_lb" "app-lb" {
     name = "app-lb"
     load_balancer_type = "application"
     internal = false
-    security_groups = [aws_security_group.alb_sg.id]
-    subnets =  [for subnet in aws_subnet.public : subnet.id]
+    security_groups = [aws_security_group.alb-sg.id]
+    subnets =  [for subnet in module.public_subnets : subnet.id]
   
 }
 
