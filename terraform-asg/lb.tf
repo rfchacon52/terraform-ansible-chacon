@@ -5,7 +5,7 @@ resource "aws_lb" "app-lb" {
     load_balancer_type = "application"
     internal = false
     security_groups = [aws_security_group.alb-sg.id]
-    subnets =  [module.vpc.public_subnets[*]]
+    subnets =  [module.vpc.public_subnets[0]]
     # count = length(module.vpc.public_subnets)
 
   # ...
