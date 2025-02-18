@@ -1,6 +1,6 @@
 # create security group to allow ingoing ports
 
-resource "aws_security_group" "terra_SG" {
+resource "aws_security_group" "terra-SG" {
   name        = "sec_group"
   description = "security group for the EC2 instance"
   vpc_id   = module.vpc.vpc_id
@@ -11,8 +11,8 @@ tags = {
 }
 
 
-resource "aws_vpc_security_group_ingress_rule" "terra_SG-80" {
-  security_group_id = aws_security_group.terra_SG.id
+resource "aws_vpc_security_group_ingress_rule" "terra-SG-80" {
+  security_group_id = aws_security_group.terra-SG.id
   cidr_ipv4 = "0.0.0.0/0"
   from_port   = 80
   ip_protocol = "tcp"
@@ -20,8 +20,8 @@ resource "aws_vpc_security_group_ingress_rule" "terra_SG-80" {
 }
 
 
-resource "aws_vpc_security_group_ingress_rule" "terra_SG-22" {
-  security_group_id = aws_security_group.terra_SG.id
+resource "aws_vpc_security_group_ingress_rule" "terra-SG-22" {
+  security_group_id = aws_security_group.terra-SG.id
   cidr_ipv4 = "0.0.0.0/0"
   from_port   = 22 
   ip_protocol = "tcp"
@@ -38,7 +38,7 @@ security_group_id = aws_security_group.terra_SG.id
 }
 
 
-resource "aws_security_group" "alb_sg" {
+resource "aws_security_group" "alb-sg" {
   name = "alb-sg1"
   description = "Security Group for LB"
   vpc_id   = module.vpc.vpc_id
@@ -60,7 +60,7 @@ resource "aws_security_group" "alb_sg" {
     }
 }
 
-resource "aws_security_group" "ec2_sg" {
+resource "aws_security_group" "ec2-sg" {
   name = "ec2-sg1"
   description = "Security Group for ec2"
   vpc_id   = module.vpc.vpc_id
@@ -69,7 +69,7 @@ resource "aws_security_group" "ec2_sg" {
     from_port = 0
     to_port   = 0
     protocol  = "-1"
-    cidr_blocks = [aws_security_group.alb_sg.id]
+    cidr_blocks = [aws_security_group.alb-sg.id]
   }
 
  egress {
