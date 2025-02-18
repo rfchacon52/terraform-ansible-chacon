@@ -29,7 +29,7 @@ resource "aws_vpc_security_group_ingress_rule" "terra-SG-22" {
 }
 
 resource "aws_vpc_security_group_egress_rule" "egress-80" {
-security_group_id = aws_security_group.terra_SG.id 
+security_group_id = aws_security_group.terra-SG.id 
 
   cidr_ipv4   = "0.0.0.0/0"
   from_port   = 80

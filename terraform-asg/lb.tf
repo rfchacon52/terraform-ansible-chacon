@@ -63,7 +63,7 @@ resource "aws_autoscaling_group" "ec2-sg" {
   vpc_zone_identifier = module.vpc.private_subnets.id
   
   launch_template {
-    id = aws_launch_template.ec2_launch_template.id
+    id = aws_launch_template.ec2-launch-template.id
     version = "$Latest"
   }
     health_check_type = "EC2"
