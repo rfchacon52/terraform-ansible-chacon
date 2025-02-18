@@ -5,7 +5,7 @@ resource "aws_lb" "app-lb" {
     load_balancer_type = "application"
     internal = false
     security_groups = [aws_security_group.alb_sg.id]
-    subnets = [module.vpc.public_subnet[*]]
+    subnets =  [for subnet in aws_subnet.public : subnet.id]
   
 }
 
@@ -60,7 +60,7 @@ resource "aws_autoscaling_group" "ec2_sg" {
   min_size = 1
   desired_capacity = 2
   target_group_arns = [aws_lb_target_group.alb_ec2_tg.arn]
-  vpc_zone_identifier = module.vpc.private_subnet[*].id
+  vpc_zone_identifier = module.vpc.private_subnets.id
   
   launch_template {
     id = aws_launch_template.ec2_launch_template.id
