@@ -39,7 +39,15 @@ resource "aws_launch_template" "ec2-launch-template" {
     name = "ws-launch-template"
     image_id  = "ami-0c7af5fe939f2677f"
     instance_type = "t2.micro"
-      
+    key_name   = "deployer.key"
+
+     block_device_mappings {
+    device_name = "/dev/sdf"
+    ebs {
+      volume_size = 20
+    }
+  }
+
     network_interfaces {
       associate_public_ip_address = false
       security_groups = [aws_security_group.ec2-sg.id]
