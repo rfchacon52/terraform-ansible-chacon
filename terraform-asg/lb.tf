@@ -5,9 +5,13 @@ resource "aws_lb" "app-lb" {
     load_balancer_type = "application"
     internal = false
     security_groups = [aws_security_group.alb-sg.id]
-    subnets =  [module.vpc.public_subnets]
-  
+    subnets =  [module.vpc.public_subnets[*]]
+    # count = length(module.vpc.public_subnets)
+
+  # ...
+ # subnet_id = module.vpc.private_subnets[count.index]
 }
+  
 
 # Target Group for ALB
 resource "aws_lb_target_group" "alb-ec2-tg" {
