@@ -11,10 +11,10 @@ provider "aws" {
 
 terraform {
   cloud {
-    organization = "Chacon_Dev"
+    organization = "Chacon_10"
 
     workspaces {
-      name = "chacon-ws5"
+      name = "Chacon-10-ws5"
     }
   }
 }
