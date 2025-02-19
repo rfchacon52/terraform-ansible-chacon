@@ -10,11 +10,10 @@ provider "aws" {
 
 
 terraform {
-  cloud {
-    organization = "Chacon_10"
-
-    workspaces {
-      name = "Chacon-10-ws5"
-    }
-  }
+  backend "s3" {
+    bucket = "tfremotestate-ec2"
+    key = "state"
+    region = "us-east-1"
+    dynamodb_table = "tfremotestate-ec2"
+  } 
 }
