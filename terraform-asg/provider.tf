@@ -11,9 +11,9 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = "tfremotestate-ec2"
-    key = "state"
-    region = "us-east-1"
-    dynamodb_table = "tfremotestate-ec2"
-  } 
+    bucket         = "chacon-backend"
+    key            = "terraform/state"
+    region         = "us-west-2"
+    dynamodb_table = "terraform-lock-table"
+  }
 }
