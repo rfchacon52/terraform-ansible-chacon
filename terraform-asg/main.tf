@@ -6,9 +6,9 @@ resource "aws_lb" "app-lb" {
     load_balancer_type = "application"
     internal = false
     security_groups = [aws_security_group.alb-sg.id]
-    count  = length(module.vpc.public_subnets)
-  # subnets =  [module.vpc.public_subnets[0], module.vpc.public_subnets[1]]
-    subnets =  module.vpc.public_subnets[count.index] 
+#    count  = length(module.vpc.public_subnets)
+   subnets =  [module.vpc.public_subnets[0], module.vpc.public_subnets[1]]
+#    subnets =  module.vpc.public_subnets[count.index] 
 }
   
 ##############################
@@ -82,9 +82,9 @@ resource "aws_autoscaling_group" "ec2-sg" {
   min_size = 1
   desired_capacity = 2
   target_group_arns = [aws_lb_target_group.alb-ec2-tg.arn]
-#   vpc_zone_identifier = [module.vpc.private_subnets[0],module.vpc.private_subnets[1]]
-  count = length(module.vpc.private_subnets)
-  vpc_zone_identifier = module.vpc.private_subnets[count.index] 
+  vpc_zone_identifier = [module.vpc.private_subnets[0],module.vpc.private_subnets[1]]
+#  count = length(module.vpc.private_subnets)
+#  vpc_zone_identifier = module.vpc.private_subnets[count.index] 
   
   launch_template {
     id = aws_launch_template.ec2-launch-template.id
