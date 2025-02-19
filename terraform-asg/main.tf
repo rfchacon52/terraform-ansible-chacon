@@ -1,29 +1,95 @@
-# Copyright (c) HashiCorp, Inc.
-
-
-data "aws_availability_zones" "available" {
-  state = "available"
+##############################
+# Load Balancer
+##############################
+resource "aws_lb" "app-lb" {
+    name = "app-lb"
+    load_balancer_type = "application"
+    internal = false
+    security_groups = [aws_security_group.alb-sg.id]
+    count  = length(module.vpc.public_subnets)
+  # subnets =  [module.vpc.public_subnets[0], module.vpc.public_subnets[1]]
+    subnets =  module.vpc.public_subnets[count.index] 
+}
+  
+##############################
+# Target Group for ALB
+##############################
+resource "aws_lb_target_group" "alb-ec2-tg" {
+    name = "aws-lb-tg"
+    port = "80"
+    protocol = "HTTP"
+    vpc_id   = module.vpc.vpc_id
+    tags = {
+        Name = "ws-launch-template"
+     }
 }
 
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "5.18.1"
-
-  name = "ags-vpc"
-  cidr = "10.0.0.0/16"
-
-  azs             = ["us-east-1a", "us-east-1b"]
-  private_subnets = ["10.0.0.0/19", "10.0.32.0/19"]
-  public_subnets  = ["10.0.64.0/19", "10.0.96.0/19"]
-
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-  create_igw             = true
-  enable_nat_gateway     = true
-  single_nat_gateway     = true
-  one_nat_gateway_per_az = false
+##############################
+# AWS LB Listner
+##############################
+resource "aws_lb_listener" "alb-listener" {
+  load_balancer_arn = aws_lb.app-lb.arn
+  port = "80"
+  protocol = "HTTP"
+  default_action {
+    type = "forward"
+    target_group_arn = aws_lb_target_group.alb-ec2-tg.arn
+    }
+  tags = {
+        Name = "ws-launch-template"
+    }
+}
  
+##############################
+# Launch Template
+##############################
+resource "aws_launch_template" "ec2-launch-template" {
+    name = "ws-launch-template"
+    image_id  = "ami-0c7af5fe939f2677f"
+    instance_type = "t2.micro"
+    key_name   = "deployer.key"
+    user_data = filebase64("user-data.sh")
+    ebs_optimized = true
+    update_default_version = true
 
+    block_device_mappings {
+    device_name = "/dev/sdf"
+    ebs {
+      volume_size = 20
+      volume_type = "gp2"
+      delete_on_termination = true
+    }
+  }
+    network_interfaces {
+      associate_public_ip_address = true
+      security_groups = [aws_security_group.ec2-sg.id]
+    }
+    
+    tag_specifications {
+      resource_type = "instance"
+      tags = {
+        Name = "ws-launch-template"
+      }
+    }
 }
 
+##############################
+# Auto Scaling Group 
+##############################
+resource "aws_autoscaling_group" "ec2-sg" {
+  name = "web-server-asg"  
+  max_size = 3
+  min_size = 1
+  desired_capacity = 2
+  target_group_arns = [aws_lb_target_group.alb-ec2-tg.arn]
+#   vpc_zone_identifier = [module.vpc.private_subnets[0],module.vpc.private_subnets[1]]
+  count = length(module.vpc.private_subnets)
+  vpc_zone_identifier = module.vpc.private_subnets[count.index] 
+  
+  launch_template {
+    id = aws_launch_template.ec2-launch-template.id
+    version = "$Latest"
+  }
+    health_check_type = "EC2"
 
+}

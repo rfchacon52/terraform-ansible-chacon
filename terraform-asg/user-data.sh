@@ -2,18 +2,22 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
-yum update -y
-yum -y remove httpd
-yum -y remove httpd-tools
-yum install -y httpd24 php72 mysql57-server php72-mysqlnd
-service httpd start
-chkconfig httpd on
+sudo yum update -y
+sudo yum install -y epel-release  # Install EPEL repository for additional packages
+sudo yum install -y nginx
+sudo systemctl enable nginx
+sudo systemctl start nginx
 
-usermod -a -G apache ec2-user
-chown -R ec2-user:apache /var/www
-chmod 2775 /var/www
-find /var/www -type d -exec chmod 2775 {} \;
-find /var/www -type f -exec chmod 0664 {} \;
-cd /var/www/html
-curl http://169.254.169.254/latest/meta-data/instance-id -o index.html
-curl https://raw.githubusercontent.com/hashicorp/learn-terramino/master/index.php -O
+
+sudo echo "<!DOCTYPE html>" > /tmp/index.html
+sudo echo "<html> >> /tmp/index.html
+sudo echo "<body style="background-color:red;">" >> /tmp/index.html
+sudo echo "<h1>This is host my_hostname </h1>" >> /tmp/index.html
+sudo echo "</body>" >> /tmp/index.html
+sudo echo "</html>" >> /tmp/index.html
+
+host_name=$(/usr/bin/hostname)
+sed -i -e s/my_hostname/$host_name/g /tmp/index.html
+sudo systemctl stop nginx
+sudo cp /tmp/index.html /usr/share/testpage/index.html
+sudo systemctl start nginx
