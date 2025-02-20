@@ -3,7 +3,7 @@ resource "aws_instance" "Bastion" {
   ami  = "ami-0c7af5fe939f2677f"
   instance_type = "t2.micro"
   key_name   = "deployer.key"
-  vpc_security_group_ids      = [aws_security_group.ec2-sg.id, aws_vpc_security_group_ingress_rule.terra-SG-22]
+  vpc_security_group_ids      = [aws_security_group.ec2-sg.id, aws_vpc_security_group_ingress_rule.terra-SG-22.id]
   associate_public_ip_address = true
  root_block_device {
    volume_type           = "gp2"
