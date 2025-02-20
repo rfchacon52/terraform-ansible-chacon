@@ -91,7 +91,7 @@ resource "aws_autoscaling_group" "ec2-sg" {
     version = "$Latest"
   }
     health_check_type = "EC2"
-
+}
 
 ##############################
 # Auto Scaling Policy 
@@ -118,9 +118,7 @@ resource "aws_cloudwatch_metric_alarm" "scale_down" {
   evaluation_periods  = "2"
   period              = "120"
   statistic           = "Average"
-
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.ec2-sg.name
   }
-}
 }
