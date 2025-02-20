@@ -22,7 +22,7 @@ resource "aws_vpc_security_group_ingress_rule" "terra-SG-80" {
 
 resource "aws_vpc_security_group_ingress_rule" "terra-SG-22" {
   security_group_id = aws_security_group.terra-SG.id
-  cidr_ipv4 = "0.0.0.0/0"
+  cidr_ipv4 = "10.0.0.0/16"
   from_port   = 22 
   ip_protocol = "tcp"
   to_port     = 22 
@@ -66,10 +66,10 @@ resource "aws_security_group" "ec2-sg" {
   vpc_id   = module.vpc.vpc_id
 
   ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port = 80 
+    to_port   = 80
+    protocol  = "http"
+    cidr_blocks = ["10.0.0.0/16"]
   }
 
  egress {
