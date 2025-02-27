@@ -1,5 +1,5 @@
 module "eks_blueprints" {
-  source = "https://github.com/aws-ia/terraform-aws-eks-blueprints?ref=5.0.0"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.25.0"
 
   cluster_name      = var.cluster_name
   cluster_version   = var.cluster_version
@@ -32,6 +32,6 @@ module "eks_blueprints" {
     args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
   }
 }
-
+}
 
 
