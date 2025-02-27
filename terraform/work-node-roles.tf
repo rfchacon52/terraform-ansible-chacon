@@ -14,15 +14,25 @@ resource "aws_iam_role" "EKSNodeRole" {
   name = "eks-${var.cluster_name}-node-role"
 
   assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
+  {
+  "Version" : "2012-10-17",
+  "Statement" : [
     {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
+      "Sid" : "WorkerNodePermissions",
+      "Effect" : "Allow",
+      "Action" : [
+        "ec2:DescribeInstances",
+        "ec2:DescribeInstanceTypes",
+        "ec2:DescribeRouteTables",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeVolumes",
+        "ec2:DescribeVolumesModifications",
+        "ec2:DescribeVpcs",
+        "eks:DescribeCluster",
+        "eks-auth:AssumeRoleForPodIdentity"
+      ],
+      "Resource" : "*"
     }
   ]
 }
