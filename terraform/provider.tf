@@ -35,12 +35,10 @@ variable "cluster_version" {
 }
 
 terraform {
-  cloud {
-    organization = "Chacon_Dev"
-
-    workspaces {
-      name = "chacon-ws4"
-    }
+  backend "s3" {
+    bucket         = "chacon-backend"
+    key            = "terraform/state"
+    region         = "us-east-1"
+    dynamodb_table = "terraform-lock-table"
   }
-}
-
+}                           

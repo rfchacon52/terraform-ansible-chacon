@@ -13,6 +13,7 @@ module "vpc" {
   enable_dns_support   = true
   create_igw             = true
   enable_nat_gateway     = true
+  map_public_ip_on_launch = true 
   single_nat_gateway     = true
   one_nat_gateway_per_az = false
 
