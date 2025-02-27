@@ -6,12 +6,12 @@ module "eks_blueprints" {
   enable_irsa       = true
 
 # vpc and private subnet
-  vpc_id = module.vpc_id
+  vpc_id = module.vpc.vpc_id
   private_subnet_ids  =  module.vpc.private_subnets
 
 # Add managed node groups
   managed_node_groups = {
-    node_grp1 = {
+    role = {
       capacity_type = "ON_DEMAND"
       node_group_name = "general"
       instance_types = ["t3.large"]
