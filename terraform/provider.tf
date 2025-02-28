@@ -22,10 +22,15 @@ required_version = ">= 1.5.0"
 
   }
 }
-
 provider "aws" {
   region = "us-east-1"
+  alias  = "virginia"
 }
+
+provider "aws" {
+  region = local.region
+}
+
 
 variable "cluster_name" {
   default = "EKS-DEV"
