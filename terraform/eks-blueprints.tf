@@ -40,7 +40,7 @@ data "aws_availability_zones" "available" {
 locals {
   name            = "karpenter-blueprints"
   cluster_version = "1.30"
-  region          = var.region
+  region          = "us-east-1" 
   node_group_name = "managed-ondemand"
 
   node_iam_role_name = module.eks_blueprints_addons.karpenter.node_iam_role_name
@@ -142,7 +142,7 @@ module "eks_blueprints_addons" {
     set = [
       {
         name  = "cloudWatchLogs.region"
-        value = var.region
+        value = "us.east
       }
     ]
   }
