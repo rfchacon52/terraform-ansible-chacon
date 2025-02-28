@@ -1,12 +1,4 @@
 ## THIS TO AUTHENTICATE TO ECR, DON'T CHANGE IT
-provider "aws" {
-  region = "us-east-1"
-  alias  = "virginia"
-}
-
-provider "aws" {
-  region = local.region
-}
 
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
