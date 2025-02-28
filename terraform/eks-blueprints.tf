@@ -142,7 +142,7 @@ module "eks_blueprints_addons" {
     set = [
       {
         name  = "cloudWatchLogs.region"
-        value = "us.east
+        value = "us.east1"
       }
     ]
   }
