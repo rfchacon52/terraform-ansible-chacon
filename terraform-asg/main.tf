@@ -52,14 +52,22 @@ resource "aws_launch_template" "ec2-launch-template" {
     ebs_optimized = true
     update_default_version = true
 
-    block_device_mappings {
-    device_name = "/dev/sdf"
-    ebs {
-      volume_size = 20
-      volume_type = "gp2"
-      delete_on_termination = true
+ block_device_mappings = [
+    {
+      device_name  = "/dev/sda1"
+      no_device    = "false"
+      virtual_name = "root"
+      ebs = {
+        encrypted             = true
+        volume_size           = 60 
+        delete_on_termination = true
+        iops                  = null
+        kms_key_id            = null
+        snapshot_id           = null
+        volume_type           = "standard"
+      }
     }
-  }
+  ]
     network_interfaces {
       associate_public_ip_address = true
       security_groups = [aws_security_group.ec2-sg.id]
