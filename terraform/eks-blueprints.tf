@@ -37,9 +37,14 @@ data "aws_availability_zones" "available" {
   }
 }
 
+
+################################################################################
+# Locals
+################################################################################
+
 locals {
-  name            = "karpenter-blueprints"
-  cluster_version = "1.30"
+  name            = var.cluster_name 
+  cluster_version = var.cluster_version 
   region          = "us-east-1" 
   node_group_name = "managed-ondemand"
 
@@ -57,9 +62,10 @@ locals {
 ################################################################################
 # Cluster
 ################################################################################
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.23.0"
+  version = "20.31.5"
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
@@ -84,9 +90,9 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  create_cloudwatch_log_group              = false
-  create_cluster_security_group            = false
-  create_node_security_group               = false
+  create_cloudwatch_log_group              = true 
+  create_cluster_security_group            = true 
+  create_node_security_group               = true
   authentication_mode                      = "API_AND_CONFIG_MAP"
   enable_cluster_creator_admin_permissions = true
 
@@ -117,9 +123,14 @@ module "eks" {
   })
 }
 
+
+################################################################################
+# EKS Blue Prints Addons 
+################################################################################
+
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.16.3"
+  version = "1.20.0"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -131,6 +142,10 @@ module "eks_blueprints_addons" {
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_kube_prometheus_stack        = true
+  enable_external_dns                    = true
+  enable_cert_manager                    = true
+  cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
+
 
   eks_addons = {
     aws-ebs-csi-driver = {
@@ -182,6 +197,8 @@ module "ebs_csi_driver_irsa" {
   tags = local.tags
 }
 
+
+
 module "aws-auth" {
   source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
   version = "~> 20.0"
@@ -197,43 +214,3 @@ module "aws-auth" {
   ]
 }
 
-#---------------------------------------------------------------
-# Supporting Resources
-#---------------------------------------------------------------
-
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "5.12.1"
-
-  name = local.name
-  cidr = local.vpc_cidr
-
-  azs             = local.azs
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = ["10.0.32.0/19", "10.0.64.0/19", "10.0.96.0/19"]
-
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
-  enable_dns_hostnames = true
-
-  # Manage so we can name
-  manage_default_network_acl    = true
-  default_network_acl_tags      = { Name = "${local.name}-default" }
-  manage_default_route_table    = true
-  default_route_table_tags      = { Name = "${local.name}-default" }
-  manage_default_security_group = true
-  default_security_group_tags   = { Name = "${local.name}-default" }
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
-    "karpenter.sh/discovery"              = local.name
-  }
-
-  tags = local.tags
-}
