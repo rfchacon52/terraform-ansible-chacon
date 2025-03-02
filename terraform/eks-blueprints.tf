@@ -94,7 +94,7 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
- # create_cloudwatch_log_group              = true
+  create_cloudwatch_log_group              = false
   create_cluster_security_group            = true
   create_node_security_group               = true
   authentication_mode                      = "API_AND_CONFIG_MAP"
