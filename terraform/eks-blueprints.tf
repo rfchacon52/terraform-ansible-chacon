@@ -94,16 +94,16 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  create_cloudwatch_log_group              = false
-  create_cluster_security_group            = false
-  create_node_security_group               = false
+  create_cloudwatch_log_group              = true
+  create_cluster_security_group            = true
+  create_node_security_group               = true
   authentication_mode                      = "API_AND_CONFIG_MAP"
   enable_cluster_creator_admin_permissions = true
 
   eks_managed_node_groups = {
     mg_5 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["t3a.small"]
+      instance_types  = ["t3a.medium"]
 
       create_security_group = true 
 
@@ -146,6 +146,8 @@ module "eks_blueprints_addons" {
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_kube_prometheus_stack        = true
+  enable_external_dns                    = true
+  enable_cert_manager                    = true
   cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
 
 
