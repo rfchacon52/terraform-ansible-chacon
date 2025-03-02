@@ -6,7 +6,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.19.0"
 
-  name = VPC-DEV
+  name = "VPC-DEV"
   cidr = local.vpc_cidr
 
   azs             = local.azs
