@@ -43,8 +43,8 @@ data "aws_availability_zones" "available" {
 ################################################################################
 
 locals {
-  name            = var.cluster_name 
-  cluster_version = var.cluster_version 
+  name            = "karpenter-blueprints"
+  cluster_version = "1.30"
   region          = "us-east-1" 
   node_group_name = "managed-ondemand"
 
@@ -90,9 +90,9 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  create_cloudwatch_log_group              = true 
-  create_cluster_security_group            = true 
-  create_node_security_group               = true
+  create_cloudwatch_log_group              = false
+  create_cluster_security_group            = false
+  create_node_security_group               = false
   authentication_mode                      = "API_AND_CONFIG_MAP"
   enable_cluster_creator_admin_permissions = true
 
@@ -142,8 +142,6 @@ module "eks_blueprints_addons" {
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_kube_prometheus_stack        = true
-  enable_external_dns                    = true
-  enable_cert_manager                    = true
   cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
 
 
@@ -158,7 +156,7 @@ module "eks_blueprints_addons" {
     set = [
       {
         name  = "cloudWatchLogs.region"
-        value = "us.east1"
+        value = "us.east-1"
       }
     ]
   }
