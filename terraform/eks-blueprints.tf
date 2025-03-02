@@ -71,6 +71,10 @@ module "eks" {
   cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
 
+ cluster_compute_config = {
+    enabled = false
+  }
+
   cluster_addons = {
     kube-proxy = { most_recent = true }
     coredns    = { most_recent = true }
