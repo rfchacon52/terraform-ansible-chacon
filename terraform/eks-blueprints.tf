@@ -103,7 +103,7 @@ module "eks" {
   eks_managed_node_groups = {
     mg_5 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["t3a.medium"]
+      instance_types  = ["t3.medium"]
 
       create_security_group = true 
 
@@ -146,8 +146,8 @@ module "eks_blueprints_addons" {
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_kube_prometheus_stack        = true
-  enable_external_dns                    = true
-  enable_cert_manager                    = true
+  enable_external_dns                    = false
+  enable_cert_manager                    = false 
   cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
 
 
