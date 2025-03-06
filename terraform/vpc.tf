@@ -1,17 +1,29 @@
 ################################################################################
 #  VPC
 ################################################################################
+data "aws_ecrpublic_authorization_token" "token" {
+  provider = aws.virginia
+}
+
+data "aws_availability_zones" "available" {}
+
+data "aws_eks_cluster" "cluster" {
+  name = module.eks.cluster_id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_id
+}
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.19.0"
 
-  name = "VPC-DEV"
-  cidr = local.vpc_cidr
-
-  azs             = local.azs
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = ["10.0.32.0/19", "10.0.64.0/19", "10.0.96.0/19"]
+  name                 = "VPC-DEV"
+  cidr                 = "172.16.0.0/16"
+  azs                  = data.aws_availability_zones.available.names
+  private_subnets      = ["172.16.1.0/24", "172.16.2.0/24", "172.16.3.0/24"]
+  public_subnets       = ["172.16.4.0/24", "172.16.5.0/24", "172.16.6.0/24"]
 
   enable_nat_gateway   = true
   single_nat_gateway   = true

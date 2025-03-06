@@ -1,39 +1,28 @@
 ################################################################################
-## THIS TO AUTHENTICATE TO ECR, DON'T CHANGE IT
+# kubeconfig 
 ################################################################################
-
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
-}
-
-data "aws_ecrpublic_authorization_token" "token" {
-  provider = aws.virginia
-}
-
-data "aws_availability_zones" "available" {
-  filter {
-    name   = "opt-in-status"
-    values = ["opt-in-not-required"]
+module "eks-kubeconfig" {
+  source     = "hyperbadger/eks-kubeconfig/aws"
+  version    = "1.0.0"
+  depends_on = [module.eks]
+  cluster_id =  module.eks.cluster_id
   }
+
+resource "local_file" "kubeconfig" {
+  content  = module.eks-kubeconfig.kubeconfig
+  filename = "kubeconfig_${local.name}"
 }
 
 
 ################################################################################
 # Locals
 ################################################################################
-
 locals {
-  name            = "karpenter-blueprints"
-  cluster_version = "1.30"
-  region          = "us-east-1" 
-  node_group_name = "managed-ondemand"
-
+  name              = "EKS-blueprints"
+  cluster_version   = "1.31"
+  region            = "us-east-1" 
+  node_group_name   = "managed-ondemand"
   node_iam_role_name = module.eks_blueprints_addons.karpenter.node_iam_role_name
-
-  vpc_cidr = "10.0.0.0/16"
-  # NOTE: You might need to change this less number of AZs depending on the region you're deploying to
-  azs = slice(data.aws_availability_zones.available.names, 0, 3)
-
   tags = {
     blueprint = local.name
   }
@@ -180,8 +169,6 @@ module "ebs_csi_driver_irsa" {
 
   tags = local.tags
 }
-
-
 
 module "aws-auth" {
   source  = "terraform-aws-modules/eks/aws//modules/aws-auth"

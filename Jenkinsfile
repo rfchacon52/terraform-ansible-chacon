@@ -81,7 +81,7 @@ parameters {
             }
         }
 
-        stage('Configure Kubectl, Create Storage-Class') {
+        stage('Configure Kubectl, Deploy EKS apps') {
            when {
              expression { params.CHOICE == "Build_Deploy_K8" }  
            }
@@ -89,10 +89,14 @@ parameters {
                 sh '''
                 cd terraform
                 export KUBE_CONFIG_PATH=~/.kube/config
-                echo "Executing update-kubeconfig on cluster EKS-DE region us-east-1"
-                aws eks update-kubeconfig --region us-east-1 --name karpenter-blueprints 
+                echo "Executing update-kubeconfig on cluster EKS-blueprints  region us-east-1"
+                aws eks update-kubeconfig --region us-east-1 --name EKS-blueprints 
                 echo "Executing Get all pods"
                 kubectl get pods -A -o wide
+                cd apps_deploy
+                echo "Deploying EKS Apps"           
+                kubectl apply -f hello-kubernetes.yaml
+                kubectl apply -f service-loadbalancer.yaml 
                 sh '''
             }
         }
