@@ -38,7 +38,10 @@ module "eks" {
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
-  cluster_endpoint_public_access = true
+
+  cluster_endpoint_private_access = true
+  cluster_endpoint_public_access  = true
+  enable_irsa = true
 
  cluster_compute_config = {
     enabled = false
@@ -48,16 +51,15 @@ module "eks" {
     kube-proxy = { most_recent = true }
     coredns    = { most_recent = true }
 
-    vpc-cni = {
-      most_recent    = true
-      before_compute = true
-      configuration_values = jsonencode({
-        env = {
-          ENABLE_PREFIX_DELEGATION = "true"
-          WARM_PREFIX_TARGET       = "1"
-        }
-      })
+    aws-ebs-csi-driver = {
+      most_recent              = true
+      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
+    } 
+  vpc-cni = {
+      most_recent              = true
+      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
     }
+
   }
 
   vpc_id     = module.vpc.vpc_id
@@ -91,11 +93,7 @@ module "eks" {
     }
   }
 
-  tags = merge(local.tags, {
-    "karpenter.sh/discovery" = local.name
-  })
 }
-
 
 ################################################################################
 # EKS Blue Prints Addons 
@@ -112,63 +110,9 @@ module "eks_blueprints_addons" {
 
   create_delay_dependencies = [for prof in module.eks.eks_managed_node_groups : prof.node_group_arn]
 
-  enable_aws_load_balancer_controller = true
-  enable_metrics_server               = true
-  enable_kube_prometheus_stack        = true
-  enable_external_dns                    = false
-  enable_cert_manager                    = false 
   cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
 
-
-  eks_addons = {
-    aws-ebs-csi-driver = {
-      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
-    }
   }
-
-  enable_aws_for_fluentbit = true
-  aws_for_fluentbit = {
-    set = [
-      {
-        name  = "cloudWatchLogs.region"
-        value = "us.east-1"
-      }
-    ]
-  }
-
-  enable_karpenter = true
-
-  karpenter = {
-    chart_version       = "1.0.1"
-    repository_username = data.aws_ecrpublic_authorization_token.token.user_name
-    repository_password = data.aws_ecrpublic_authorization_token.token.password
-  }
-  karpenter_enable_spot_termination          = true
-  karpenter_enable_instance_profile_creation = true
-  karpenter_node = {
-    iam_role_use_name_prefix = false
-  }
-
-  tags = local.tags
-}
-
-module "ebs_csi_driver_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.44.0"
-
-  role_name_prefix = "${module.eks.cluster_name}-ebs-csi-driver-"
-
-  attach_ebs_csi_policy = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
-    }
-  }
-
-  tags = local.tags
-}
 
 module "aws-auth" {
   source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
