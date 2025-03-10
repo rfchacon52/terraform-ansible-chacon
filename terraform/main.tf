@@ -45,6 +45,7 @@ module "eks" {
     mg_5 = {
       node_group_name = "managed-ondemand"
       instance_types  = ["t3.medium"]
+      disk_size = 50
       create_security_group = true 
       subnet_ids   = module.vpc.private_subnets
       max_size     = 3
