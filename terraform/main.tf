@@ -52,11 +52,10 @@ module "eks" {
       min_size     = 1
   }
 }
-
+}
 ################################################################################
 # EKS Blue Prints Addons 
 ################################################################################
-
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "1.20.0"
@@ -83,10 +82,6 @@ module "eks_blueprints_addons" {
     }
   }
 
-  create_cluster_security_group            = true
-  create_node_security_group               = true
-  authentication_mode                      = "API_AND_CONFIG_MAP"
-  enable_cluster_creator_admin_permissions = true
   enable_cluster_proportional_autoscaler = true
   enable_kube_prometheus_stack           = true
   enable_metrics_server                  = true
