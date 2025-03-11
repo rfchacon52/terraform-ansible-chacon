@@ -39,8 +39,16 @@ module "eks" {
   cluster_endpoint_public_access  = true
   enable_irsa = true
 
+
+cluster_compute_config = {
+enabled = false
+}
+
+ enable_cluster_creator_admin_permissions = true
+
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+
   eks_managed_node_groups = {
     mg_5 = {
       node_group_name = "managed-ondemand"
