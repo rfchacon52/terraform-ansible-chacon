@@ -63,12 +63,6 @@ enabled = false
 
 
 }
-#data "aws_eks_cluster" "cluster" {
-#  name = module.eks.
-#}
-#data "aws_eks_cluster_auth" "cluster" {
-#  name = module.eks.cluster_name
-#}
 ################################################################################
 # EKS Blue Prints Addons 
 ################################################################################
@@ -109,7 +103,10 @@ module "eks_blueprints_addons" {
     Environment = "dev"
   }
 }
- 
+
+data "aws_eks_cluster" "cluster" {
+  name = module.eks.cluster_name
+}
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_name
 }
