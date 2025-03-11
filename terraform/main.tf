@@ -58,7 +58,7 @@ module "eks" {
 
   eks_managed_node_groups = {
     core_node_group = {
-      instance_types = ["m5.large"]
+      instance_types = ["t3.medium"]
 
       ami_type = "BOTTLEROCKET_x86_64"
       platform = "bottlerocket"
