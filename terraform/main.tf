@@ -14,6 +14,8 @@ resource "local_file" "kubeconfig" {
 }
 
 
+
+
 ################################################################################
 # Locals
 ################################################################################
@@ -111,4 +113,8 @@ data "aws_eks_cluster" "cluster" {
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_name
    depends_on = [module.eks.cluster_name]
+}
+
+data "aws_kms_alias" "this" {
+  name = eks/EKS-blueprints
 }
