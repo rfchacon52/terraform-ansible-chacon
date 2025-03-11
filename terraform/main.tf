@@ -46,7 +46,6 @@ module "eks" {
       node_group_name = "managed-ondemand"
       instance_types  = ["t3.medium"]
       disk_size = 50
-      create_security_group = true 
       subnet_ids   = module.vpc.private_subnets
       max_size     = 3
       desired_size = 2
@@ -54,16 +53,6 @@ module "eks" {
   }
 }
 
-node_security_group_additional_rules = {
-    ingress_allow_access_from_control_plane = {
-      type                          = "ingress"
-      protocol                      = "tcp"
-      from_port                     = 9443
-      to_port                       = 9443
-      source_cluster_security_group = true
-      description                   = "Allow access from control plane to webhook port of AWS load balancer controller"
-    }
-  }
 
 }
 data "aws_eks_cluster" "cluster" {
@@ -101,9 +90,9 @@ module "eks_blueprints_addons" {
     }
   }
 
-  enable_cluster_proportional_autoscaler = true
-  enable_kube_prometheus_stack           = true
-  enable_metrics_server                  = true
+  # enable_cluster_proportional_autoscaler = true
+  # enable_kube_prometheus_stack           = true
+ # enable_metrics_server                  = true
   #enable_external_dns                    = true
   #enable_cert_manager                    = true
  # cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
@@ -113,19 +102,4 @@ module "eks_blueprints_addons" {
   }
 }
  
-
-module "aws-auth" {
-  source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
-  version = "~> 20.0"
-
-  manage_aws_auth_configmap = true
-
-  aws_auth_roles = [
-    {
-      rolearn  = module.eks_blueprints_addons.karpenter.node_iam_role_arn
-      username = "system:node:{{EC2PrivateDNSName}}"
-      groups   = ["system:bootstrappers", "system:nodes"]
-    },
-  ]
-}
 
