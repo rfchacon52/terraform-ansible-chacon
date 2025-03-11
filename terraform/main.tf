@@ -91,8 +91,8 @@ module "eks_blueprints_addons" {
   }
 
   # enable_cluster_proportional_autoscaler = true
-  # enable_kube_prometheus_stack           = true
- # enable_metrics_server                  = true
+  enable_kube_prometheus_stack           = true
+  enable_metrics_server                  = true
   #enable_external_dns                    = true
   #enable_cert_manager                    = true
  # cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
