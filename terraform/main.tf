@@ -53,6 +53,22 @@ module "eks" {
   # which will allow resources to be deployed into the cluster
   enable_cluster_creator_admin_permissions = true
 
+cluster_addons = {
+    kube-proxy         = { most_recent = true }
+    coredns            = { most_recent = true }
+    aws-ebs-csi-driver = { most_recent = true }
+    vpc-cni = {
+      most_recent    = true
+      before_compute = true
+      configuration_values = jsonencode({
+        env = {
+          ENABLE_PREFIX_DELEGATION = "true"
+          WARM_PREFIX_TARGET       = "1"
+        }
+      })
+    }
+  }
+
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
@@ -236,7 +252,6 @@ module "eks_blueprints_addons" {
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
 
-  enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
     chart_version = "1.6.0" # min version required to use SG for NLB feature
   }
