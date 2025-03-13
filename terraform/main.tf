@@ -57,17 +57,24 @@ cluster_addons = {
     kube-proxy         = { most_recent = true }
     coredns            = { most_recent = true }
     aws-ebs-csi-driver = { most_recent = true }
-    vpc-cni = {
-      most_recent    = true
+   
+  vpc-cni = {
       before_compute = true
+      most_recent    = true
       configuration_values = jsonencode({
         env = {
-          ENABLE_PREFIX_DELEGATION = "true"
-          WARM_PREFIX_TARGET       = "1"
+          ENABLE_POD_ENI                    = "true"
+          ENABLE_PREFIX_DELEGATION          = "true"
+          POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
         }
+        nodeAgent = {
+          enablePolicyEventLogs = "true"
+        }
+        enableNetworkPolicy = "true"
       })
     }
   }
+
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -252,6 +259,8 @@ module "eks_blueprints_addons" {
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
 
+  enable_kube_prometheus_stack           = true
+  enable_metrics_server                  = true
   aws_load_balancer_controller = {
     chart_version = "1.6.0" # min version required to use SG for NLB feature
   }
@@ -265,7 +274,7 @@ module "eks_blueprints_addons" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.0"
+  version = "~> 5.1"
 
   name = local.name
   cidr = local.vpc_cidr
@@ -276,6 +285,8 @@ module "vpc" {
 
   enable_nat_gateway = true
   single_nat_gateway = true
+  create_igw           = true
+  enable_dns_hostnames = true
 
   manage_default_network_acl    = true
   default_network_acl_tags      = { Name = "${local.name}-default" }
