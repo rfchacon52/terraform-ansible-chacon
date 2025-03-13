@@ -78,22 +78,37 @@ cluster_addons = {
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+create_cluster_security_group = false
+  create_node_security_group    = false
 
   eks_managed_node_groups = {
-    core_node_group = {
-      instance_types = ["t3.medium"]
-
-      ami_type = "BOTTLEROCKET_x86_64"
-      platform = "bottlerocket"
+    default = {
+      instance_types           = ["t3.medium"]
+      force_update_version     = true
+      release_version          = var.ami_release_version
+      use_name_prefix          = false
+      iam_role_name            = "${var.cluster_name}-ng-default"
+      iam_role_use_name_prefix = false
 
       min_size     = 1
       max_size     = 3
       desired_size = 2
+
+      update_config = {
+        max_unavailable_percentage = 50
+      }
+
+      labels = {
+        workshop-default = "yes"
+      }
     }
   }
 
-  tags = local.tags
+  tags = merge(local.tags, {
+    "karpenter.sh/discovery" = var.cluster_name
+  })
 }
+
 
 ################################################################################
 # EKS Blueprints Addons
