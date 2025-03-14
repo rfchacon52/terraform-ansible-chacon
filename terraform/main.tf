@@ -1,6 +1,3 @@
-provider "aws" {
-  region = local.region
-}
 
 provider "helm" {
   kubernetes {
@@ -24,11 +21,14 @@ data "aws_availability_zones" "available" {
   }
 }
 
+################################################################################
+# Locals 
+################################################################################
 locals {
-  name   = "EKS-blueprints" 
+  name   = var.cluster_name
   region = "us-east-1"
 
-  vpc_cidr = "10.0.0.0/16"
+  vpc_cidr = var.vpc_cidr
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   tags = {
@@ -46,41 +46,36 @@ module "eks" {
   version = "~> 20.11"
 
   cluster_name                   = local.name
-  cluster_version                = "1.30"
+  cluster_version                = var.cluster_version
   cluster_endpoint_public_access = true
 
   # Give the Terraform identity admin access to the cluster
   # which will allow resources to be deployed into the cluster
   enable_cluster_creator_admin_permissions = true
-
-cluster_addons = {
-    kube-proxy         = { most_recent = true }
-    coredns            = { most_recent = true }
-    aws-ebs-csi-driver = { most_recent = true }
-   
-  vpc-cni = {
-      before_compute = true
-      most_recent    = true
-      configuration_values = jsonencode({
-        env = {
-          ENABLE_POD_ENI                    = "true"
-          ENABLE_PREFIX_DELEGATION          = "true"
-          POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
-        }
-        nodeAgent = {
-          enablePolicyEventLogs = "true"
-        }
-        enableNetworkPolicy = "true"
-      })
-    }
-  }
-
-
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
-create_cluster_security_group = false
+  create_cluster_security_group = false
   create_node_security_group    = false
-
+  cluster_addons = {
+      vpc-cni = {
+      enabled = true
+    }
+    kube-proxy = {
+      enabled = true
+    }
+    coredns = {
+      enabled = true
+    }
+    aws-ebs-csi-driver = {
+      enabled = true,
+      irsa_roles = {
+        aws_ebs_csi_driver = {
+          namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+        }
+      }
+    }
+       
+  }
   eks_managed_node_groups = {
     default = {
       instance_types           = ["t3.medium"]
@@ -103,12 +98,7 @@ create_cluster_security_group = false
       }
     }
   }
-
-  tags = merge(local.tags, {
-    "karpenter.sh/discovery" = var.cluster_name
-  })
 }
-
 
 ################################################################################
 # EKS Blueprints Addons
@@ -159,7 +149,7 @@ module "ingres_nginx_external" {
     values = [
       <<-EOT
           controller:
-            replicaCount: 3
+            replicaCount: 1
             service:
               annotations:
                 service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
@@ -180,7 +170,7 @@ module "ingres_nginx_external" {
                 labelSelector:
                   matchLabels:
                     app.kubernetes.io/instance: ingress-nginx-external
-            minAvailable: 2
+            minAvailable: 1
             ingressClassResource:
               name: ingress-nginx-external
               default: false
@@ -235,7 +225,7 @@ module "ingres_nginx_internal" {
     values = [
       <<-EOT
           controller:
-            replicaCount: 3
+            replicaCount: 1 
             service:
               annotations:
                 service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
@@ -256,7 +246,7 @@ module "ingres_nginx_internal" {
                 labelSelector:
                   matchLabels:
                     app.kubernetes.io/instance: ingress-nginx-internal
-            minAvailable: 2
+            minAvailable: 1
             ingressClassResource:
               name: ingress-nginx-internal
               default: false

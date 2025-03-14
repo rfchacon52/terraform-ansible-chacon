@@ -3,27 +3,27 @@
 ###################################################
 
 terraform {
-
-required_version = ">= 1.5.0"
-
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "5.83.1"
+      version =  "~> 5.0"
     }
    kubernetes = {
       source = "hashicorp/kubernetes"
-      version = "2.27.0"
+      version = "~> 2.0"
     }
   kubectl = {
       source  = "gavinbunney/kubectl"
-      version = "1.14.0"
+      version = "~> 2.0" 
     }
   helm = {
       source  = "hashicorp/helm"
-      version = "2.17.0"
+      version = "~> 2.0" 
     }
-
+    aws-load-balancer-controller = {
+      source = "terraform-aws-modules/eks/aws//modules/aws-load-balancer-controller"
+      version = "~> 1.0"
+    }
   }
 
 ###################################################
@@ -38,7 +38,6 @@ required_version = ">= 1.5.0"
   }
 
 }
-
 
 provider "aws" {
   region = "us-east-1"
