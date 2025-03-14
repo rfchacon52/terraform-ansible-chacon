@@ -269,7 +269,6 @@ module "eks_blueprints_addons" {
   aws_load_balancer_controller = {
     chart_version = "1.6.0" # min version required to use SG for NLB feature
   }
-
   tags = local.tags
 }
 
