@@ -9,19 +9,19 @@ required_version = ">= 1.5.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "5.83.1"
+      version = "5.91.0"
     }
    kubernetes = {
       source = "hashicorp/kubernetes"
-      version = "2.27.0"
+      version = "2.36.0"
     }
   kubectl = {
       source  = "gavinbunney/kubectl"
-      version = "1.14.0"
+      version = "1.19.0"
     }
   helm = {
       source  = "hashicorp/helm"
-      version = "2.17.0"
+      version = "3.0.0-pre2"
     }
 
   }
@@ -34,7 +34,7 @@ required_version = ">= 1.5.0"
     bucket         = "chacon-backend"
     key            = "terraform/state"
     region         = "us-east-1"
-    dynamodb_table = "terraform-lock-table"
+    use_lockfile   = true
   }
 
 }
