@@ -10,10 +10,36 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  cluster_compute_config = {
-    enabled    = true
-    node_pools = ["general-purpose"]
+
+  eks_addons = {
+    aws-ebs-csi-driver = {
+      most_recent = true
+    }
+    coredns = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
   }
+
+
+  eks_managed_node_groups = {
+    standard_nodes = {
+      desired_size = 2
+      min_size     = 1
+      max_size     = 3
+
+      instance_types = ["t3.medium"]
+    }
+  }
+
+  enable_irsa = true
+
+   
 
 
 
