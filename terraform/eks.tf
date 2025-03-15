@@ -27,8 +27,8 @@ module "eks_blueprints_addons" {
 #  enable_karpenter                       = true
   enable_kube_prometheus_stack           = true
   enable_metrics_server                  = true
-  enable_external_dns                    = true
-  enable_cert_manager                    = true
+#  enable_external_dns                    = true
+#  enable_cert_manager                    = true
   cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
 
   tags = {
@@ -43,7 +43,11 @@ module "eks" {
 
   cluster_name                   = var.cluster_name 
   cluster_version                = var.cluster_version 
-  cluster_endpoint_public_access = true
+  cluster_endpoint_private_access = true
+  cluster_endpoint_public_access  = true
+  enable_cluster_creator_admin_permissions = true
+  authentication_mode = "API_AND_CONFIG_MAP"
+  enable_irsa = true
 
 
   vpc_id     = module.vpc.vpc_id
