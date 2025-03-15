@@ -9,22 +9,24 @@ required_version = ">= 1.5.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "5.91.0"
+      version = "5.83.1"
     }
    kubernetes = {
       source = "hashicorp/kubernetes"
-      version = "2.36.0"
+      version = "2.27.0"
     }
   kubectl = {
       source  = "gavinbunney/kubectl"
-      version = "1.19.0"
+      version = "1.14.0"
     }
   helm = {
       source  = "hashicorp/helm"
-      version = "3.0.0-pre2"
+      version = "2.17.0"
     }
 
   }
+
+
 
 ###################################################
 # State file 
