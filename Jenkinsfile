@@ -97,6 +97,13 @@ parameters {
                 echo "Deploying EKS Apps"           
                 kubectl apply -f hello-kubernetes.yaml
                 kubectl apply -f service-loadbalancer.yaml 
+                echo "Deploying prometheus-community chart"
+                kubectl create namespace prometheus
+                helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+                helm upgrade -i prometheus prometheus-community/prometheus \
+                --namespace prometheus \
+                --set alertmanager.persistence.storageClass="gp2" \
+                --set server.persistentVolume.storageClass="gp2"
                 sh '''
             }
         }
