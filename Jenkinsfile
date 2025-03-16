@@ -132,7 +132,7 @@ parameters {
                 terraform fmt -recursive
                 echo "Running terraform validate"
                 terraform validate -no-color
-                terraform refresh -no-color
+                # terraform refresh -no-color
                 terraform apply -auto-approve -no-color
                 sh '''
             }
