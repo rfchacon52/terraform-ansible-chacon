@@ -48,8 +48,6 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
   authentication_mode = "API_AND_CONFIG_MAP"
   enable_irsa = true
-  create_kms_key              = false
-  create_cloudwatch_log_group = false
 
 
   vpc_id     = module.vpc.vpc_id
