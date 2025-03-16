@@ -22,7 +22,7 @@ module "eks_blueprints_addons" {
     }
   }
 
-#  enable_aws_load_balancer_controller    = true
+  enable_aws_load_balancer_controller    = true
 #  enable_cluster_proportional_autoscaler = true
 #  enable_karpenter                       = true
   enable_kube_prometheus_stack           = true
@@ -48,6 +48,8 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
   authentication_mode = "API_AND_CONFIG_MAP"
   enable_irsa = true
+  create_kms_key              = false
+  create_cloudwatch_log_group = false
 
 
   vpc_id     = module.vpc.vpc_id
@@ -59,8 +61,8 @@ module "eks" {
       desired_size = 2
       min_size     = 1
       max_size     = 5
-
-      instance_types = ["t3.medium"]
+      ami_type       = "AL2_x86_64"
+      instance_types = ["t2.medium"]
     }
   }
 
