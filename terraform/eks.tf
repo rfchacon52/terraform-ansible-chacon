@@ -58,7 +58,7 @@ module "eks" {
     standard_nodes = {
       desired_size = 2
       min_size     = 1
-      max_size     = 3
+      max_size     = 5
 
       instance_types = ["t3.medium"]
     }
