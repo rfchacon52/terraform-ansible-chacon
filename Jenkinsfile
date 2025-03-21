@@ -17,8 +17,8 @@ parameters {
   TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
   TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
   KUBE_CONFIG_PATH      = '~/.kube/config'
-  JAVA_HOME             = /usr/lib/jvm/java-17-openjdk-17.0.14.0.7-2.el9.x86_64/
-  MAVEN_HOME            = /usr/share/maven 
+  JAVA_HOME             = '/usr/lib/jvm/java-17-openjdk-17.0.14.0.7-2.el9.x86_64/'
+  MAVEN_HOME            = '/usr/share/maven' 
     }    
     options {
         // This is required if you want to clean before build
