@@ -61,6 +61,37 @@ parameters {
             }
         }
 
+        stage('Run Maven build') {
+           when {
+             expression { params.CHOICE == "Build_Deploy_K8" }  
+           }
+             steps {
+                sh '''
+                echo "Running Maven build step"
+                cd project
+                mvn clean package
+                sh '''
+                  }
+             }
+
+        stage('Build and Push Docker image') {
+           when {
+             expression { params.CHOICE == "Build_Deploy_K8" }  
+           }
+             steps {
+                cd project
+                script {
+                    withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_TOKEN')]) {
+                        sh '''
+                            docker login -u "rfchacon717" -p "$DOCKER_TOKEN"
+                            docker build -t chacon-image:latest .
+                            docker push chacon-image:latest
+                        '''
+                    } 
+               
+                  }
+             }
+
         stage('TerraForm build/deploy K8 Infra') {
            when {
              expression { params.CHOICE == "Build_Deploy_K8" }  
