@@ -85,7 +85,7 @@ parameters {
                             cd project
                             echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
                             docker build -t chacon-image:latest .
-                            docker push chacon-image:latest
+                            docker push rfchacon717/chacon-image:latest
                         '''
                       }
                     } 
