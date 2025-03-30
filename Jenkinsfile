@@ -79,7 +79,7 @@ parameters {
              expression { params.CHOICE == "Build_Deploy_K8" }  
            }
              steps {
-                cd project
+                sh 'cd project'
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_TOKEN')]) {
                         sh '''
