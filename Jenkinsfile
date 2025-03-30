@@ -87,6 +87,7 @@ parameters {
                             docker build -t chacon-image:latest .
                             docker push chacon-image:latest
                         '''
+                      }
                     } 
                
                   }
