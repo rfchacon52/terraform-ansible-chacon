@@ -83,7 +83,7 @@ parameters {
                     withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_TOKEN')]) {
                         sh '''
                             cd project
-                            docker login -u "rfchacon717" -p "$DOCKER_TOKEN"
+                            echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
                             docker build -t chacon-image:latest .
                             docker push chacon-image:latest
                         '''
