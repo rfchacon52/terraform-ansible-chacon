@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: chacon-deployment
 spec:
-  replicas: 3 # Number of pod replicas
+  replicas: 2 # Number of pod replicas
   selector:
     matchLabels:
       app: chacon-app
