@@ -79,10 +79,10 @@ parameters {
              expression { params.CHOICE == "Build_Deploy_K8" }  
            }
              steps {
-                sh 'cd project'
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_TOKEN')]) {
                         sh '''
+                            cd project
                             docker login -u "rfchacon717" -p "$DOCKER_TOKEN"
                             docker build -t chacon-image:latest .
                             docker push chacon-image:latest
