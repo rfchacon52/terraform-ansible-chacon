@@ -127,8 +127,8 @@ parameters {
                 aws eks update-kubeconfig --region us-east-1 --name EKS-blueprints 
                 cd apps_deploy
                 echo "Deploying EKS Apps"           
-                # kubectl apply -f hello-kubernetes.yaml
-                # kubectl apply -f service-loadbalancer.yaml
+                kubectl apply -f hello-kubernetes.yaml
+                kubectl apply -f service-loadbalancer.yaml
                 kubectl apply -f chacon.yaml  
                 kubectl apply -f chacon-service-loadbalancer.yaml 
                 echo "Executing Get all pods"
