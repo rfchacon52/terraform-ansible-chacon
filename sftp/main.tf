@@ -59,7 +59,8 @@ resource "aws_iam_policy" "sftp_user_policy" {
           "s3:DeleteObjectVersion",
           "s3:GetObjectVersion",
           "s3:GetObjectACL",
-          "s3:PutObjectACL"
+          "s3:PutObjectACL",
+          "s3.PutBucketAcl"
         ]
         Resource = [
           "${aws_s3_bucket.chacon-sftp-home-bucket.arn}/sftp-user-home/*"
