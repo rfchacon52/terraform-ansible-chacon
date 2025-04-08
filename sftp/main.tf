@@ -37,8 +37,8 @@ resource "aws_iam_policy" "sftp_user_policy" {
           "s3:ListBucket"
         ]
         Resource = [
-          aws_s3_bucket.sftp_home_bucket.arn,
-          "${aws_s3_bucket.sftp_home_bucket.arn}/sftp-user-home/*" # Optional: Allow listing within the home directory
+          aws_s3_bucket.sftp-home-bucket.arn,
+          "${aws_s3_bucket.sftp-home-bucket.arn}/sftp-user-home/*" # Optional: Allow listing within the home directory
         ]
         Condition = {
           StringLike = {
@@ -62,7 +62,7 @@ resource "aws_iam_policy" "sftp_user_policy" {
           "s3:PutObjectACL"
         ]
         Resource = [
-          "${aws_s3_bucket.sftp_home_bucket.arn}/sftp-user-home/*"
+          "${aws_s3_bucket.sftp-home-bucket.arn}/sftp-user-home/*"
         ]
       }
     ]
@@ -98,7 +98,7 @@ resource "aws_transfer_user" "sftp_user" {
   server_id = aws_transfer_server.sftp_server.id
   user_name = "sftpuser" # Choose your desired username
   role      = aws_iam_role.sftp_user_role.arn
-  home_directory = "/${aws_s3_bucket.sftp_home_bucket.bucket}/sftp-user-home"
+  home_directory = "/${aws_s3_bucket.sftp-home-bucket.bucket}/sftp-user-home"
   policy         = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -106,7 +106,7 @@ resource "aws_transfer_user" "sftp_user" {
         Sid = "AllowAccessToHomeDir"
         Effect = "Allow"
         Action = "s3:ListBucket"
-        Resource = aws_s3_bucket.sftp_home_bucket.arn
+        Resource = aws_s3_bucket.sftp-home-bucket.arn
         Condition = {
           StringLike = {
             "s3:prefix" = ["sftp-user-home/"]
