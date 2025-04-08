@@ -6,12 +6,12 @@
 resource "aws_s3_bucket" "chacon-sftp-home-bucket"  {
   bucket = "chacon-sftp-home-bucket" 
   }
-
+/*
 resource "aws_s3_bucket_acl" "chacon-sftp-home-bucket" {
   bucket = aws_s3_bucket.chacon-sftp-home-bucket.id
   acl    = "private"
 }
-
+*/
 resource "aws_s3_bucket_versioning" "versioning-chacon-sftp-home-bucket" {
   bucket = aws_s3_bucket.chacon-sftp-home-bucket.id
   versioning_configuration {
