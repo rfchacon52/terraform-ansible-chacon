@@ -3,13 +3,14 @@ pipeline {
 agent any
 
 parameters {
-  choice choices: ['Build_Deploy_ASG', 'Build_Deploy_K8', 'Destroy_ASG', 'Destroy_K8', 'Fix_state'], description: '''Select [  Build_Deploy_EC2 to build EC2
+  choice choices: ['Build_Deploy_ASG', 'Build_Deploy_K8', 'Destroy_ASG', 'Destroy_K8', 'Destroy_SFTP', 'Deploy_SFTP'], description: '''Select [ 
                
                1. Build_Deploy_ASG
                2. Build_Deploy_K8 to build full EKS 
                3. Destroy_ASG to destroy ASG 
                4. Destroy_K8 to destroy EKS
-               Fix_state to run state commands  ]''', name: 'CHOICE'
+               5. Destroy_SFTP
+               5. Deploy_SFTP  ]''', name: 'CHOICE'
 }
  
  
@@ -154,25 +155,47 @@ parameters {
             }
         }
 
-        stage('Terraform Fix State file') {
+        stage('Terraform Deploy SFTP') {
            when {
-             expression { params.CHOICE == "Fix_state" }  
+             expression { params.CHOICE == "Deploy_SFTP" }  
            }
             steps {
                 sh '''
-                export KUBE_CONFIG_PATH=~/.kube/config
-                cd terraformk8
+                cd sftp 
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
                 terraform fmt -recursive
                 echo "Running terraform validate"
                 terraform validate -no-color
-                # terraform refresh -no-color
-                terraform apply -auto-approve -no-color
+                echo "Executing terraform plan"                 
+                terraform plan -out=tfplan -no-color
+                echo "Executing terraform apply"                 
+                terraform apply tfplan -no-color
                 sh '''
             }
         }
+
+
+        stage('Terraform Destroy SFTP') {
+           when {
+             expression { params.CHOICE == "Destroy_SFTP" }  
+           }
+            steps {
+                sh '''
+                cd sftp 
+                echo "Running terraform init"
+                terraform init -no-color
+                echo "Running terraform fmt -recursive"
+                terraform fmt -recursive
+                echo "Running terraform validate"
+                terraform validate -no-color
+                echo "Executing Terraform Destroy"
+                terraform apply -destroy -auto-approve -no-color
+                sh '''
+            }
+        }
+
 
         stage('Terraform ASG Destroy') {
            when {
