@@ -3,8 +3,8 @@
 # IAM Role and Policy for SFTP User Access to Home Directory
 # -----------------------------------------------------------------------------
 
-resource "aws_iam_role" "sftp_user_role" {
-  name = "SFTPUserRole"
+resource "aws_iam_role" "sftp_role" {
+  name = "ChaconSFTPUserRole"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -19,23 +19,31 @@ resource "aws_iam_role" "sftp_user_role" {
   })
 
   tags = {
-    Name        = "SFTPUserRole"
+    Name        = "ChaconSFTPUserRole"
     Environment = "Dev"
   }
 }
 
-resource "aws_iam_policy" "sftp_user_policy" {
-  name        = "SFTPUserPolicy"
+resource "aws_iam_policy" "sftp_policy" {
+  name        = "ChaconSFTPUserPolicy"
   description = "Policy allowing SFTP user access to their home directory"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid = "AllowListBucket"
-        Effect = "Allow"
+         "Sid": "AllowFullAccesstoCloudWatchLogs",
+        "Effect": "Allow",
+        "Action": [
+            "logs:*"
+        ],
+        "Resource": "*"
+        },
+
+        { Effect = "Allow"
         Action = [
-          "s3:ListBucket"
-        ]
+          "s3:ListBucket",
+          "s3:GetBucketLocation"
+        ],
         Resource = [
           aws_s3_bucket.chacon-sftp-home-bucket.arn,
           "${aws_s3_bucket.chacon-sftp-home-bucket.arn}/sftp-user-home/*" # Optional: Allow listing within the home directory
@@ -83,11 +91,17 @@ resource "aws_iam_role_policy_attachment" "sftp_user_policy_attachment" {
 # -----------------------------------------------------------------------------
 # AWS Transfer Family SFTP Server
 # -----------------------------------------------------------------------------
-
+resource "aws_cloudwatch_log_group" "transfer" {
+  name_prefix = "transfer_test_"
+}
 
 resource "aws_transfer_server" "sftp_server" {
   endpoint_type = "PUBLIC"
+  logging_role  = aws_iam_role.sftp_role.arn
   protocols     = ["SFTP"]
+  structured_log_destinations = [
+    "${aws_cloudwatch_log_group.transfer.arn}:*"
+  ]
 }
 
 
