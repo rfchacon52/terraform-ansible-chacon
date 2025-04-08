@@ -3,14 +3,13 @@ pipeline {
 agent any
 
 parameters {
-  choice choices: ['Build_Deploy_ASG', 'Build_Deploy_K8', 'Destroy_ASG', 'Destroy_K8', 'Destroy_SFTP', 'Deploy_SFTP'], description: '''Select [ 
-               
+  choice choices: ['Build_Deploy_ASG', 'Build_Deploy_K8', 'Destroy_ASG', 'Destroy_K8', 'Destroy_SFTP', 'Deploy_SFTP'], description: '''Select:  
                1. Build_Deploy_ASG
                2. Build_Deploy_K8 to build full EKS 
                3. Destroy_ASG to destroy ASG 
                4. Destroy_K8 to destroy EKS
                5. Destroy_SFTP
-               5. Deploy_SFTP  ]''', name: 'CHOICE'
+               6. Deploy_SFTP  ''', name: 'CHOICE'
 }
  
  
