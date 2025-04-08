@@ -84,8 +84,8 @@ resource "aws_iam_policy" "sftp_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "sftp_user_policy_attachment" {
-  role       = aws_iam_role.sftp_user_role.name
-  policy_arn = aws_iam_policy.sftp_user_policy.arn
+  role       = aws_iam_role.sftp_role.name
+  policy_arn = aws_iam_policy.sftp_policy.arn
 }
 
 # -----------------------------------------------------------------------------
@@ -112,7 +112,7 @@ resource "aws_transfer_server" "sftp_server" {
 resource "aws_transfer_user" "sftp_user" {
   server_id = aws_transfer_server.sftp_server.id
   user_name = "sftpuser" # Choose your desired username
-  role      = aws_iam_role.sftp_user_role.arn
+  role      = aws_iam_role.sftp_role.arn
   home_directory = "/${aws_s3_bucket.chacon-sftp-home-bucket.bucket}/sftp-user-home"
   policy         = jsonencode({
     Version = "2012-10-17"
