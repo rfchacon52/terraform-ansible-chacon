@@ -13,7 +13,8 @@ variable "sftp_host_private_key" {
   type      = string
   sensitive = true 
   
-default = "-----BEGIN RSA PRIVATE KEY-----
+default = <<EOF
+-----BEGIN RSA PRIVATE KEY-----
 MIIEogIBAAKCAQEAuUKFa0H4JbxEVSFvh/cGFApQk+hGl0o63rnyZwIfHKw5vIg7
 f/+JGxrFx1CKtY0MOrTVTt0og/M7E23JYHlrhIKYaf7W9fpIg2E4MQuTTtelU0Rz
 03+FtGXCYxdnQAlIlp1J2X3lac8z68HwXRk8VMXKHeHIaPSBYHtBU+0nuwzJP66p
@@ -39,7 +40,8 @@ RGGb5MnJO/xZe0xyeFFXuiWLojTbcsFrIsKHqAdxoxJjdEiAiv0vapjmWnPjXw7x
 8vaLAoGAFj2/WPTcCDa3uFh9v+euKL/ixMACdw2XZkYQA5m5DwopHvKWs0U3eUx6
 1UnI+cSGrLceN63NEj+YipAzD4tUwA07IDtZZhxMQ1I65iW2unyke8DeDL9pa8dz
 O2sc7WF5rEtrQJTxox11BQtGfGw1XPQSKObuKIK6+oBNFBkZ+aI=
------END RSA PRIVATE KEY-----"                      
+-----END RSA PRIVATE KEY----- 
+EOF                     
 }
 
 
