@@ -72,16 +72,6 @@ resource "aws_iam_role_policy_attachment" "transfer_role_policy_attachment" {
 }
 
 
-# Create an SSH key pair (private key will be stored locally by Terraform)
-resource "aws_key_pair" "transfer_key" {
-  key_name   = "transfer-server-key"
-  public_key = file("~/.ssh/id_rsa.pub") # Replace with your actual public key path
-
-  tags = {
-    Environment = "dev"
-  }
-}
-
 resource "aws_transfer_server" "transfer_server" {
   identity_provider_type = "SERVICE_MANAGED" # Or "API_GATEWAY", "AWS_DIRECTORY_SERVICE"
   protocols = ["SFTP"] # Add other protocols as needed: "FTP", "FTPS"
@@ -104,3 +94,9 @@ resource "aws_transfer_user" "transfer_user" {
     Environment = "dev"
   }
 }
+#Generate SSH key 
+resource "aws_transfer_ssh_key" "ssh_key" {
+  server_id = aws_transfer_server.transfer_server.id
+  user_name = aws_transfer_user.transfer_user.user_name
+  body = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDI81EOwYm7z2fiXrEFWeCDU16V2g3MbJFt35DhntyeQEIpuExmYxwdZ1i3rbldDb6Y7zbKlTMj25WwOFCz+kHQlKCtqggGKMxG2qgg+CjG5CPReYA3T8gRAsaGnM+xwlLwjPVY+edKuRzZpFdAPe44Kj3cuwKguVH/MqtvcSfbZBo8BAChm3P2koYXW01kWCIbfy778T0ADzCSGzqC5UwEmhZ6oHN6QXzDDqWSDTWDYgBagGd/8vgDtr9BaDUlFw8YJ9Q21bMIuCzFOef5aac1Vr0copa3zolVvznt86YzAi9LKCACSfVRRzRrS3VOSAS8I0QOynE7VsxlhqT0p2Sn" 
+  }
