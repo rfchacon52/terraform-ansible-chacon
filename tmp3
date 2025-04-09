@@ -1,0 +1,168 @@
+# Create a VPC
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name        = "transfer-vpc"
+    Environment = "dev"
+  }
+}
+
+# Create a public subnet
+resource "aws_subnet" "public_subnet" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.1.0/24"
+  availability_zone = "us-west-2a" # Choose an appropriate AZ
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name        = "transfer-public-subnet"
+    Environment = "dev"
+  }
+}
+
+# Create an internet gateway
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name        = "transfer-igw"
+    Environment = "dev"
+  }
+}
+
+# Create a route table for the public subnet
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.gw.id
+  }
+
+  tags = {
+    Name        = "transfer-public-rt"
+    Environment = "dev"
+  }
+}
+
+# Associate the public subnet with the public route table
+resource "aws_route_table_association" "public_assoc" {
+  subnet_id      = aws_subnet.public_subnet.id
+  route_table_id = aws_route_table.public_rt.id
+}
+
+# Create an S3 bucket
+resource "aws_s3_bucket" "transfer_bucket" {
+  bucket = "your-unique-transfer-bucket-name" # Replace with a unique bucket name
+  acl    = "private"
+
+  tags = {
+    Name        = "transfer-bucket"
+    Environment = "dev"
+  }
+}
+
+# Create an IAM role for the Transfer Server
+resource "aws_iam_role" "transfer_role" {
+  name = "transfer-server-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "transfer.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      },
+    ]
+  })
+
+  tags = {
+    Name        = "transfer-role"
+    Environment = "dev"
+  }
+}
+
+# Create an IAM policy for the Transfer Server to access S3
+resource "aws_iam_policy" "transfer_policy" {
+  name        = "transfer-server-policy"
+  description = "Policy for AWS Transfer Server to access S3 bucket"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = [
+          "s3:ListBucket",
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ]
+        Resource = [
+          aws_s3_bucket.transfer_bucket.arn,
+          "${aws_s3_bucket.transfer_bucket.arn}/*"
+        ]
+      },
+    ]
+  })
+
+  tags = {
+    Name        = "transfer-policy"
+    Environment = "dev"
+  }
+}
+
+# Attach the IAM policy to the IAM role
+resource "aws_iam_role_policy_attachment" "transfer_role_policy_attachment" {
+  role       = aws_iam_role.transfer_role.name
+  policy_arn = aws_iam_policy.transfer_policy.arn
+}
+
+# Create an SSH key pair (AWS Managed)
+resource "aws_key_pair" "transfer_key" {
+  key_name   = "transfer-server-key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3eFCS... your public key content ... user@host" # Replace with your actual public key
+
+  tags = {
+    Name        = "transfer-key"
+    Environment = "dev"
+  }
+}
+
+# Create the AWS Transfer Server
+resource "aws_transfer_server" "transfer_server" {
+  identity_provider_type = "SERVICE_MANAGED" # Or "API_GATEWAY", "AWS_DIRECTORY_SERVICE"
+  protocols              = ["SFTP"]         # Add other protocols as needed: "FTP", "FTPS"
+  domain                 = "S3"             # Specify S3 as the backing storage
+  role                   = aws_iam_role.transfer_role.arn
+
+  vpc_endpoint_ids = [aws_vpc.main.id] # Attach to the VPC (this creates a VPC-scoped server)
+  subnet_ids       = [aws_subnet.public_subnet.id] # Associate with the public subnet
+  security_group_ids = [] # Add security group IDs if needed
+
+  tags = {
+    Name        = "transfer-server"
+    Environment = "dev"
+  }
+}
+
+# Create a Transfer Server User with SSH key authentication
+resource "aws_transfer_user" "transfer_user" {
+  server_id = aws_transfer_server.transfer_server.id
+  user_name = "transferuser" # Choose a username
+  role      = aws_iam_role.transfer_role.arn
+  home_directory = "/" # Or a specific path within the S3 bucket
+
+  ssh_public_keys {
+    public_key_body = aws_key_pair.transfer_key.public_key
+  }
+
+  tags = {
+    Name        = "transfer-user"
+    Environment = "dev"
+  }
+}
