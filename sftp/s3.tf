@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 
 resource "aws_s3_bucket" "transfer_bucket"  {
-  bucket = "transfer_server_bucket_${random_string.suffix.result}" # Corrected.  Nested inside main.
+  bucket_prefix = "chacon_app"
     tags = {
     Name        = "chacon_sftp_transfer_bucket"
     Environment = "dev"
