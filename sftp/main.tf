@@ -60,7 +60,7 @@ resource "aws_iam_policy" "transfer_user_policy" {
           "s3:PutObjectACL",
           "s3:GetObject"
         ]
-        Resource = "${aws_s3_bucket.main_bucket.arn}/${aws_iam_user.transfer_user.name}/*" # important
+        Resource = "${aws_s3_bucket.transfer_bucket.arn}/${aws_iam_user.transfer_user.name}/*" # important
       },
        {
         Effect = "Allow",
