@@ -27,7 +27,6 @@ resource "aws_iam_policy" "transfer_user_policy" {
       {
         Effect   = "Allow"
         Action   = ["s3:ListBucket"]
-        Resource = aws_s3_bucket.main_bucket.arn # Use the main bucket
         Condition = {
           StringEquals = {
             "s3:Prefix" = ["${aws_iam_user.transfer_user.name}/"] # Important:  Trailing slash
