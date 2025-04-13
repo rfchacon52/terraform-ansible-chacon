@@ -12,10 +12,9 @@ resource "aws_key_pair" "transfer_key_pair" {
 
 # Generate a random suffix for bucket names
 resource "random_string" "suffix" {
-  length = 8
+  length = 16 
   special = false
   upper = false
-  special = false
 }
 
 # IAM policy for the Transfer user to access S3
