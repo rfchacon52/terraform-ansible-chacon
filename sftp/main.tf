@@ -15,6 +15,7 @@ resource "random_string" "suffix" {
   length = 8
   special = false
   upper = false
+  special = false
 }
 
 # IAM policy for the Transfer user to access S3
