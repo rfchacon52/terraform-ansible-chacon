@@ -60,7 +60,7 @@ resource "aws_iam_policy" "transfer_user_policy" {
           "s3:PutObjectACL",
           "s3:GetObject"
         ]
-        Resource = "${aws_s3_bucket.transfer_bucket.arn}/${aws_iam_user.transfer_user.name}/*" # important
+        Resource = "${aws_s3_bucket.transfer-bucket.arn}/*" # important
       },
        {
         Effect = "Allow",
@@ -83,7 +83,7 @@ resource "aws_iam_user_policy_attachment" "transfer_user_policy_attachment" {
 }
 
 # Create the AWS Transfer Server
-resource "aws_transfer_server" "transfer_server" {
+resource "aws_transfer_server" "transfer-server" {
   identity_provider_type = "SERVICE_MANAGED" # Or "API_GATEWAY"
   domain                 = "S3" #optional, defaults to S3
   protocols              = ["SFTP"] 
@@ -119,14 +119,14 @@ resource "aws_iam_role_policy_attachment" "transfer_user_role_policy_attachment"
 
 # Create the Transfer user's SSH key configuration
 resource "aws_transfer_ssh_key" "transfer_user_key" {
-  server_id = aws_transfer_server.transfer_server.id
+  server_id = aws_transfer_server.transferr-server.id
   user_name = aws_transfer_user.transfer_user.user_name
   body      = tls_private_key.transfer_key.public_key_openssh
 }
 
 # Create the Transfer user
 resource "aws_transfer_user" "transfer_user" {
-  server_id = aws_transfer_server.transfer_server.id
+  server_id = aws_transfer_server.transfer-server.id
   user_name = "sftp-user"
   home_directory = "/transfer-server-main-bucket-${random_string.suffix.result}/transfer-user" # Use the bucket name
   role           = aws_iam_role.transfer_user_role.arn
