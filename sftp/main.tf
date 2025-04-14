@@ -119,7 +119,7 @@ resource "aws_iam_role_policy_attachment" "transfer_user_role_policy_attachment"
 
 # Create the Transfer user's SSH key configuration
 resource "aws_transfer_ssh_key" "transfer_user_key" {
-  server_id = aws_transfer_server.transferr-server.id
+  server_id = aws_transfer_server.transfer-server.id
   user_name = aws_transfer_user.transfer_user.user_name
   body      = tls_private_key.transfer_key.public_key_openssh
 }
