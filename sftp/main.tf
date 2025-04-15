@@ -1,3 +1,22 @@
+# Create the IAM role for the Transfer user
+resource "aws_iam_role" "transfer_user_role" {
+  name = "transfer_user_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "transfer.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+
 # Generate an SSH key pair
 resource "tls_private_key" "transfer_key" {
   algorithm = "RSA"
@@ -25,8 +44,11 @@ resource "aws_iam_policy" "transfer_user_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
-        Action   = ["s3:ListBucket"]
+        Effect   = "Allow",
+        Action   = [
+          "s3:GetObject",
+          "s3:ListBucket"
+      ]
         Condition = {
           StringEquals = {
             "s3:Prefix" = ["${aws_iam_user.transfer_user.name}/"] # Important:  Trailing slash
@@ -93,23 +115,6 @@ resource "aws_transfer_server" "transfer-server" {
   }
 }
 
-# Create the IAM role for the Transfer user
-resource "aws_iam_role" "transfer_user_role" {
-  name = "transfer_user_role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          Service = "transfer.amazonaws.com"
-        }
-        Action = "sts:AssumeRole"
-      }
-    ]
-  })
-}
 
 # Attach the policy to the role
 resource "aws_iam_role_policy_attachment" "transfer_user_role_policy_attachment" {
@@ -130,6 +135,6 @@ resource "aws_transfer_user" "transfer_user" {
   user_name = "sftp-user"
   home_directory = "/transfer-server-main-bucket-${random_string.suffix.result}/transfer-user" # Use the bucket name
   role           = aws_iam_role.transfer_user_role.arn
-  #  ssh_key_body = tls_private_key.transfer_key.public_key_openssh # moved to aws_transfer_ssh_key resource
+  ssh_key_body = tls_private_key.transfer_key.public_key_openssh # moved to aws_transfer_ssh_key resource
 }
 
