@@ -135,6 +135,6 @@ resource "aws_transfer_user" "transfer_user" {
   user_name = "sftp-user"
   home_directory = "/transfer-server-main-bucket-${random_string.suffix.result}/transfer-user" # Use the bucket name
   role           = aws_iam_role.transfer_user_role.arn
-  ssh_key_body = tls_private_key.transfer_key.public_key_openssh # moved to aws_transfer_ssh_key resource
+#  ssh_key_body = tls_private_key.transfer_key.public_key_openssh # moved to aws_transfer_ssh_key resource
 }
 
