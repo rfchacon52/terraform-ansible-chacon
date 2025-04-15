@@ -48,13 +48,9 @@ resource "aws_iam_policy" "transfer_user_policy" {
         Action   = [
           "s3:GetObject",
           "s3:ListBucket"
-      ]
-        Condition = {
-          StringEquals = {
-            "s3:Prefix" = ["${aws_iam_user.transfer_user.name}/"] # Important:  Trailing slash
-          }
-        }
-      },
+      ],
+        Resource = "${aws_s3_bucket.transfer-bucket.arn}/*" # important
+      }, 
      {
       Effect = "Allow",
       Action = [
