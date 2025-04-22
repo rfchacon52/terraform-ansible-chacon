@@ -55,7 +55,7 @@ resource "aws_security_group" "terramino_instance" {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    security_groups = [aws_security_group.terramino_lb.id]
+#    security_groups = [aws_security_group.terramino_lb.id]
   }
 
   egress {
