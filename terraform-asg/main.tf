@@ -1,17 +1,4 @@
 ##############################
-# Load Balancer
-##############################
-resource "aws_lb" "app-lb" {
-    name = "app-lb"
-    load_balancer_type = "application"
-    internal = false
-    security_groups = [aws_security_group.alb-sg.id]
-#    count  = length(module.vpc.public_subnets)
-   subnets =  [module.vpc.public_subnets[0], module.vpc.public_subnets[1]]
-#    subnets =  module.vpc.public_subnets[count.index] 
-}
-  
-##############################
 # Target Group for ALB
 ##############################
 resource "aws_lb_target_group" "alb-ec2-tg" {
@@ -20,8 +7,18 @@ resource "aws_lb_target_group" "alb-ec2-tg" {
     protocol = "HTTP"
     vpc_id   = module.vpc.vpc_id
     tags = {
-        Name = "ws-launch-template"
-     }
+        Name = "aws-launch-template"
+   }
+}
+##############################
+# Load Balancer
+##############################
+resource "aws_lb" "app-lb" {
+    name = "app-lb"
+    load_balancer_type = "application"
+    internal = false
+    security_groups = [aws_security_group.alb-sg.id]
+    subnets =  module.vpc.public_subnets
 }
 
 ##############################
@@ -35,98 +32,68 @@ resource "aws_lb_listener" "alb-listener" {
     type = "forward"
     target_group_arn = aws_lb_target_group.alb-ec2-tg.arn
     }
-  tags = {
-        Name = "ws-launch-template"
-    }
 }
  
 ##############################
-# Launch Template
+# Launch Templataws_launch_configuration"e
 ##############################
-resource "aws_launch_template" "ec2-launch-template" {
-    name = "ws-launch-template"
+resource "aws_launch_configuration" "ec2-launch-config" {
+    name_prefix = "learn-terraform-aws-asg-"
     image_id  = "ami-0c7af5fe939f2677f"
     instance_type = "t2.micro"
     key_name   = "deployer.key"
     user_data = filebase64("user-data.sh")
     ebs_optimized = true
-    update_default_version = true
-
- block_device_mappings = [
-    {
-      device_name  = "/dev/sda1"
-      no_device    = "false"
-      virtual_name = "root"
-      ebs = {
-        encrypted             = true
-        volume_size           = 60 
-        delete_on_termination = true
-        iops                  = null
-        kms_key_id            = null
-        snapshot_id           = null
-        volume_type           = "standard"
-      }
-    }
-  ]
-    network_interfaces {
-      associate_public_ip_address = true
-      security_groups = [aws_security_group.ec2-sg.id]
-    }
-    
-    tag_specifications {
-      resource_type = "instance"
-      tags = {
-        Name = "ws-launch-template"
-      }
-    }
+lifecycle {
+    create_before_destroy = true
+  }
 }
 
 ##############################
 # Auto Scaling Group 
 ##############################
-resource "aws_autoscaling_group" "ec2-sg" {
-  name = "web-server-asg"  
+resource "aws_autoscaling_group" "aws_auto_group" {
+  name      = "aws_auto_group"
   max_size = 3
   min_size = 1
   desired_capacity = 2
-  target_group_arns = [aws_lb_target_group.alb-ec2-tg.arn]
-  vpc_zone_identifier = [module.vpc.private_subnets[0],module.vpc.private_subnets[1]]
-#  count = length(module.vpc.private_subnets)
-#  vpc_zone_identifier = module.vpc.private_subnets[count.index] 
-  
-  launch_template {
-    id = aws_launch_template.ec2-launch-template.id
-    version = "$Latest"
+  launch_configuration = aws_launch_configuration.ec2-launch-config 
+  vpc_zone_identifier = module.vpc.private_subnets
+  health_check_type    = "ELB"
+  tag {
+    key                 = "Name"
+    value               = "HashiCorp Learn ASG - Terramino"
+    propagate_at_launch = true
   }
-    health_check_type = "EC2"
-}
+}  
 
 ##############################
 # Auto Scaling Policy 
 ##############################
-resource "aws_autoscaling_policy" "scale_down" {
-  name                   = "terramino_scale_down"
+resource "aws_autoscaling_policy" "scale_up" {
+  name                   = "terramino_scale_up"
   autoscaling_group_name = aws_autoscaling_group.ec2-sg.name
+  scaling_adjustment     = 4
   adjustment_type        = "ChangeInCapacity"
-  scaling_adjustment     = -1
   cooldown               = 120
 }
 
 ##############################
 # CloudWatch Metric Alarm 
 ##############################
-resource "aws_cloudwatch_metric_alarm" "scale_down" {
+resource "aws_cloudwatch_metric_alarm" "scale_up" {
+  alarm_name          = "terramino_scale_up"
   alarm_description   = "Monitors CPU utilization for Terramino ASG"
-  alarm_actions       = [aws_autoscaling_policy.scale_down.arn]
-  alarm_name          = "terramino_scale_down"
-  comparison_operator = "LessThanOrEqualToThreshold"
+  alarm_actions       = [aws_autoscaling_policy.scale_up.arn]
+  comparison_operator = "GreaterThanOrEqualToThreshold"
   namespace           = "AWS/EC2"
   metric_name         = "CPUUtilization"
-  threshold           = "10"
+  threshold           = "70"
   evaluation_periods  = "2"
   period              = "120"
   statistic           = "Average"
-  dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.ec2-sg.name
+ dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.bar.name
   }
-}
+} 
+  
