@@ -1,5 +1,16 @@
 # create security group to allow ingoing ports
 
+
+resource "aws_security_group" "terra-SG" {
+  name        = "terra-SG"
+  description = "terra-SG"
+  vpc_id   = module.vpc.vpc_id
+  tags = {
+    Name = "terra-SG"
+  }
+}
+
+
 resource "aws_vpc_security_group_ingress_rule" "terra-SG-80" {
   security_group_id = aws_security_group.terra-SG.id
   cidr_ipv4 = "0.0.0.0/0"
@@ -7,7 +18,6 @@ resource "aws_vpc_security_group_ingress_rule" "terra-SG-80" {
   ip_protocol = "tcp"
   to_port     = 80
 }
-/*
 
 resource "aws_vpc_security_group_ingress_rule" "terra-SG-22" {
   security_group_id = aws_security_group.terra-SG.id
@@ -26,7 +36,6 @@ security_group_id = aws_security_group.terra-SG.id
   to_port     = 80
 }
 
-*/
 resource "aws_security_group" "alb-sg" {
   name = "alb-sg1"
   description = "Security Group for LB"
@@ -55,7 +64,7 @@ resource "aws_security_group" "terramino_instance" {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-#    security_groups = [aws_security_group.terramino_lb.id]
+    security_groups = [aws_security_group.terramino_lb.id]
   }
 
   egress {

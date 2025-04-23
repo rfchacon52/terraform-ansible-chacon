@@ -100,5 +100,7 @@ resource "aws_cloudwatch_metric_alarm" "scale_up" {
 
 resource "aws_autoscaling_attachment" "terramino" {
   autoscaling_group_name = aws_autoscaling_group.aws_auto_group.id 
-  lb_target_group_arn   = aws_alb_target_group.alb-ec2-tg.arn
+  lb_target_group_arn   = aws_lb_target_group.alb-ec2-tg.arn
 }  
+
+
