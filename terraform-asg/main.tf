@@ -102,8 +102,3 @@ resource "aws_autoscaling_attachment" "terramino" {
   autoscaling_group_name = aws_autoscaling_group.aws_auto_group.id 
   alb_target_group_arn   = aws_alb_target_group.alb-ec2-tg.arn
 }  
-# Create a new ALB Target Group attachment
-resource "aws_autoscaling_attachment" "terramino" {
-  autoscaling_group_name = aws_autoscaling_group.asg.id
-  alb_target_group_arn   = aws_alb_target_group.test.arn
-}
