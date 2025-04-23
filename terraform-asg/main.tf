@@ -93,12 +93,17 @@ resource "aws_cloudwatch_metric_alarm" "scale_up" {
   period              = "120"
   statistic           = "Average"
  dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.bar.name
+    AutoScalingGroupName = aws_autoscaling_group.aws_auto_group.name
   }
 } 
 
 
 resource "aws_autoscaling_attachment" "terramino" {
-  autoscaling_group_name = aws_autoscaling_group.aws_auto_group.name 
-  alb_target_group_arn   = aws_lb_target_group.alb-ec2-tg.arn
+  autoscaling_group_name = aws_autoscaling_group.aws_auto_group.id 
+  alb_target_group_arn   = aws_alb_target_group.alb-ec2-tg.arn
 }  
+# Create a new ALB Target Group attachment
+resource "aws_autoscaling_attachment" "terramino" {
+  autoscaling_group_name = aws_autoscaling_group.asg.id
+  alb_target_group_arn   = aws_alb_target_group.test.arn
+}
