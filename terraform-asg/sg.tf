@@ -7,7 +7,7 @@ resource "aws_vpc_security_group_ingress_rule" "terra-SG-80" {
   ip_protocol = "tcp"
   to_port     = 80
 }
-
+/*
 
 resource "aws_vpc_security_group_ingress_rule" "terra-SG-22" {
   security_group_id = aws_security_group.terra-SG.id
@@ -26,7 +26,7 @@ security_group_id = aws_security_group.terra-SG.id
   to_port     = 80
 }
 
-
+*/
 resource "aws_security_group" "alb-sg" {
   name = "alb-sg1"
   description = "Security Group for LB"
