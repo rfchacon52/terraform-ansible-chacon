@@ -57,7 +57,7 @@ resource "aws_autoscaling_group" "aws_auto_group" {
   max_size = 3
   min_size = 1
   desired_capacity = 2
-  launch_configuration = aws_launch_configuration.ec2-launch-config 
+  launch_configuration = aws_launch_configuration.ec2-launch-config.name
   vpc_zone_identifier = module.vpc.private_subnets
   health_check_type    = "ELB"
   tag {
