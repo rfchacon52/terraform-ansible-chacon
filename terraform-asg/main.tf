@@ -87,13 +87,12 @@ resource "aws_autoscaling_group" "aws_auto_group" {
   max_size = 3
   min_size = 1
   desired_capacity = 2
-  launch_configuration = aws_launch_configuration.ec2-launch-config.name
   vpc_zone_identifier = module.vpc.private_subnets
   health_check_type    = "ELB"
-  tag {
-    key                 = "Name"
-    value               = "HashiCorp Learn ASG - Terramino"
-    propagate_at_launch = true
+  force_delete          = true
+launch_template {
+    id      = "${aws_launch_template.basic_template.id}"
+    version = "$Latest"
   }
 }  
 
