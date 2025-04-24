@@ -2,7 +2,7 @@ resource "aws_instance" "Bastion" {
   
   ami  = "ami-0c7af5fe939f2677f"
   instance_type = "t2.micro"
-  key_name   = "deployer.key"
+  key_name   = "key_name"
   vpc_security_group_ids      = [aws_security_group.terra-SG.id]
   associate_public_ip_address = true
   user_data = file("user-data.sh")

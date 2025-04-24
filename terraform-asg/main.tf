@@ -41,10 +41,10 @@ resource "aws_launch_template" "basic_template" {
   name_prefix   = "basic-template-"
   image_id  = "ami-0c7af5fe939f2677f"
   instance_type = "t2.micro"
-  key_name   = "deployer.key"
+  key_name   = "key_name"
   user_data = filebase64("user-data.sh")
   ebs_optimized = true
-  vpc_security_group_ids = [aws_security_group.instance_sg.id]
+  vpc_security_group_ids = [aws_security_group.terra-SG.id]
   lifecycle {
     create_before_destroy = true
   }
@@ -55,28 +55,6 @@ resource "aws_launch_template" "basic_template" {
 }
 
 
-resource "aws_security_group" "instance_sg" {
-  name_prefix = "instance-sg-"
-  vpc_id   = module.vpc.vpc_id
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Be cautious with this in production
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "instance-security-group"
-  }
-}
 
 
 ##############################
