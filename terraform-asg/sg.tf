@@ -1,5 +1,5 @@
 # create security group to allow ingoing ports
- Create ALB Security Group
+# Create ALB Security Group
 resource "aws_security_group" "alb_sg" {
   name        = var.alb_security_group_name
   description = "Allow traffic to ALB"
