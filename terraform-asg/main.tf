@@ -1,21 +1,3 @@
-##############################
-# Data source to get the latest Amazon Linux 2 AMI 
-##############################
-data "aws_ami" "amazon_linux_2" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["Amazon Linux 2"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-}
-
 
 ##############################
 # Target Group for ALB
@@ -62,7 +44,7 @@ resource "aws_lb_listener" "listener" {
 ##############################
 resource "aws_launch_configuration" "launch_configuration" {
   name_prefix          = "lc-"
-  image_id             = data.aws_ami.amazon_linux_2.id
+  image_id  = "ami-0c7af5fe939f2677f"
   instance_type          = var.instance_type
   security_groups        = [aws_security_group.ec2_sg.id]
   key_name   = "key_name"
