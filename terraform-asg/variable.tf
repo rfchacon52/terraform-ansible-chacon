@@ -8,7 +8,7 @@ variable "aws_region" {
 variable "ami_id" {
   description = "The AMI ID for the EC2 instances"
   type        = string
-  default     = "ami-0f6c1051253397fef" # Change this to a valid AMI for your region
+  default     = "ami-0c15e602d3d6c6c4a" # Change this to a valid AMI for your region
 }
 
 variable "instance_type" {
