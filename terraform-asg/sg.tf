@@ -37,6 +37,13 @@ resource "aws_security_group" "ec2_sg" {
     security_groups = [aws_security_group.alb_sg.id]
   }
 
+ ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.114/32"] # Replace with your actual IP for SSH access (optional, but recommended for management)
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

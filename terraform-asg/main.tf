@@ -40,27 +40,35 @@ resource "aws_lb_listener" "listener" {
 } 
 
 ##############################
-# Launch Templataws_launch_configuration"e
+# AWS Launch Template 
 ##############################
-resource "aws_launch_configuration" "launch_configuration" {
-  name_prefix          = "lc-"
-  image_id  = "ami-0c7af5fe939f2677f"
-  instance_type          = var.instance_type
-  security_groups        = [aws_security_group.ec2_sg.id]
+resource "aws_launch_template" "launch_template" {
+  name_prefix   = "lt-"
+  instance_type = var.instance_type
   key_name   = "key_name"
-  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
-  user_data  = <<-EOF
-              #!/bin/bash
-              echo "Hello from EC2 instance" > index.html
-              nohup python -m SimpleHTTPServer 80 &
-              EOF
-
+  image_id  = var.ami_id 
+  network_interface {
+  security_groups = [aws_security_group.ec2_sg.id]
+    subnet_id = module.vpc.private_subnets[0] #  Important: Associate with a subnet
+  }
+  iam_instance_profile {
+    arn = aws_iam_instance_profile.ec2_instance_profile.arn
+  }
+  )
+  user_data = filebase64("user-data.sh")
+  ebs_optimized = true
   lifecycle {
     create_before_destroy = true
   }
+
+
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name = "ec2-instance-launch-template"
+    }
+  }
 }
-
-
 ##############################
 # Auto Scaling Group 
 ##############################
