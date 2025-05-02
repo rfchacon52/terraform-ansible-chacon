@@ -58,15 +58,6 @@ resource "aws_launch_template" "launch_template" {
  network_interfaces {
     associate_public_ip_address = true
   } 
-  
-
- vpc_security_group_ids = [
-    aws_security_group.ec2_sg.id,
-    aws_security_group.alb_sg
-  ]
-
-
-
   iam_instance_profile {
     arn = aws_iam_instance_profile.ec2_instance_profile.arn
   }
