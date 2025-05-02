@@ -47,14 +47,29 @@ resource "aws_launch_template" "launch_template" {
   instance_type = var.instance_type
   key_name   = "key_name"
   image_id  = var.ami_id 
-  network_interface {
-  security_groups = [aws_security_group.ec2_sg.id]
-    subnet_id = module.vpc.private_subnets[0] #  Important: Associate with a subnet
+   block_device_mappings {
+    device_name = "/dev/sdf"
+
+    ebs {
+      volume_size = 20
+    }
   }
+  
+ network_interfaces {
+    associate_public_ip_address = true
+  } 
+  
+
+ vpc_security_group_ids = [
+    aws_security_group.ec2_sg.id,
+    aws_security_group.alb_sg
+  ]
+
+
+
   iam_instance_profile {
     arn = aws_iam_instance_profile.ec2_instance_profile.arn
   }
-  )
   user_data = filebase64("user-data.sh")
   ebs_optimized = true
   lifecycle {

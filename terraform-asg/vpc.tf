@@ -1,4 +1,4 @@
- Latest version of the vpc module as of May 1, 2025
+# Latest version of the vpc module as of May 1, 2025
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.21.0" # Use the latest available version
