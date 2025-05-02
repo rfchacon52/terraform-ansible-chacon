@@ -89,7 +89,10 @@ resource "aws_launch_template" "launch_template" {
 ##############################
 resource "aws_autoscaling_group" "auto_scaling_group" {
   name                      = "auto-scaling-group"
-  launch_configuration      = aws_launch_configuration.launch_configuration.name
+ launch_template {
+    id      = aws_launch_template.launch_template
+    version = aws_launch_template.launch_template.latest_version
+  }
   vpc_zone_identifier       = module.vpc.public_subnets[*] # Use the subnets from the VPC module
   target_group_arns         = [aws_lb_target_group.target_group.arn]
   min_size                  = var.min_size
