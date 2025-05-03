@@ -258,5 +258,4 @@ parameters {
                 terraform apply -destroy -auto-approve -no-color
                 sh '''
             }
-# end
 }
