@@ -2,34 +2,6 @@
 # you can add it with:
 # terraform init
 # See: https://registry.terraform.io/modules/hashicorp/vpc/aws
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "5.21.0" # Ensure you are using a compatible version.  Check the registry.
-
-  name = "my-alb-vpc"
-  cidr = "10.0.0.0/16"
-
-  # Create public subnets.  The number of public and private
-  # subnets should match the availability_zones count.
-  public_subnets  = ["10.0.1.0/24", "10.0.2.0/24"]
-  private_subnets = ["10.0.101.0/24", "10.0.102.0/24"]
-
-  #  Define the availability zones.  This should match the number
-  #  of subnets you've defined.
-  availability_zones = ["us-east-1a", "us-east-1b"]
-
-  # Ensure that NAT gateways are created for the private subnets
-  # to access the internet.  This is needed for the EC2 instances
-  # in the private subnets to, for example, download updates.
-  enable_nat_gateway   = true
-  single_nat_gateway = true # Use a single NAT gateway to save costs.
-  create_igw           = true # Create an Internet Gateway
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-
-
-}
-
 # Create a security group for the ALB.  This security group
 # allows traffic on port 80 (HTTP) from anywhere.  You should
 # restrict this to only the IP addresses that need to access
