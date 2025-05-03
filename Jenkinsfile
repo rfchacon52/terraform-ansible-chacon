@@ -3,13 +3,15 @@ pipeline {
 agent any
 
 parameters {
-  choice choices: ['Build_Deploy_ASG', 'Build_Deploy_K8', 'Destroy_ASG', 'Destroy_K8', 'Destroy_SFTP', 'Deploy_SFTP'], description: '''Select:  
-               1. Build_Deploy_ASG
-               2. Build_Deploy_K8 to build full EKS 
-               3. Destroy_ASG to destroy ASG 
-               4. Destroy_K8 to destroy EKS
-               5. Destroy_SFTP
-               6. Deploy_SFTP  ''', name: 'CHOICE'
+  choice choices: ['Deploy_ASG', 'Deploy_K8', 'Destroy_ASG', 'Destroy_K8', 'Destroy_SFTP', 'Deploy_SFTP', 'Deploy_ALB', 'Destroy_ALB'], description: '''Select:  
+               1. Deploy_ASG
+               2. Destroy_ASG  
+               3. Deploy_K8  
+               4. Destroy_K8 
+               5. Deploy_ALB
+               6. Destroy_ALB 
+               7. Destroy_SFTP 
+               8. Deploy_SFTP  ''', name: 'CHOICE'
 }
  
  
@@ -41,7 +43,7 @@ parameters {
         
         stage('Terraform ASG Init & Plan & Apply') {
            when {
-             expression { params.CHOICE == "Build_Deploy_ASG" }  
+             expression { params.CHOICE == "Deploy_ASG" }  
            }
             steps {
                 
@@ -63,7 +65,7 @@ parameters {
 
         stage('Run Maven build') {
            when {
-             expression { params.CHOICE == "Build_Deploy_K8" }  
+             expression { params.CHOICE == "Deploy_K8" }  
            }
              steps {
                 sh '''
@@ -76,7 +78,7 @@ parameters {
 
         stage('Build and Push Docker image') {
            when {
-             expression { params.CHOICE == "Build_Deploy_K8" }  
+             expression { params.CHOICE == "Deploy_K8" }  
            }
              steps {
                 script {
@@ -95,7 +97,7 @@ parameters {
 
         stage('TerraForm build/deploy K8 Infra') {
            when {
-             expression { params.CHOICE == "Build_Deploy_K8" }  
+             expression { params.CHOICE == "Deploy_K8" }  
            }
              steps {
                 sh '''
@@ -117,7 +119,7 @@ parameters {
 
         stage('Configure Kubectl, Deploy EKS apps') {
            when {
-             expression { params.CHOICE == "Build_Deploy_K8" }  
+             expression { params.CHOICE == "Deploy_K8" }  
            }
             steps {
                 sh '''
@@ -214,10 +216,46 @@ parameters {
                 sh '''
             }
 
-        }
-
-    }
-
 }
 
 
+  stage('Terraform ALB Deploy') {
+           when {
+             expression { params.CHOICE == "Deploy_ALB" }  
+           }
+            steps {
+                sh '''
+                echo "Running terraform init"
+                terraform init -no-color
+                echo "Running terraform fmt -recursive"
+                terraform fmt -recursive
+                echo "Running terraform validate"
+                terraform validate -no-color
+                echo "Executing terraform plan"                 
+                terraform plan -out=tfplan -no-color
+                echo "Executing terraform apply"                 
+                terraform apply tfplan -no-color 
+                sh '''
+            }
+
+}
+
+  stage('Terraform ALB Destroy') {
+           when {
+             expression { params.CHOICE == "Destroy_ALB" }  
+           }
+            steps {
+                sh '''
+                cd terraform-ALB
+                echo "Running terraform init"
+                terraform init -no-color
+                echo "Running terraform fmt -recursive"
+                terraform fmt -recursive
+                echo "Running terraform validate"
+                terraform validate -no-color
+                echo "Executing Terraform EC2 Destroy"
+                terraform apply -destroy -auto-approve -no-color
+                sh '''
+            }
+
+}

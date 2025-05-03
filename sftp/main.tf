@@ -103,6 +103,12 @@ resource "aws_iam_user_policy_attachment" "transfer_user_policy_attachment" {
 # Create the AWS Transfer Server
 resource "aws_transfer_server" "transfer-server" {
   identity_provider_type = "SERVICE_MANAGED" # Or "API_GATEWAY"
+  endpoint_type          = "VPC"
+
+  endpoint_details {
+    subnet_ids = [module.vpc.private_subnets]
+    vpc_id     = [module.vpc_id]
+  }
   domain                 = "S3" #optional, defaults to S3
   protocols              = ["SFTP"] 
   
