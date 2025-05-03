@@ -225,6 +225,7 @@ parameters {
            }
             steps {
                 sh '''
+                cd terraform_ALB
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
@@ -246,7 +247,7 @@ parameters {
            }
             steps {
                 sh '''
-                cd terraform-ALB
+                cd terraform_ALB
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
