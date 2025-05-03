@@ -3,8 +3,8 @@
 # terraform init
 # See: https://registry.terraform.io/modules/hashicorp/vpc/aws
 module "vpc" {
-  source  = "hashicorp/vpc/aws"
-  version = "5.1.0" # Ensure you are using a compatible version.  Check the registry.
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "5.21.0" # Ensure you are using a compatible version.  Check the registry.
 
   name = "my-alb-vpc"
   cidr = "10.0.0.0/16"
@@ -24,6 +24,10 @@ module "vpc" {
   enable_nat_gateway   = true
   single_nat_gateway = true # Use a single NAT gateway to save costs.
   create_igw           = true # Create an Internet Gateway
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+
+
 }
 
 # Create a security group for the ALB.  This security group
