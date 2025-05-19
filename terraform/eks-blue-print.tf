@@ -1,6 +1,7 @@
 module "eks_blueprints_addons" {
+
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version  "~> 1.1" 
+  version  = "~> 1.1" 
   
   # Use a compatible version
 
@@ -11,21 +12,17 @@ module "eks_blueprints_addons" {
   
   # Define the addons you want to deploy.  Check the module's documentation
   # for the correct configuration parameters for each addon.
-  addons = {
+  eks_addons = {
     coredns = {
       most_recent = true
-     # version = "v1.11.1" #check the correct version
     }
     vpc-cni = {
      most_recent = true
-    # version = "v1.17.0" #check the correct version
     }
     kube-proxy = {
       most_recent = true
-     # version = "1.28.1" #check the correct version
     }
-    #  Example of a common addon.  Check for latest.
-    "aws-ebs-csi-driver" = {
+    aws-ebs-csi-driver = {
       most_recent = true
       service_account_role_arn = "arn:aws:iam::767397937300:role/ebs-csi-driver-role" # Replace
     }
