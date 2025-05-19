@@ -2,10 +2,6 @@
 #  Locals 
 ################################################################################
 
-provider "aws" {
-  region = local.region
-}
-
 data "aws_availability_zones" "available" {
   # Exclude local zones
   filter {
