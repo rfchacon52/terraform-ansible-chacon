@@ -65,7 +65,7 @@ parameters {
 
         stage('Run Maven build') {
            when {
-             expression { params.CHOICE == "Deploy_K8" }  
+             expression { params.CHOICE == "Deploy_ASG" }  
            }
              steps {
                 sh '''
@@ -78,7 +78,7 @@ parameters {
 
         stage('Build and Push Docker image') {
            when {
-             expression { params.CHOICE == "Deploy_K8" }  
+             expression { params.CHOICE == "Deploy_ASG" }  
            }
              steps {
                 script {
@@ -101,7 +101,6 @@ parameters {
            }
              steps {
                 sh '''
-                export KUBE_CONFIG_PATH=~/.kube/config
                 cd terraform
                 echo "Running terraform init"
                 terraform init -no-color
