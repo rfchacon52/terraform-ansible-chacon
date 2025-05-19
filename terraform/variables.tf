@@ -30,15 +30,3 @@ variable "region" {
   type        = string
   default     = "us-east-1"
 }
-
-variable "create_cloudwatch_log_group" {
-  description = "Determines whether a log group is created by this module for the cluster logs. If not, AWS will automatically create one if logging is enabled"
-  type        = bool
-  default     = true
-}
-
-variable "cloudwatch_log_group_retention_in_days" {
-  description = "Number of days to retain log events. Default retention - 90 days"
-  type        = number
-  default     = 15
-} 
