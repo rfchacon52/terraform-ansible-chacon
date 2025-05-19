@@ -1,7 +1,6 @@
 module "eks_blueprints_addons" {
-
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version  = "20.36.0"
+  version  "~> 1.1" 
   
   # Use a compatible version
 
@@ -14,17 +13,20 @@ module "eks_blueprints_addons" {
   # for the correct configuration parameters for each addon.
   addons = {
     coredns = {
-      version = "v1.11.1" #check the correct version
+      most_recent = true
+     # version = "v1.11.1" #check the correct version
     }
     vpc-cni = {
-      version = "v1.17.0" #check the correct version
+     most_recent = true
+    # version = "v1.17.0" #check the correct version
     }
     kube-proxy = {
-      version = "1.28.1" #check the correct version
+      most_recent = true
+     # version = "1.28.1" #check the correct version
     }
     #  Example of a common addon.  Check for latest.
     "aws-ebs-csi-driver" = {
-      version = "v2.21.0"
+      most_recent = true
       service_account_role_arn = "arn:aws:iam::767397937300:role/ebs-csi-driver-role" # Replace
     }
   }
@@ -35,7 +37,7 @@ module "eks_blueprints_addons" {
 #  enable_karpenter                       = true
   enable_kube_prometheus_stack           = true
   enable_metrics_server                  = true
-  enable_external_dns                    = false
+#  enable_external_dns                    = false
   enable_cert_manager                    = true
   # cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
 
