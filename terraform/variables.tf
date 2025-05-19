@@ -28,7 +28,7 @@ variable "vpc_cidr" {
 variable "region" {
   description = "Default EKS Region"
   type        = string
-  default     = "us.east-1"
+  default     = "us-east-1"
 }
 
 variable "create_cloudwatch_log_group" {
