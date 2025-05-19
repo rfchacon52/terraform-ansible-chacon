@@ -15,7 +15,7 @@ variable "ami_type" {
   default     = "AL2_x86_64" 
 }
 
-variable "instance_type" {
+variable "instance_types" {
   description = "Default instance types"
   type        = string
   default     = "t2.small"
