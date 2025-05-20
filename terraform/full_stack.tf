@@ -71,7 +71,7 @@ module "eks" {
   version = "20.36.0" # Use the latest version
 
   cluster_name    = local.name 
-  cluster_version = "1.31" # Specify your desired Kubernetes version
+  cluster_version = "1.32" # Specify your desired Kubernetes version
   vpc_id          = module.vpc.vpc_id
   subnet_ids      = module.vpc.private_subnets
 
