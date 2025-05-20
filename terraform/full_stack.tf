@@ -85,7 +85,7 @@ module "eks" {
     default = {
       name = "default"
       ami_type       =  var.ami_type
-      instance_types = var.instance_types 
+      instance_types = ["t2.small"]
       desired_capacity = 2
       min_size  = 1
       max_size  = 4
