@@ -85,7 +85,7 @@ module "eks" {
     default = {
       name = "default"
       ami_type       =  var.ami_type
-      instance_types = ["t2.small"] # Choose your instance type
+      instance_types = var.instance_types 
       desired_capacity = 2
       min_size  = 1
       max_size  = 4
@@ -100,7 +100,7 @@ module "eks" {
 # Attach the necessary policy to the cluster role
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.0" # Use a recent version
+  version = "" # Use a recent version
 
   cluster_name    = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
