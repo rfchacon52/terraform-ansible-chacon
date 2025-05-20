@@ -100,7 +100,7 @@ module "eks" {
 # Attach the necessary policy to the cluster role
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "" # Use a recent version
+  version = "1.21.0" # Use a recent version
 
   cluster_name    = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
