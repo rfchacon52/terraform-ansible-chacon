@@ -100,7 +100,7 @@ module "eks" {
 # Attach the necessary policy to the cluster role
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.0" # Use a recent version
+#  version = "~> 1.0" # Use a recent version
 
   cluster_name    = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -132,17 +132,3 @@ enable_aws_load_balancer_controller    = true
   # cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
 
 }
-
-# 6. Configure the Kubernetes Provider
-provider "kubernetes" {
-  host                  = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_ca_certificate)
-  token                 = data.aws_eks_cluster_auth.cluster.token
-  alias = "k8s"
-}
-
-# 7. Get the Kubernetes Authentication Token
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_name
-}
-
