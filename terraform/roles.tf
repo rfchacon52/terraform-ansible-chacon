@@ -45,6 +45,33 @@ resource "aws_iam_role" "ebs-csi-driver-role" {
   })
 }
 
+resource "aws_iam_role" "eks_nodegroup_role" {
+      name = "eks-nodegroup-role"
+      assume_role_policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [
+          {
+            Effect    = "Allow"
+            Principal = {
+              Service = "eks.amazonaws.com"
+            }
+            Action    = "sts:AssumeRole"
+          }
+        ]
+      })
+    }
+
+
+    resource "aws_iam_role_policy_attachment" "eks_nodegroup_cnipolicy" {
+      role       = aws_iam_role.eks_nodegroup_role.name
+      policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+    }
+
+    resource "aws_iam_role_policy_attachment" "eks_nodegroup_ec2registry" {
+      role       = aws_iam_role.eks_nodegroup_role.name
+      policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+    }
+
 
 resource "aws_iam_role_policy_attachment" "eks_nodegroup_policy_attachment_cni" {
   role  = aws_iam_role.eks_nodegroup_role.name
@@ -54,9 +81,4 @@ resource "aws_iam_role_policy_attachment" "eks_nodegroup_policy_attachment_cni" 
 resource "aws_iam_role_policy_attachment" "eks_nodegroup_policy_attachment_worker" {
   role  = aws_iam_role.eks_nodegroup_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy" # AWS managed policy
-}
-
-resource "aws_iam_role_policy_attachment" "eks_nodegroup_policy_attachment_ecr" {
-  role  = aws_iam_role.eks_nodegroup_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" # AWS managed policy
 }

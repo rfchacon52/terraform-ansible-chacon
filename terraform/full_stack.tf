@@ -73,7 +73,7 @@ module "eks" {
   cluster_name    = local.name 
   cluster_version = "1.31" # Specify your desired Kubernetes version
   vpc_id          = module.vpc.vpc_id
-  subnet_ids      = module.vpc.private_subnets_ids # Use private subnets for nodes
+  subnet_ids      = module.vpc.private_subnets
 
   # Use the EKS cluster role created below
   cluster_endpoint_private_access = true
@@ -84,6 +84,7 @@ module "eks" {
   eks_managed_node_groups = {
     default = {
       name = "default"
+      ami_type       =  var.ami_type
       instance_types = ["t2.small"] # Choose your instance type
       desired_capacity = 2
       min_size  = 1
@@ -92,15 +93,14 @@ module "eks" {
       # Ensure nodes use the nodegroup role
       node_group_role_arn = aws_iam_role.eks_nodegroup_role.arn
     }
-  }
-  #EKS Addons
-}
 
+    }
+  }
 
 # Attach the necessary policy to the cluster role
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-#  version = "~> 1.0" # Use a recent version
+  version = "~> 1.0" # Use a recent version
 
   cluster_name    = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
