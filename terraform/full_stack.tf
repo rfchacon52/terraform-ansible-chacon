@@ -89,8 +89,8 @@ module "eks" {
       desired_capacity = 2
       min_size  = 1
       max_size  = 4
-      # node_group_subnet_ids = module.vpc.private_subnets
-      # Ensure nodes use the nodegroup role
+      create_security_group = true 
+      subnet_ids   = module.vpc.private_subnets
       node_group_role_arn = aws_iam_role.eks_nodegroup_role.arn
     }
 
@@ -122,13 +122,13 @@ module "eks_blueprints_addons" {
     }
   }
 
-# enable_aws_load_balancer_controller    = true
+ enable_aws_load_balancer_controller    = true
 #  enable_cluster_proportional_autoscaler = true
 #  enable_karpenter                       = true
-#  enable_kube_prometheus_stack           = true
-#  enable_metrics_server                  = true
+enable_kube_prometheus_stack           = true
+enable_metrics_server                  = true
 #  enable_external_dns                    = false
-#  enable_cert_manager                    = true
+enable_cert_manager                    = true
   # cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
 
 }
