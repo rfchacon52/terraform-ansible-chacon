@@ -107,20 +107,25 @@ module "eks_blueprints_addons" {
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
 
+
+# Define the addons you want to deploy.  Check the module's documentation
+  # for the correct configuration parameters for each addon.
   eks_addons = {
-    aws-ebs-csi-driver = {
-      most_recent = true
-    }
     coredns = {
       most_recent = true
     }
     vpc-cni = {
-      most_recent = true
+     most_recent = true
     }
     kube-proxy = {
       most_recent = true
     }
+    aws-ebs-csi-driver = {
+      most_recent = true
+      service_account_role_arn = "arn:aws:iam::767397937300:role/ebs-csi-driver-role" # Replace
+    }
   }
+
 
  enable_aws_load_balancer_controller    = true
 #  enable_cluster_proportional_autoscaler = true
