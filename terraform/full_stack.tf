@@ -91,7 +91,7 @@ module "eks" {
       max_size  = 4
       # node_group_subnet_ids = module.vpc.private_subnets
       # Ensure nodes use the nodegroup role
-      node_group_role_arn = aws_iam_role.eks_nodegroup_role.arn
+      # node_group_role_arn = aws_iam_role.eks_nodegroup_role.arn
     }
 
     }
