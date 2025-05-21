@@ -45,10 +45,10 @@ resource "aws_iam_role" "ebs-csi-driver-role" {
 }
 
 
-resource "aws_iam_policy_attachment" "ebs_csi_driver_policy_attachment" {
-  name  = aws_iam_role.ebs-csi-driver-role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-}
+#resource "aws_iam_policy_attachment" "ebs_csi_driver_policy_attachment" {
+ # name  = aws_iam_role.ebs-csi-driver-role.role
+ # policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+#}
 
 resource "aws_iam_role" "eks_nodegroup_role" {
       name = "eks-nodegroup-role"
