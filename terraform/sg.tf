@@ -289,9 +289,9 @@ resource "aws_security_group" "app_pod_sg" {
 # --- Data Source to get EKS cluster's managed security group ID ---
 # This is needed to reference the automatically created EKS cluster security group
 # for communication between the control plane and worker nodes.
-data "aws_eks_cluster" "this" {
-  name = local.cluster_name
-}
+#data "aws_eks_cluster" "this" {
+#  name = local.cluster_name
+# }
 
 # --- Data Source to get VPC CIDR Block ---
 # Used for example SSH ingress to worker nodes from within the VPC.
