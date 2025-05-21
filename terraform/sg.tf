@@ -138,9 +138,6 @@ resource "aws_security_group" "eks_node_group" {
     from_port   = 1025 # Kubelet port range
     to_port     = 65535 # Kubelet port range
     protocol    = "tcp"
-    # Reference the EKS cluster's managed security group (output from aws_eks_cluster)
-    # This is crucial for control plane to node communication
-    security_groups = [aws_security_group.eks_node_group.id]
   }
 
   # Ingress: Allow traffic between nodes in the same security group (self-referencing)
