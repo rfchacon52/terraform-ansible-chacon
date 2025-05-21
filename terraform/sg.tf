@@ -31,7 +31,7 @@ resource "aws_security_group" "eks_worker_node_ingress_argocd_http" {
 
   ingress {
     description = "Allow HTTP access to ArgoCD NodePort"
-    from_port   = 30660 # The NodePort for HTTP
+    from_port   = 30060 # The NodePort for HTTP
     to_port     = 30660 # The NodePort for HTTP
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] # Be cautious: 0.0.0.0/0 means open to the world.
@@ -40,8 +40,8 @@ resource "aws_security_group" "eks_worker_node_ingress_argocd_http" {
 
   ingress {
     description = "Allow HTTPS access to ArgoCD NodePort"
-    from_port   = 30279 # The NodePort for HTTPS
-    to_port     = 30279 # The NodePort for HTTPS
+    from_port   = 30000 # The NodePort for HTTPS
+    to_port     = 30479 # The NodePort for HTTPS
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] # Be cautious: 0.0.0.0/0 means open to the world.
                                 # Restrict this to known IP ranges if possible.
@@ -140,7 +140,7 @@ resource "aws_security_group" "eks_node_group" {
     protocol    = "tcp"
     # Reference the EKS cluster's managed security group (output from aws_eks_cluster)
     # This is crucial for control plane to node communication
-    security_groups = [data.aws_eks_cluster.this.vpc_config[0].cluster_security_group_id]
+    security_groups = [aws_security_group.eks_node_group.id]
   }
 
   # Ingress: Allow traffic between nodes in the same security group (self-referencing)
@@ -172,7 +172,7 @@ resource "aws_security_group" "eks_node_group" {
     to_port     = 443
     protocol    = "tcp"
     # Reference the EKS cluster's managed security group
-    security_groups = [data.aws_eks_cluster.this.vpc_config[0].cluster_security_group_id]
+    security_groups = [aws_security_group.eks_node_group.id]
   }
 
   # Egress: Allow worker nodes to pull container images from ECR, communicate with S3, etc.
@@ -232,7 +232,7 @@ resource "aws_security_group" "alb_ingress" {
 
   tags = {
     Name        = "${local.cluster_name}-alb-ingress"
-    Environment = "production"
+    Environment = "dev"
     # Required tag for ALB controller to discover and manage this SG
     "kubernetes.io/cluster/${local.cluster_name}" = "owned"
   }
@@ -280,7 +280,7 @@ resource "aws_security_group" "app_pod_sg" {
 
   tags = {
     Name        = "${local.cluster_name}-app-pod-sg"
-    Environment = "production"
+    Environment = "dev"
     # This tag is often required by the ALB controller if SGfP is enabled
     # "kubernetes.io/cluster/${local.cluster_name}" = "owned"
   }
