@@ -52,6 +52,7 @@ resource "aws_iam_role" "ebs-csi-driver-role" {
 }
   # This is the standard managed policy for the EBS CSI driver
 resource "aws_iam_policy_attachment" "ebs_csi_driver_policy_attachment" {
+  roles      = [aws_iam_role.ebs-csi-driver-role.name] # <-- THIS IS THE MISSING PART
    name  = aws_iam_role.ebs-csi-driver-role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
