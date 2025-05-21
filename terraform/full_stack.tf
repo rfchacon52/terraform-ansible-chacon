@@ -122,7 +122,7 @@ module "eks_blueprints_addons" {
     }
     aws-ebs-csi-driver = {
       most_recent = true
-      service_account_role_arn = "arn:aws:iam::767397937300:role/ebs-csi-driver-role" # Replace
+     # service_account_role_arn = "arn:aws:iam::767397937300:role/ebs-csi-driver-role" # Replace
     }
   }
 
