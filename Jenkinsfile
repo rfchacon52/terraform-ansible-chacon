@@ -102,6 +102,7 @@ parameters {
              steps {
                 sh '''
                 cd terraform
+                export KUBE_CONFIG_PATH=~/.kube/config
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
