@@ -122,18 +122,18 @@ module "eks_blueprints_addons" {
     }
     aws-ebs-csi-driver = {
       most_recent = true
-     # service_account_role_arn = "arn:aws:iam::767397937300:role/ebs-csi-driver-role" # Replace
+      service_account_role_arn = "arn:aws:iam::767397937300:role/ebs-csi-driver-role" # Replace
     }
   }
 
 
- #enable_aws_load_balancer_controller    = true
+ enable_aws_load_balancer_controller    = true
 #  enable_cluster_proportional_autoscaler = true
 #  enable_karpenter                       = true
 #enable_kube_prometheus_stack           = true
-#enable_metrics_server                  = true
+enable_metrics_server                  = true
 #  enable_external_dns                    = false
-#enable_cert_manager                    = true
+enable_cert_manager                    = true
   # cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
 
 }
