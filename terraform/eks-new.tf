@@ -29,9 +29,9 @@ module "eks_blueprints_addons" {
  # enable_cluster_proportional_autoscaler = true
 #  enable_karpenter                       = true
  # enable_kube_prometheus_stack           = true
- # enable_metrics_server                  = true
+  enable_metrics_server                  = true
 #  enable_external_dns                    = true
-#  enable_cert_manager                    = true
+  enable_cert_manager                    = true
 #  cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
 
   tags = {
@@ -46,7 +46,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.31"
   cluster_name = var.cluster_name 
-  cluster_version = "1.31"
+  cluster_version = "1.28"
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access = true
   enable_cluster_creator_admin_permissions = true
@@ -67,9 +67,7 @@ module "eks" {
       min_size = 1
       max_size = 3 
       desired_size = 2
-    vpc_security_group_ids = concat (
-    [aws_security_group.eks_worker_node_ingress_argocd_http.id,aws_security_group.worker_group_mgmt_two.id,aws_security_group.worker_group_mgmt_one.id,aws_security_group.all_worker_mgmt.id]
-   )
+      vpc_security_group_ids = [aws_security_group.eks_node_group.id]
     } 
   tags = {
     Environment = "Dev"
