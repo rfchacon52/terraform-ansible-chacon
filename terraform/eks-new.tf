@@ -67,10 +67,10 @@ module "eks" {
       min_size = 1
       max_size = 3 
       desired_size = 2
-    }
     vpc_security_group_ids = concat (
-    [aws_security_group.eks_worker_node_ingress_argocd_http.id],[aws_security_group.worker_group_mgmt_two.id],[aws_security_group.worker_group_mgmt_one.id],[aws_security_group.all_worker_mgmt.id]
-   ) 
+    [aws_security_group.eks_worker_node_ingress_argocd_http.id,aws_security_group.worker_group_mgmt_two.id,aws_security_group.worker_group_mgmt_one.id,aws_security_group.all_worker_mgmt.id]
+   )
+    } 
   tags = {
     Environment = "Dev"
   }
