@@ -138,6 +138,7 @@ resource "aws_security_group" "eks_node_group" {
     from_port   = 1025 # Kubelet port range
     to_port     = 65535 # Kubelet port range
     protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Ingress: Allow traffic between nodes in the same security group (self-referencing)
@@ -169,7 +170,7 @@ resource "aws_security_group" "eks_node_group" {
     to_port     = 443
     protocol    = "tcp"
     # Reference the EKS cluster's managed security group
-    security_groups = [aws_security_group.eks_node_group.id]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Egress: Allow worker nodes to pull container images from ECR, communicate with S3, etc.
@@ -224,7 +225,7 @@ resource "aws_security_group" "alb_ingress" {
     to_port     = 32767 # Or specific service ports exposed by your applications
     protocol    = "tcp"
     # The worker node security group is the destination
-    security_groups = [aws_security_group.eks_node_group.id]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
