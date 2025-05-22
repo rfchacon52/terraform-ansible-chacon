@@ -5,9 +5,6 @@ data "aws_vpc" "selected" {
   id = module.vpc.vpc_id
 }
 
-data "aws_eks_cluster" "this" {
-  name = local.name
-}
 
 # --- 1. EKS Control Plane API Access Security Group ---
 resource "aws_security_group" "eks_cluster_api_access" {
