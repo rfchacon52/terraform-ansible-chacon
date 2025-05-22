@@ -75,7 +75,7 @@ module "eks" {
   subnet_ids  = module.vpc.private_subnets # Place worker nodes in private subnets for security
 
   # Attach the custom API access Security Group for the EKS control plane
-  cluster_security_group_ids = [aws_security_group.eks_cluster_api_access.id]
+#  cluster_security_group_ids = [aws_security_group.eks_cluster_api_access.id]
 
   # --- EKS Managed Node Group Configuration (The "Auto Mode" part) ---
   eks_managed_node_group_defaults = {

@@ -21,6 +21,18 @@ terraform {
       version = "~> 2.11" # For deploying Helm charts like ArgoCD if not via Blueprints
     }
   }
+
+###################################################
+# State file 
+###################################################
+
+  backend "s3" {
+    bucket         = "chacon-backend3"
+    key            = "terraform/state"
+    region         = "us-east-1"
+    use_lockfile   = true
+  }
+
 }
 
 provider "aws" {
@@ -47,21 +59,6 @@ provider "helm" {
 # Data source for EKS cluster authentication token for Kubernetes and Helm providers
 data "aws_eks_cluster_auth" "this" {
   name = module.eks.cluster_name
-}
-
-
-
-###################################################
-# State file 
-###################################################
-
-  backend "s3" {
-    bucket         = "chacon-backend3"
-    key            = "terraform/state"
-    region         = "us-east-1"
-    use_lockfile   = true
-  }
-
 }
 
 
