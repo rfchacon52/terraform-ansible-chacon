@@ -15,7 +15,3 @@ output "oidc_provider_arn" {
   value       = module.eks.oidc_provider_arn
 }
 
-output "node_group_security_group_id" {
-  description = "The ID of the security group attached to the worker nodes"
-  value       = aws_security_group.eks_node_group.id
-}
