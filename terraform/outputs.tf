@@ -5,12 +5,6 @@ output "cluster_name" {
   value       = module.eks.cluster_name
 }
 
-output "kubeconfig" {
-  description = "The kubeconfig for connecting to the cluster"
-  value       = module.eks.kubeconfig
-  sensitive   = true # Mark as sensitive as it contains credentials
-}
-
 output "cluster_endpoint" {
   description = "The endpoint for the EKS cluster"
   value       = module.eks.cluster_endpoint
