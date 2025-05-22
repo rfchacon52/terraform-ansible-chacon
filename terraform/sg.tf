@@ -41,6 +41,7 @@ resource "aws_security_group_rule" "eks_api_ingress_from_nodes" {
   source_security_group_id = aws_security_group.eks_node_group.id # References node group SG
   security_group_id        = aws_security_group.eks_cluster_api_access.id
   description              = "Allow worker nodes to communicate with control plane (kubelet)"
+  cidr_blocks = ["0.0.0.0/0"]
 }
 
 # Rule: Allow egress from EKS API SG to EKS Node Group
@@ -51,6 +52,7 @@ resource "aws_security_group_rule" "eks_api_egress_to_nodes" {
   protocol                 = "-1"
   security_group_id        = aws_security_group.eks_cluster_api_access.id
   description              = "Allow control plane to reach worker nodes"
+  cidr_blocks = ["0.0.0.0/0"]
 }
 
 
@@ -85,6 +87,7 @@ resource "aws_security_group_rule" "eks_node_ingress_from_control_plane" {
   source_security_group_id = data.aws_eks_cluster.this.vpc_config[0].cluster_security_group_id # References EKS-managed SG
   security_group_id        = aws_security_group.eks_node_group.id
   description              = "Allow traffic from EKS control plane"
+  cidr_blocks = ["0.0.0.0/0"]
 }
 
 # Rule: Ingress from nodes to themselves (self-referencing)
@@ -96,6 +99,7 @@ resource "aws_security_group_rule" "eks_node_ingress_self" {
   self              = true
   security_group_id = aws_security_group.eks_node_group.id
   description       = "Allow all traffic between nodes in the same security group"
+  cidr_blocks = ["0.0.0.0/0"]
 }
 
 # Rule: Ingress from local Mac to NodePort range on Worker Node SG
@@ -118,6 +122,7 @@ resource "aws_security_group_rule" "eks_node_ingress_from_alb" {
   source_security_group_id = aws_security_group.alb_ingress.id # References ALB SG
   security_group_id        = aws_security_group.eks_node_group.id
   description              = "Allow ALB/NLB to send traffic to worker nodes"
+  cidr_blocks = ["0.0.0.0/0"]
 }
 
 # Rule: Egress from Worker Node SG to EKS API Server
@@ -128,6 +133,7 @@ resource "aws_security_group_rule" "eks_node_egress_to_api" {
   protocol                 = "tcp"
   security_group_id        = aws_security_group.eks_node_group.id
   description              = "Allow worker nodes to communicate with EKS API server"
+  cidr_blocks = ["0.0.0.0/0"]
 }
 
 
