@@ -126,13 +126,13 @@ parameters {
                 cd terraform
                 export KUBE_CONFIG_PATH=~/.kube/config
                 echo "Executing update-kubeconfig on cluster EKS-blueprints  region us-east-1"
-                aws eks update-kubeconfig --region us-east-1 --name EKS-blueprints 
-              #  cd apps_deploy
-                # echo "Deploying EKS Apps"           
-                # kubectl apply -f hello-kubernetes.yaml
-                # kubectl apply -f service-loadbalancer.yaml
-                # kubectl apply -f chacon.yaml  
-                # kubectl apply -f chacon-service-loadbalancer.yaml 
+                aws eks update-kubeconfig --region us-east-1 --name EKS-blueprintsr 
+                cd apps_deploy
+                 echo "Deploying EKS Apps"           
+                 kubectl apply -f hello-kubernetes.yaml
+                 kubectl apply -f service-loadbalancer.yaml
+                 kubectl apply -f chacon.yaml  
+                 kubectl apply -f chacon-service-loadbalancer.yaml 
                 echo "Executing Get all pods"
                 kubectl get pods -A -o wide
                 sh '''
