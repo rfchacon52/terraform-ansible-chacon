@@ -85,8 +85,8 @@ module "eks" {
 
   eks_managed_node_groups = {
     # Define a node group named 't2-small-nodes'
-    t2_small_nodes = {
-      name           = "${local.name}-t2-small-nodes"
+    node_group1 = {
+      name           = "${local.name}-ng"
       instance_types = ["t2.small"]
       ami_type       = "AL2_x86_64" # Amazon Linux 2 (recommended for t2.small)
 
