@@ -94,7 +94,7 @@ module "eks_blueprints_addons" {
 
 
   # Enable AWS Load Balancer Controller (Helm-based add-on)
-  enable_aws_load_balancer_controller = true
+  # enable_aws_load_balancer_controller = true
 
   # Optional: Enable ArgoCD if you want to deploy it via this module
   # enable_argocd = true
