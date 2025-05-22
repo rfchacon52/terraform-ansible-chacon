@@ -174,4 +174,5 @@ resource "aws_security_group_rule" "alb_egress_to_nodes" {
   protocol                 = "-1" # All protocols (or more specific to NodePort range if desired)
   security_group_id        = aws_security_group.alb_ingress.id
   description              = "Allow ALB to send traffic to EKS worker nodes (target groups)"
+  cidr_blocks = ["0.0.0.0/0"]
 }
