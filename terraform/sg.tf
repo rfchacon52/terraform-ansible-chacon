@@ -99,7 +99,6 @@ resource "aws_security_group_rule" "eks_node_ingress_self" {
   self              = true
   security_group_id = aws_security_group.eks_node_group.id
   description       = "Allow all traffic between nodes in the same security group"
-  cidr_blocks = ["0.0.0.0/0"]
 }
 
 # Rule: Ingress from local Mac to NodePort range on Worker Node SG
