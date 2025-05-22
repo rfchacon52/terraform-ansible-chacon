@@ -1,32 +1,31 @@
+# variables.tf
 
-variable "cluster_version" {
-  description = "EKS cluster version."
-  type        = string
-  default     = "1.32"
-}
 variable "cluster_name" {
-  description = "EKS cluster name."
+  description = "Name of the EKS cluster"
   type        = string
-  default     = "EKS-blueprints"
-}
-variable "ami_type" {
-  description = "Default EKS AMI release version for node groups"
-  type        = string
-  default     = "AL2_x86_64" 
+  default     = EKS-AM-Cluster" # Customize this
 }
 
-variable "instance_types" {
-  description = "Default instance types"
-  type        = string
-  default     = "t2.small"
-}
-variable "vpc_cidr" {
-  description = "Defines the CIDR block used on Amazon VPC created for Amazon EKS."
-  type        = string
-  default     = "10.0.0.0/16"
-}
 variable "region" {
-  description = "Default EKS Region"
+  description = "AWS region to deploy resources in"
   type        = string
-  default     = "us-east-1"
+  default     = "us-east-1" # Customize this
+}
+
+variable "vpc_cidr" {
+  description = "CIDR block for the VPC"
+  type        = string
+  default     = "10.0.0.0/16" # Customize this
+}
+
+variable "allowed_mac_ip" {
+  description = "Your local Mac's IP address for SSH and NodePort access"
+  type        = string
+  default     = "10.0.0.114/32" # IMPORTANT: Replace with your actual public IP if not in VPC
+}
+
+variable "eks_cluster_version" {
+  description = "Kubernetes version for the EKS cluster"
+  type        = string
+  default     = "1.29" # IMPORTANT: Use a version supported by EKS (e.g., 1.28, 1.29 as of mid-2025)
 }

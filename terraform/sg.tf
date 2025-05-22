@@ -1,148 +1,71 @@
-resource "aws_security_group" "worker_group_mgmt_one" {
-  name_prefix = "worker_group_mgmt_one"
-  vpc_id      = module.vpc.vpc_id
-ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-cidr_blocks = [
-      "10.0.0.0/16",
-    ]
-  }
-}
-resource "aws_security_group" "worker_group_mgmt_two" {
-  name_prefix = "worker_group_mgmt_two"
-  vpc_id      = module.vpc.vpc_id
-ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-cidr_blocks = [
-      "10.0.0.0/16",
-    ]
-  }
+# sg.tf
+
+# --- Data Sources to reference existing VPC and EKS components ---
+data "aws_vpc" "selected" {
+  id = module.vpc.vpc_id
 }
 
-
-resource "aws_security_group" "eks_worker_node_ingress_argocd_http" {
-  name        = "eks-argocd-http-nodeport-ingress"
-  description = "Allow HTTP access to ArgoCD NodePort service in EKS"
-  vpc_id      = module.vpc.vpc_id # Replace with your EKS cluster's VPC ID
-
-  ingress {
-    description = "Allow HTTP access to ArgoCD NodePort"
-    from_port   = 30060 # The NodePort for HTTP
-    to_port     = 30660 # The NodePort for HTTP
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Be cautious: 0.0.0.0/0 means open to the world.
-                                # Restrict this to known IP ranges if possible.
-  }
-
-  ingress {
-    description = "Allow HTTPS access to ArgoCD NodePort"
-    from_port   = 30000 # The NodePort for HTTPS
-    to_port     = 30479 # The NodePort for HTTPS
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Be cautious: 0.0.0.0/0 means open to the world.
-                                # Restrict this to known IP ranges if possible.
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1" # Allow all outbound traffic
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name        = "eks-argocd-nodeport-sg"
-    Environment = "Dev" # Or your environment
-  }
+# Get the EKS cluster's automatically generated security group ID
+# for control plane to node communication. This becomes available after cluster creation.
+data "aws_eks_cluster" "this" {
+  name = local.name
 }
 
-# main.tf or security_groups.tf
-
-# --- Local Values ---
-# Define common tags and other variables for consistency
-locals {
-  cluster_name = var.cluster_name # Replace with your cluster name
-  vpc_id       = module.vpc.vpc_id  # Replace with your VPC ID
-  # Example: CIDR blocks allowed to access the EKS API endpoint publicly
-  allowed_api_cidrs = ["10.0.0.0/24", "10.0.1.0/24", "10.0.2.0/24","10.0.3.0/24","10.0.0.0/16" ] # Replace with your office/VPN CIDRs
-}
-
-# --- 1. EKS Control Plane Security Group ---
-# This SG is created by EKS automatically. However, you can associate
-# additional security groups with the cluster to restrict access to the
-# public API endpoint or to allow specific traffic to the private endpoint.
-# The `cluster_security_group_id` output from the aws_eks_cluster resource
-# will give you the ID of the EKS-managed security group.
-# For security best practices, you often want to restrict inbound access
-# to the EKS API endpoint from the public internet.
-
+# --- 1. EKS Control Plane API Access Security Group ---
 resource "aws_security_group" "eks_cluster_api_access" {
-  name        = "${local.cluster_name}-api-access"
-  description = "Allows access to the EKS cluster API endpoint"
-  vpc_id      = local.vpc_id
+  name        = "${local.name}-api-access-sg"
+  description = "Allows restricted access to the EKS cluster API endpoint"
+  vpc_id      = data.aws_vpc.selected.id
 
+  # Allow inbound HTTPS from your Mac for kubectl access to the EKS API
   ingress {
-    description = "Allow EKS worker nodes to communicate with control plane"
-    from_port   = 443 # Kubernetes API server port
+    description = "Allow EKS API access from local Mac"
+    from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    # This should be the security group of your worker nodes
+    cidr_blocks = [var.allowed_mac_ip] # Your local Mac's IP
+  }
+
+  # Allow inbound HTTPS from the EKS Node Group for kubelet and other control plane communication
+  ingress {
+    description     = "Allow worker nodes to communicate with control plane (kubelet)"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
     security_groups = [aws_security_group.eks_node_group.id]
   }
 
-  # Ingress rules for public API endpoint (if public access is enabled)
-  dynamic "ingress" {
-    for_each = local.allowed_api_cidrs
-    content {
-      description = "Allow specific CIDRs to access EKS API"
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
-      cidr_blocks = [ingress.value]
-    }
-  }
-
-  # Egress rule for control plane to reach worker nodes
+  # Egress to worker nodes (for control plane to push configurations, logs, etc.)
   egress {
-    description = "Allow control plane to reach worker nodes (kubelet, CNI)"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1" # All protocols
-    # This should be the security group of your worker nodes
+    description     = "Allow control plane to reach worker nodes"
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
     security_groups = [aws_security_group.eks_node_group.id]
   }
 
-  tags = {
-    Name        = "${local.cluster_name}-api-access"
-    Environment = "production" # Or your environment
-  }
+  tags = local.tags
 }
 
 # --- 2. EKS Worker Node Security Group ---
-# This security group is attached to your EC2 worker instances (managed node groups or self-managed).
-# It defines how worker nodes can communicate with the control plane, with each other,
-# and potentially with other AWS services.
-
+# This security group is attached to your EC2 worker instances.
+# It controls traffic to/from the worker nodes themselves, including NodePorts.
 resource "aws_security_group" "eks_node_group" {
-  name        = "${local.cluster_name}-node-group"
+  name        = "${local.name}-node-group-sg"
   description = "Security group for EKS worker nodes"
-  vpc_id      = local.vpc_id
+  vpc_id      = data.aws_vpc.selected.id
 
-  # Ingress: Allow traffic from control plane
+  # Ingress: Allow traffic from EKS control plane (via its automatically created SG)
   ingress {
-    description = "Allow traffic from EKS control plane"
-    from_port   = 1025 # Kubelet port range
-    to_port     = 65535 # Kubelet port range
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    description     = "Allow traffic from EKS control plane"
+    from_port       = 1025 # Kubelet port range
+    to_port         = 65535 # Kubelet port range
+    protocol        = "tcp"
+    security_groups = [data.aws_eks_cluster.this.vpc_config[0].cluster_security_group_id]
   }
 
-  # Ingress: Allow traffic between nodes in the same security group (self-referencing)
-  # This allows Pod-to-Pod communication and node-to-node communication
+  # Ingress: Allow all traffic between nodes in the same security group (self-referencing)
+  # Essential for Pod-to-Pod communication via CNI
   ingress {
     description = "Allow all traffic between nodes in the same security group"
     from_port   = 0
@@ -151,54 +74,52 @@ resource "aws_security_group" "eks_node_group" {
     self        = true # Refers to itself
   }
 
-  # Ingress: Optional - Allow SSH access to worker nodes (for troubleshooting/admin)
-  # It's highly recommended to restrict this to specific CIDRs, VPN, or bastion hosts.
-  # For managed node groups, you can specify `remote_access` in the node group config.
+  # Ingress: Allow your local Mac to access NodePorts on worker nodes
   ingress {
-    description = "Allow SSH from specific IPs/CIDRs for worker node access"
-    from_port   = 22
-    to_port     = 22
+    description = "Allow local Mac to access NodePorts (e.g., ArgoCD 30660)"
+    from_port   = 30000 # Standard NodePort range start
+    to_port     = 32767 # Standard NodePort range end (30660 falls within this)
     protocol    = "tcp"
-    cidr_blocks = [local.vpc_id_cidr_block] # Example: Allow from within the VPC
-    # cidr_blocks = ["YOUR_TRUSTED_IP/32"] # Replace with specific IPs
+    cidr_blocks = [var.allowed_mac_ip] # Your local Mac's IP
+  }
+
+  # Ingress: Allow ALB/NLB to send traffic to worker nodes (for target groups)
+  ingress {
+    description     = "Allow ALB/NLB to send traffic to worker nodes"
+    from_port       = 30000 # NodePort range
+    to_port         = 32767
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_ingress.id] # Reference the ALB Ingress SG
   }
 
   # Egress: Allow worker nodes to communicate with the EKS API server
   egress {
-    description = "Allow worker nodes to communicate with EKS API server"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    # Reference the EKS cluster's managed security group
-    cidr_blocks = ["0.0.0.0/0"]
+    description     = "Allow worker nodes to communicate with EKS API server"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = [data.aws_eks_cluster.this.vpc_config[0].cluster_security_group_id]
   }
 
   # Egress: Allow worker nodes to pull container images from ECR, communicate with S3, etc.
-  # This typically means allowing outbound to the internet (or NAT Gateway).
   egress {
-    description = "Allow worker nodes to communicate with the internet (e.g., ECR, S3)"
+    description = "Allow worker nodes outbound internet access (e.g., ECR, S3)"
     from_port   = 0
     to_port     = 0
     protocol    = "-1" # All protocols
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name = "${local.cluster_name}-node-group"
-    # IMPORTANT: These tags are required by EKS for the worker nodes to register correctly
-    "kubernetes.io/cluster/${local.cluster_name}" = "owned"
-  }
+  tags = local.tags
 }
 
-# --- 3. Security Group for Ingress (e.g., ALB) ---
-# This SG is for your Application Load Balancer (ALB) or Network Load Balancer (NLB)
-# created by the AWS Load Balancer Controller.
-# It defines what inbound traffic is allowed to your applications.
-
+# --- 3. ALB Ingress Security Group ---
+# This SG is for the Application Load Balancer created by the AWS Load Balancer Controller.
+# It allows public internet access to your applications.
 resource "aws_security_group" "alb_ingress" {
-  name        = "${local.cluster_name}-alb-ingress"
+  name        = "${local.name}-alb-ingress-sg"
   description = "Security group for EKS Application Load Balancer ingress"
-  vpc_id      = local.vpc_id
+  vpc_id      = data.aws_vpc.selected.id
 
   # Ingress: Allow HTTP traffic from anywhere
   ingress {
@@ -218,85 +139,38 @@ resource "aws_security_group" "alb_ingress" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Egress: Allow ALB to send traffic to worker nodes (target groups)
+  # Egress: ALBs generally need to initiate connections to targets
+  # The ALB controller will manage specific egress rules for target groups.
+  # This default rule allows outbound traffic to target nodes.
   egress {
-    description = "Allow ALB to send traffic to EKS worker nodes"
-    from_port   = 30000 # Typical NodePort range, or target group health checks
-    to_port     = 32767 # Or specific service ports exposed by your applications
-    protocol    = "tcp"
-    # The worker node security group is the destination
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name        = "${local.cluster_name}-alb-ingress"
-    Environment = "dev"
-    # Required tag for ALB controller to discover and manage this SG
-    "kubernetes.io/cluster/${local.cluster_name}" = "owned"
-  }
-}
-
-# --- 4. (Optional) Security Group for Pods (SGfP) ---
-# If you enable Security Groups for Pods (ENABLE_POD_ENI=true on VPC CNI),
-# you will create specific security groups for your Pods. This is a powerful
-# feature for fine-grained network segmentation.
-# These security groups are typically defined and associated with Pods via
-# a Kubernetes `SecurityGroupPolicy` Custom Resource, but you define the
-# actual `aws_security_group` here.
-
-resource "aws_security_group" "app_pod_sg" {
-  name        = "${local.cluster_name}-app-pod-sg"
-  description = "Security Group for specific application Pods"
-  vpc_id      = local.vpc_id
-
-  # Ingress: Example - Allow traffic from ALB Ingress SG to your app Pods
-  ingress {
-    description     = "Allow traffic from ALB Ingress"
-    from_port       = 8080 # Your application's listening port
-    to_port         = 8080
-    protocol        = "tcp"
-    security_groups = [aws_security_group.alb_ingress.id]
-  }
-
-  # Ingress: Example - Allow traffic from other Pods in the same SG (e.g., microservices)
-  ingress {
-    description = "Allow traffic from other Pods in this SG"
+    description = "Allow ALB to send traffic to EKS worker nodes (target groups)"
     from_port   = 0
     to_port     = 0
-    protocol    = "-1"
-    self        = true
+    protocol    = "-1" # All protocols (or more specific to NodePort range)
+    security_groups = [aws_security_group.eks_node_group.id]
   }
 
-  # Egress: Allow Pods to reach other services (e.g., RDS, DynamoDB, S3)
-  egress {
-    description = "Allow outbound to other AWS services"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"] # Be more restrictive if possible (e.g., VPC CIDR, service endpoints)
-  }
-
-  tags = {
-    Name        = "${local.cluster_name}-app-pod-sg"
-    Environment = "dev"
-    # This tag is often required by the ALB controller if SGfP is enabled
-    # "kubernetes.io/cluster/${local.cluster_name}" = "owned"
-  }
+  tags = local.tags
 }
 
-# --- Data Source to get EKS cluster's managed security group ID ---
-# This is needed to reference the automatically created EKS cluster security group
-# for communication between the control plane and worker nodes.
-#data "aws_eks_cluster" "this" {
-#  name = local.cluster_name
+# Optional: Dedicated SSH access security group (if you want more granular control than allowing from all private nodes)
+# resource "aws_security_group" "ssh_access_from_mac" {
+#   name        = "${local.name}-ssh-access-from-mac-sg"
+#   description = "Allow SSH access from specific IPs/CIDRs for worker node access"
+#   vpc_id      = data.aws_vpc.selected.id
+
+#   ingress {
+#     description = "Allow SSH from local Mac"
+#     from_port   = 22
+#     to_port     = 22
+#     protocol    = "tcp"
+#     cidr_blocks = [var.allowed_mac_ip]
+#   }
+#   egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+#   tags = local.tags
 # }
-
-# --- Data Source to get VPC CIDR Block ---
-# Used for example SSH ingress to worker nodes from within the VPC.
-data "aws_vpc" "selected" {
-  id = local.vpc_id
-}
-
-locals {
-  vpc_id_cidr_block = data.aws_vpc.selected.cidr_block
-}
