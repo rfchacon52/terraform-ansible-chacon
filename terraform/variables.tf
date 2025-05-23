@@ -1,31 +1,44 @@
-# variables.tf
 
+variable "cluster_version" {
+  description = "EKS cluster version."
+  type        = string
+  default     = "1.31"
+}
 variable "cluster_name" {
-  description = "Name of the EKS cluster"
+  description = "EKS cluster name."
   type        = string
-  default     = "EKS-blueprintsr" # Customize this
+  default     = "EKS-blueprints"
+}
+variable "ami_type" {
+  description = "Default EKS AMI release version for node groups"
+  type        = string
+  default     = "AL2_x86_64" 
 }
 
-variable "region" {
-  description = "AWS region to deploy resources in"
+variable "instance_type" {
+  description = "Default instance types"
   type        = string
-  default     = "us-east-1" # Customize this
+  default     = "t2.small"
 }
-
 variable "vpc_cidr" {
-  description = "CIDR block for the VPC"
+  description = "Defines the CIDR block used on Amazon VPC created for Amazon EKS."
   type        = string
-  default     = "10.0.0.0/16" # Customize this
+  default     = "10.0.0.0/16"
+}
+variable "region" {
+  description = "Default EKS Region"
+  type        = string
+  default     = "us.east-1"
 }
 
-variable "allowed_mac_ip" {
-  description = "Your local Mac's IP address for SSH and NodePort access"
-  type        = string
-  default     = "10.0.0.114/32" # IMPORTANT: Replace with your actual public IP if not in VPC
+variable "create_cloudwatch_log_group" {
+  description = "Determines whether a log group is created by this module for the cluster logs. If not, AWS will automatically create one if logging is enabled"
+  type        = bool
+  default     = true
 }
 
-variable "eks_cluster_version" {
-  description = "Kubernetes version for the EKS cluster"
-  type        = string
-  default     = "1.31" # IMPORTANT: Use a version supported by EKS (e.g., 1.28, 1.29 as of mid-2025)
-}
+variable "cloudwatch_log_group_retention_in_days" {
+  description = "Number of days to retain log events. Default retention - 90 days"
+  type        = number
+  default     = 15
+} 

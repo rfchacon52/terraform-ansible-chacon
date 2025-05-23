@@ -1,26 +1,32 @@
 ###################################################
-# Providers file 
+# State file 
 ###################################################
 
-# versions.tf
-
 terraform {
-  required_version = ">= 1.0"
+
+required_version = ">= 1.0.0" # Or your desired minimum Terraform version
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0" # Use a recent stable version
+      version = "5.98.0"
     }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.23" # Required for deploying Kubernetes resources like service accounts if not using Helm/Blueprints
+   kubernetes = {
+      source = "hashicorp/kubernetes"
+      version = "2.27.0"
     }
-    helm = {
+  kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = "1.14.0"
+    }
+  helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.11" # For deploying Helm charts like ArgoCD if not via Blueprints
+      version = "2.17.0"
     }
+
   }
+
+
 
 ###################################################
 # State file 
@@ -35,26 +41,9 @@ terraform {
 
 }
 
+
 provider "aws" {
-  region = var.region
+  region = "us-east-1"
+  alias  = "virginia"
 }
-
-# The Kubernetes provider configuration needs to wait until the EKS cluster is ready
-# and use its output values for authentication.
-# This ensures Helm provider also uses the correct cluster context.
-provider "kubernetes" {
-  host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  token                  = data.aws_eks_cluster_auth.this.token
-}
-
-provider "helm" {
-  kubernetes {
-    host                   = module.eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-    token                  = data.aws_eks_cluster_auth.this.token
-  }
-}
-
-
 
