@@ -5,14 +5,6 @@ provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.my_eks_cluster_auth.token
-
-  # Ensure Kubernetes provider is configured ONLY after the EKS cluster is up
-  # This dependency is critical for correct provisioning order
-  # and avoids "cluster not found" errors during plan/apply.
-  depends_on = [
-    module.eks.cluster_id,
-    module.eks.eks_managed_node_groups # Wait for node groups too, for a fully ready cluster
-  ]
 }
 
 # Example Kubernetes resource:
@@ -32,11 +24,6 @@ provider "helm" {
     token                  = data.aws_eks_cluster_auth.my_eks_cluster_auth.token
   }
 
-  # Ensure Helm provider is configured ONLY after the EKS cluster is up
-  depends_on = [
-    module.eks.cluster_id,
-    module.eks.eks_managed_node_groups # Wait for node groups too
-  ]
 }
 
 # Example Helm release:
@@ -60,11 +47,6 @@ provider "kubectl" {
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.my_eks_cluster_auth.token
 
-  # Ensure Kubectl provider is configured ONLY after the EKS cluster is up
-  depends_on = [
-    module.eks.cluster_id,
-    module.eks.eks_managed_node_groups # Wait for node groups too
-  ]
 }
 
 # Example Kubectl command:
