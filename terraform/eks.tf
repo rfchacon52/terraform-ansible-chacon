@@ -46,13 +46,3 @@ module "eks" {
 }
 
 
-map_users = [
-    {
-      userarn  = data.aws_caller_identity.current.arn # This maps your Terraform execution identity
-      username = "terraform-admin"
-      groups   = ["system:masters"]
-    }
-  ]
-
-data "aws_caller_identity" "current" {}
-
