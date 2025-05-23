@@ -9,7 +9,6 @@ module "eks" {
   control_plane_subnet_ids = module.vpc.private_subnets # Explicitly define for control plane
   cluster_endpoint_public_access = true
   enable_cluster_creator_admin_permissions = true
-  create_cluster = true
 
  cluster_addons = {
     coredns = {
@@ -32,7 +31,6 @@ module "eks" {
       # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
       ami_type       =  var.ami_type
       instance_types =  var.instance_type
-      create_iam_role = true
       min_size     = 1
       max_size     = 3
       desired_size = 2
