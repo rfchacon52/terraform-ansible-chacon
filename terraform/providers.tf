@@ -56,9 +56,5 @@ provider "helm" {
   }
 }
 
-# Data source for EKS cluster authentication token for Kubernetes and Helm providers
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
-}
 
 

@@ -80,36 +80,3 @@ module "eks" {
   }
 
 }
-# --- EKS Blueprints Addons Module ---
-# Deploys essential EKS add-ons and configures their IRSA roles.
-# This assumes you want to use the `eks_blueprints_addons` module.
-module "eks_blueprints_addons" {
-  source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.21.0" # Ensure to update this to the latest/desired version
-
-  cluster_name      = module.eks.cluster_name
-  cluster_endpoint  = module.eks.cluster_endpoint
-  cluster_version   = module.eks.cluster_version
-  oidc_provider_arn = module.eks.oidc_provider_arn # Critical for IRSA setup by addons
-
-
-  # Enable AWS Load Balancer Controller (Helm-based add-on)
-  # enable_aws_load_balancer_controller = true
-
-  # Optional: Enable ArgoCD if you want to deploy it via this module
-  # enable_argocd = true
-  # argocd_helm_config = {
-  #   values = [
-  #     jsonencode({
-  #       server = {
-  #         service = {
-  #           type     = "NodePort"
-  #           nodePort = 30660
-  #         }
-  #       }
-  #     })
-  #   ]
-  # }
-
-  tags = local.tags
-}

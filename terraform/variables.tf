@@ -27,5 +27,5 @@ variable "allowed_mac_ip" {
 variable "eks_cluster_version" {
   description = "Kubernetes version for the EKS cluster"
   type        = string
-  default     = "1.29" # IMPORTANT: Use a version supported by EKS (e.g., 1.28, 1.29 as of mid-2025)
+  default     = "1.31" # IMPORTANT: Use a version supported by EKS (e.g., 1.28, 1.29 as of mid-2025)
 }
