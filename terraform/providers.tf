@@ -4,7 +4,7 @@
 
 terraform {
 
-required_version = ">= 1.0.0" # Or your desired minimum Terraform version
+required_version = ">= 1.12.0" # Or your desired minimum Terraform version
 
   required_providers {
     aws = {
