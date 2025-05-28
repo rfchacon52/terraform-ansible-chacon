@@ -18,8 +18,15 @@ module "eks" {
       most_recent = true
     }
     vpc-cni = {
-      most_recent = true
-    }
+    resolve_conflicts = "OVERWRITE" # Important to ensure your settings apply
+      most_recent       = true        # Recommended to use the latest patch version
+      configuration_values = jsonencode({
+        env = {
+          ENABLE_PREFIX_DELEGATION = "true"
+          WARM_PREFIX_TARGET       = "1" # Recommended for most cases
+        }
+      })
+    } 
     aws-ebs-csi-driver = {
       most_recent = true
     }
