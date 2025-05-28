@@ -125,16 +125,12 @@ parameters {
                 sh '''
                 cd terraform
                 export KUBE_CONFIG_PATH=~/.kube/config
-                echo "Executing update-kubeconfig on cluster EKS-blueprints  region us-east-1"
-                aws eks update-kubeconfig --region us-east-1 --name EKS-blueprints 
-                cd apps_deploy
-                 echo "Deploying EKS Apps"           
-                 kubectl apply -f hello-kubernetes.yaml
-                 kubectl apply -f service-loadbalancer.yaml
-                 kubectl apply -f chacon.yaml  
-                 kubectl apply -f chacon-service-loadbalancer.yaml 
+                EKS_CLUSTER_NAME=$(terraform output -raw eks_cluster_name)
+                REGION_NAME=$(terraform output -raw aws_region_name) 
+                echo "Executing update-kubeconfig on cluster $EKS_CLUSTER_NAME region $REGION_NAME"
+                aws eks update-kubeconfig --region $REGION_NAME --name $EKS_CLUSTER_NAME 
                 echo "Executing Get all pods"
-                kubectl get pods -A -o wide
+                kubectl get all -A -o wide
                 sh '''
             }
         }
@@ -145,7 +141,10 @@ parameters {
            }
             steps {
                 sh '''
-                cd terraform
+                EKS_CLUSTER_NAME=$(terraform output -raw eks_cluster_name)
+                cd tools
+               ./cleanup-cluster.sh $EKS_CLUSTER_NAME 
+                cd ../terraform
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform validate"
