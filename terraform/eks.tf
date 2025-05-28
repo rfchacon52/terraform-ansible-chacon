@@ -98,11 +98,11 @@ enable_aws_load_balancer_controller = true
 
 # --- Output the kubeconfig (optional, for convenience) ---
 # This output comes from the main 'eks_cluster' module.
-output "kubeconfig" {
-  description = "Generated kubeconfig for the EKS cluster"
-  value       = module.eks.kubeconfig
-  sensitive   = true # Mark as sensitive to prevent showing in plain text in logs
-}
+#output "kubeconfig" {
+#  description = "Generated kubeconfig for the EKS cluster"
+#  value       = module.eks.kubeconfig
+#  sensitive   = true # Mark as sensitive to prevent showing in plain text in logs
+
 
 
 
