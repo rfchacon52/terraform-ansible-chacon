@@ -68,7 +68,7 @@ log_info "Step 1/4: Deleting all pods across all namespaces..."
 # This command attempts to forcefully delete all pods. Pods managed by controllers
 # (like Deployments, StatefulSets) might be recreated until their controllers are removed.
 # However, clearing pods first helps reduce active workloads.
-kubectl delete pods -A  --force --grace-period=0 || log_error "Failed to delete all pods. Some pods might remain, but cleanup will continue."
+kubectl delete pods --all-namespaces --all || log_error " Some pods might remain, but cleanup will continue."
 log_info "Waiting for 30 seconds for pods to terminate..."
 sleep 30
 
@@ -85,7 +85,8 @@ sleep 15
 log_info "Step 3/4: Deleting all node groups for cluster: ${EKS_CLUSTER_NAME}..."
 # This command deletes all managed and unmanaged nodegroups associated with the cluster.
 # This operation can take a significant amount of time as EC2 instances are terminated.
-eksctl delete nodegroup --cluster "${EKS_CLUSTER_NAME}"  --approve || log_error "Failed to delete nodegroups. Continuing anyway, but manual cleanup might be needed."
+eksctl delete nodegroup --cluster "${EKS_CLUSTER_NAME}" eksctl delete nodegroup --cluster "${EKS_CLUSTER_NAME}" --name node-group --region "${REGION}" || log_error "Failed to delete nodegroups. Continuing anyway, but manual cleanup might be needed."
+
 log_info "Node group deletion initiated. This may take several minutes. Waiting for 120 seconds for initial termination..."
 sleep 120 # Give some time for nodegroups to start terminating
 

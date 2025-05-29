@@ -7,7 +7,7 @@ variable "cluster_version" {
 variable "cluster_name" {
   description = "EKS cluster name."
   type        = string
-  default     = "EKS-blueprints"
+  default     = "eksblue"
 }
 variable "ami_type" {
   description = "Default EKS AMI release version for node groups"
