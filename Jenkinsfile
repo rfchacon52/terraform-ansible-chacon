@@ -138,10 +138,8 @@ parameters {
            }
             steps {
                 sh '''
-                EKS_CLUSTER_NAME=$(terraform output -raw eks_cluster_name)
-                cd tools
-               ./cleanup-cluster.sh $EKS_CLUSTER_NAME 
-                cd ../terraform
+                cd terraform
+               ./cleanup-cluster.sh  
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform validate"
