@@ -47,8 +47,8 @@ module "eks" {
       ami_type       =  var.ami_type
       instance_types =  ["t2.small"]  
       min_size     = 1
-      max_size     = 3
-      desired_size = 2
+      max_size     = 4
+      desired_size = 3
     }
   }
 
