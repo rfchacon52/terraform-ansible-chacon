@@ -125,10 +125,7 @@ parameters {
                 sh '''
                 cd terraform
                 export KUBE_CONFIG_PATH=~/.kube/config
-                EKS_CLUSTER_NAME=$(terraform output -raw eks_cluster_name)
-                REGION_NAME=$(terraform output -raw aws_region_name) 
-                echo "Executing update-kubeconfig on cluster $EKS_CLUSTER_NAME region $REGION_NAME"
-                aws eks update-kubeconfig --region $REGION_NAME --name $EKS_CLUSTER_NAME 
+                aws eks update-kubeconfig --region us-east-1 --name EKS-blueprints
                 echo "Executing Get all pods"
                 kubectl get all -A -o wide
                 sh '''

@@ -17,9 +17,13 @@
 set -e
 
 # --- Configuration ---
-# !!! REPLACE THIS WITH YOUR EKS CLUSTER NAME !!!
 
-EKS_CLUSTER_NAME="$1" # Get the cluster name from the first argument
+my_cluster_string=$(kubectl config current-context | cut -d '@' -f2)
+export EKS_CLUSTER_NAME=$(basename $my_cluster_string)
+export REGION=$(echo $my_cluster_string | awk -F : '{print $4}')
+
+echo $EKS_CLUSTER_NAME
+echo $REGION
 
 
 # --- Helper Functions for Logging ---
@@ -64,7 +68,7 @@ log_info "Step 1/4: Deleting all pods across all namespaces..."
 # This command attempts to forcefully delete all pods. Pods managed by controllers
 # (like Deployments, StatefulSets) might be recreated until their controllers are removed.
 # However, clearing pods first helps reduce active workloads.
-kubectl delete pods --all-namespaces --all --force --grace-period=0 || log_error "Failed to delete all pods. Some pods might remain, but cleanup will continue."
+kubectl delete pods --all-namespaces  --force --grace-period=0 || log_error "Failed to delete all pods. Some pods might remain, but cleanup will continue."
 log_info "Waiting for 30 seconds for pods to terminate..."
 sleep 30
 
