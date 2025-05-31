@@ -1,3 +1,5 @@
+
+
 resource "aws_iam_policy" "alb_controller_policy" {
   name        = "${var.cluster_name}-alb-controller-policy"
   description = "IAM policy for AWS Load Balancer Controller"
@@ -17,6 +19,12 @@ module "eks" {
   cluster_endpoint_public_access = true
   cluster_endpoint_private_access = true
   enable_cluster_creator_admin_permissions = true
+  enable_irsa = true 
+
+
+  eks_managed_node_group_defaults = {
+    disk_size = 50
+  }
 
  cluster_addons = {
     coredns = {

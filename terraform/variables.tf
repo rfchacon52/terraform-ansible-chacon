@@ -12,7 +12,7 @@ variable "cluster_name" {
 variable "ami_type" {
   description = "Default EKS AMI release version for node groups"
   type        = string
-  default     = "AL2_x86_64" 
+  default     = "amazon-eks-node-al2023-x86_64-standard-1.31-v20250519" 
 }
 
 variable "instance_type" {
