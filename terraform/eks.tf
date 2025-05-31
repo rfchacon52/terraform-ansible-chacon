@@ -69,7 +69,7 @@ module "eks" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.20.1" # Latest stable version based on recent activity (v1.20.0 was from Stack Overflow example)
+  version = "1.20.0" # Latest stable version based on recent activity (v1.20.0 was from Stack Overflow example)
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
