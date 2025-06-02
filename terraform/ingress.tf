@@ -91,3 +91,4 @@ resource "kubernetes_ingress_v1" "my_application_ingress" {
     # }
   }
 
+}
