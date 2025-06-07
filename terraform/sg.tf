@@ -26,7 +26,7 @@ resource "aws_security_group_rule" "eks_api_ingress_from_mac" {
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
-  cidr_blocks       = [var.allowed_mac_ip]
+  cidr_blocks       = ["10.0.0.114/32"]
   security_group_id = aws_security_group.eks_cluster_api_access.id
   description       = "Allow EKS API access from local Mac"
 }
@@ -99,7 +99,7 @@ resource "aws_security_group_rule" "eks_node_ingress_from_mac_nodeport" {
   from_port         = 30000
   to_port           = 32767
   protocol          = "tcp"
-  cidr_blocks       = [var.allowed_mac_ip]
+  cidr_blocks       = ["10.0.0.114/32"]
   security_group_id = aws_security_group.eks_node_group.id
   description       = "Allow local Mac to access NodePorts (e.g., ArgoCD 30660)"
 }
