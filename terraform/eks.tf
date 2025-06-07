@@ -1,4 +1,6 @@
-
+#####################################################
+# EKS module 
+####################################################
 
 resource "aws_iam_policy" "alb_controller_policy" {
   name        = "${var.cluster_name}-alb-controller-policy"
@@ -12,7 +14,7 @@ module "eks" {
   version = "20.36.0"
 
   cluster_name    = var.cluster_name
-  cluster_version = "1.31"
+  cluster_version = "1.32"
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
   control_plane_subnet_ids = module.vpc.private_subnets # Explicitly define for control plane
@@ -20,7 +22,6 @@ module "eks" {
   cluster_endpoint_private_access = true
   enable_cluster_creator_admin_permissions = true
   enable_irsa = true 
-
 
   eks_managed_node_group_defaults = {
     disk_size = 50
@@ -52,11 +53,12 @@ module "eks" {
   eks_managed_node_groups = {
     node-group = {
       # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
+      name = general
       ami_type       =  var.ami_type
       instance_types =  ["t2.small"]  
       min_size     = 1
       max_size     = 4
-      desired_size = 3
+      desired_size = 2
     }
   }
 
@@ -67,6 +69,9 @@ module "eks" {
 }
 
 
+#####################################################
+# EKS Blue Print Add-ons
+####################################################
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "1.20.0" # Latest stable version based on recent activity (v1.20.0 was from Stack Overflow example)
@@ -76,19 +81,16 @@ module "eks_blueprints_addons" {
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
 
+  enable_cluster_autoscaler              = true
   enable_metrics_server                  = true
   enable_external_dns                    = true
   enable_cert_manager                    = true
  # cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
-
   # --- Add-on Configuration: AWS Load Balancer Controller ---
-
   enable_aws_load_balancer_controller = true
-
   aws_load_balancer_controller = {
 
     chart_version = "1.6.2"
-
 
     set = [
       {
@@ -109,11 +111,3 @@ module "eks_blueprints_addons" {
 
 }
 
-# --- Output the kubeconfig (optional, for convenience) ---
-# This output comes from the main 'eks_cluster' module.
-#output "kubeconfig" {
-#  description = "Generated kubeconfig for the EKS cluster"
-#  value       = module.eks.kubeconfig
-#  sensitive   = true # Mark as sensitive to prevent showing in plain text in logs
-
-# terraform/helm-provider.tf

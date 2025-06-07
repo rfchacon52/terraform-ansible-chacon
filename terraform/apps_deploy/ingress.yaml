@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello-kubernetes-ingress
+  namespace: default
+  annotations:
+    # Specify that you want the AWS Load Balancer Controller to handle this Ingress
+    kubernetes.io/ingress.class: alb
+    # Scheme defines whether the ALB is internet-facing or internal
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    # Define the health check path for the target group
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    # Define the target type (instance or ip)
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hello-kubernetes # Your service name
+                port:
+                  number: 80 # Your service port

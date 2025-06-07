@@ -128,6 +128,9 @@ parameters {
                 aws eks update-kubeconfig --region us-east-1 --name eksblue 
                 echo "Executing Get all pods"
                 kubectl get all -A -o wide
+                kubectl apply -f apps_deploy/hello-kubernetes.yaml
+                kubectl apply -f apps_deploy/service-loadbalancer.yaml
+                kubectl apply -f apps_deploy/ingress.yaml
                 sh '''
             }
         }

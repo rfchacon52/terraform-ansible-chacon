@@ -57,7 +57,7 @@ resource "aws_iam_role_policy_attachment" "eks_node_registry_policy_attach" {
 
 # NOTE: The AmazonEKS_CNI_Policy is often attached to the `aws-node` service account via IRSA
 # by the `vpc-cni` addon if you enable it. If not, you might attach it here to the node role.
-# resource "aws_iam_role_policy_attachment" "eks_node_cni_policy_attach" {
-#   role       = aws_iam_role.eks_node_role.name
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-# }
+ resource "aws_iam_role_policy_attachment" "eks_node_cni_policy_attach" {
+   role       = aws_iam_role.eks_node_role.name
+   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+ }

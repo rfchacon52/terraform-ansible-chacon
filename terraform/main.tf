@@ -17,6 +17,7 @@ data "aws_availability_zones" "available" {
 locals {
   name   =  var.cluster_name
   region =  var.region 
+  env  = "Dev"
 
   vpc_cidr = var.vpc_cidr 
   azs      = slice(data.aws_availability_zones.available.names, 0, 2)
