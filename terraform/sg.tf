@@ -48,6 +48,7 @@ resource "aws_security_group_rule" "eks_api_egress_to_nodes" {
   from_port                = 0
   to_port                  = 0
   protocol                 = "-1"
+  source_security_group_id = aws_security_group.eks_node_group.id
   security_group_id        = aws_security_group.eks_cluster_api_access.id
   description              = "Allow control plane to reach worker nodes"
 }
