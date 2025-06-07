@@ -44,6 +44,6 @@ variable "cloudwatch_log_group_retention_in_days" {
 } 
 variable "allowed_mac_ip" {
   description = "Defines the CIDR block used on Mac."
-  type        = string
+  type        = list(string)
   default     = "10.0.0.114/32"
 }
