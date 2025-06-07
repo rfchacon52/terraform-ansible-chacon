@@ -124,6 +124,7 @@ resource "aws_security_group_rule" "eks_node_egress_to_api" {
   protocol                 = "tcp"
   # CORRECTED: Reference the EKS module's output directly
   security_group_id        = aws_security_group.eks_node_group.id
+  source_security_group_id = aws_security_group.alb_ingress.id
   description              = "Allow worker nodes to communicate with EKS API server"
 }
 
@@ -159,5 +160,6 @@ resource "aws_security_group_rule" "alb_egress_to_nodes" {
   to_port                  = 0
   protocol                 = "-1"
   security_group_id        = aws_security_group.alb_ingress.id
+  source_security_group_id = aws_security_group.alb_ingress.id
   description              = "Allow ALB to send traffic to EKS worker nodes (target groups)"
 }
