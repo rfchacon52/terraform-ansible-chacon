@@ -1,6 +1,6 @@
 resource "aws_security_group" "transfer_sg" {
   name_prefix = "transfer-sg-"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = module.vpc.vpc_id 
 
   ingress {
     from_port   = 22
