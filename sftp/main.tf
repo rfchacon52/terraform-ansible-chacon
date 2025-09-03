@@ -107,7 +107,7 @@ resource "aws_transfer_server" "transfer-server" {
 
   endpoint_details {
     subnet_ids = module.vpc.private_subnets
-    vpc_id = join("", module.vpc.vpc_id) 
+    vpc_id =  module.vpc.vpc_id 
   }
   domain                 = "S3" #optional, defaults to S3
   protocols              = ["SFTP"] 
