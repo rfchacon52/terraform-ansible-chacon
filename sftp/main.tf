@@ -106,7 +106,7 @@ resource "aws_transfer_server" "transfer-server" {
   endpoint_type          = "VPC"
 
   endpoint_details {
-    subnet_ids = [module.vpc.private_subnets]
+    subnet_ids = module.vpc.private_subnets
     vpc_id = join("", module.vpc.vpc_id) 
   }
   domain                 = "S3" #optional, defaults to S3
