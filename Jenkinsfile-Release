@@ -65,12 +65,6 @@ pipeline {
 
 
         stage("Build and Deploy") {
-            when {
-                expression {
-                    return env.GIT_TAG != "" // Only run if GIT_TAG is not empty
-                }
-            }
-
            stages {
              stage('Docker Login') {
                steps {
