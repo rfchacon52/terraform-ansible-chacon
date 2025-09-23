@@ -65,6 +65,12 @@ pipeline {
 
 
         stage("Build and Deploy") {
+           when {
+                expression {
+                    return env.GIT_TAG != "" // Only run if GIT_TAG is not empty
+                }
+            }
+
            stages {
              stage('Docker Login') {
                steps {
@@ -73,7 +79,7 @@ pipeline {
                         sh '''
                             echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
                             echo "Building Docker image"
-                            docker build -t ${IMAGE_TAG_RELEASE} . 
+                            docker build -t ${IMAGE_TAG} -t ${IMAGE_TAG_RELEASE} .
                             echo "Piuching Docker image" 
                             docker push --all-tags ${IMAGE_NAME}
                             echo "Docker image push successfully"
