@@ -4,10 +4,14 @@ pipeline {
     environment {
         IMAGE_NAME = 'sanjeevkt720/jenkins-flask-app'
         IMAGE_TAG = "${IMAGE_NAME}:${env.GIT_COMMIT}"
-        KUBECONFIG = credentials('kubeconfig-credentials-id')
-        AWS_ACCESS_KEY_ID = credentials('aws-access-key')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
+       //  KUBECONFIG = credentials('kubeconfig-credentials-id')
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
         GH_TOKEN = credentials('github-access-token')
+        KUBE_CONFIG_PATH      = '~/.kube/config'
+        JAVA_HOME             = '/usr/lib/jvm/java-17-openjdk-17.0.14.0.7-2.el9.x86_64/'
+        MAVEN_HOME            = '/usr/share/maven'
+
     }
 
 
@@ -67,35 +71,31 @@ pipeline {
                 }
             }
 
-            stages {
 
-                stage('Docker Login') {
-                    steps {
-                        withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        sh 'echo ${PASSWORD} | docker login -u ${USERNAME} --password-stdin'}
-                        echo 'Login successfully'
+             stage('Docker Login') {
+               steps {
+                script {
+                    withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_TOKEN')]) {
+                        sh '''
+                            echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
+                            echo "Building Docker image"
+                            docker build -t ${IMAGE_TAG} -t ${IMAGE_TAG_RELEASE} . 
+                            echo "Piuching Docker image" 
+                            docker push --all-tags ${IMAGE_NAME}
+                            echo "Docker image push successfully"
+                            docker push rfchacon717/chacon-image:latest
+                        '''
+                      }
                     }
-                }
-                stage('Build') {
-                    steps {
-                        sh 'docker build -t ${IMAGE_TAG} -t ${IMAGE_TAG_RELEASE} .'
-                        echo "Docker image build successfully"
-                        sh 'docker image ls'
-                    }
-                }
 
-                stage('Push Image') {
-                    steps {
-                        sh 'docker push --all-tags ${IMAGE_NAME}'
-                        echo "Docker image push successfully"
                     }
                 }
 
                 stage('Deploy') {
                     steps {
-                        sh 'kubectl config use-context user@prod.us-east-1.eksctl.io'
-                        sh 'kubectl config current-context'
-                        sh "kubectl set image deployment/flask-app flask-app=${IMAGE_TAG_RELEASE}"
+                        sh '''
+                        echo "Deploy to k8"
+                        ''' 
                     }
                 }
             }
