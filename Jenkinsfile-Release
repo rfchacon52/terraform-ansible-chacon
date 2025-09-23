@@ -73,7 +73,7 @@ pipeline {
                         sh '''
                             echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
                             echo "Building Docker image"
-                            docker build -t ${IMAGE_TAG} -t ${IMAGE_TAG_RELEASE} . 
+                            docker build -t ${IMAGE_TAG_RELEASE} . 
                             echo "Piuching Docker image" 
                             docker push --all-tags ${IMAGE_NAME}
                             echo "Docker image push successfully"
