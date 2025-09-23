@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'sanjeevkt720/jenkins-flask-app'
+        IMAGE_NAME = 'rfchacon717/jenkins-flask-app'
         IMAGE_TAG = "${IMAGE_NAME}:${env.GIT_COMMIT}"
        //  KUBECONFIG = credentials('kubeconfig-credentials-id')
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
@@ -83,7 +83,6 @@ pipeline {
                             echo "Piuching Docker image" 
                             docker push --all-tags ${IMAGE_NAME}
                             echo "Docker image push successfully"
-                            docker push rfchacon717/chacon-image:latest
                         '''
                       }
                     }
@@ -91,10 +90,21 @@ pipeline {
                     }
                 }
 
-                stage('Deploy') {
+                stage('Deploy Terraform cluster') {
                     steps {
                         sh '''
-                        echo "Deploy to k8"
+                        cd terraform
+                        export KUBE_CONFIG_PATH=~/.kube/config
+                        echo "Running terraform init"
+                        terraform init -no-color
+                        echo "Running terraform fmt -recursive"
+                        terraform fmt -recursive
+                        echo "Running terraform validate"
+                        terraform  validate -no-color
+                        echo "Executing terraform plan"                 
+                        terraform plan -out=tfplan -no-color
+                        echo "Executing terraform apply"                 
+                        terraform apply tfplan -no-color
                         ''' 
                     }
                 }
