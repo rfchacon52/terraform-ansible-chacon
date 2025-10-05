@@ -115,6 +115,20 @@ parameters {
                   }
              }
 
+       stage('Deploy nginx using ansible') {
+               when {
+                  expression { params.CHOICE == "Deploy_ASG" }
+                 }
+            steps {
+
+                sh '''
+                cd terraform-asg/ansible
+                ansible-playbook -i inventory deplooy_nginx.yml --check 
+                sh '''
+            }
+        }
+
+
         stage('TerraForm build/deploy K8 Infra') {
            when {
              expression { params.CHOICE == "Deploy_K8" }  
