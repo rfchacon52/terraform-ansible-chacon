@@ -45,29 +45,21 @@ resource "aws_lb_listener" "listener" {
 resource "aws_launch_template" "launch_template" {
   name_prefix   = "lt-"
   instance_type = var.instance_type
-  key_name   = "key_name"
+  key_name   = "terraform-lab-key-pair"
   image_id  = var.ami_id 
-   block_device_mappings {
-    device_name = "/dev/sdf"
-
+    block_device_mappings {
+    device_name = "/dev/sda1" # Common root device for many Linux AMIs
     ebs {
-      volume_size = 20
+      volume_size = 20          # Increase root volume size to 50 GiB
+      volume_type = "gp3"
+      delete_on_termination = true
     }
   }
-  
  network_interfaces {
-    associate_public_ip_address = true
+  device_index = 0
+  associate_public_ip_address = true
+  security_groups    = [aws_security_group.ec2_sg.id]
   } 
-  iam_instance_profile {
-    arn = aws_iam_instance_profile.ec2_instance_profile.arn
-  }
-  user_data = filebase64("user-data.sh")
-  ebs_optimized = true
-  lifecycle {
-    create_before_destroy = true
-  }
-
-
   tag_specifications {
     resource_type = "instance"
     tags = {

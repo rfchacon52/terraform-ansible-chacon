@@ -95,6 +95,26 @@ parameters {
                   }
              }
 
+
+        stage('Build and Push Docker image') {
+           when {
+             expression { params.CHOICE == "Deploy_ASG" }  
+           }
+             steps {
+                script {
+                    withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_TOKEN')]) {
+                        sh '''
+                            cd project
+                            echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
+                            docker build -t rfchacon717/chacon-image:latest .
+                            docker push rfchacon717/chacon-image:latest
+                        '''
+                      }
+                    } 
+               
+                  }
+             }
+
         stage('TerraForm build/deploy K8 Infra') {
            when {
              expression { params.CHOICE == "Deploy_K8" }  
