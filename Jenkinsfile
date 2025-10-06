@@ -84,10 +84,11 @@ parameters {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_TOKEN')]) {
                         sh '''
-                            cd project
-                            echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
-                            docker build -t rfchacon717/chacon-image:latest .
-                            docker push rfchacon717/chacon-image:latest
+                           #  cd project
+                           #  echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
+                           # docker build -t rfchacon717/chacon-image:latest .
+                           # docker push rfchacon717/chacon-image:latest
+                           echo "Docker part"
                         '''
                       }
                     } 
@@ -104,10 +105,11 @@ parameters {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_TOKEN')]) {
                         sh '''
-                            cd project
-                            echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
-                            docker build -t rfchacon717/chacon-image:latest .
-                            docker push rfchacon717/chacon-image:latest
+                         #   cd project
+                         #   echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
+                         #   docker build -t rfchacon717/chacon-image:latest .
+                         #   docker push rfchacon717/chacon-image:latest
+                         echo "Build part"
                         '''
                       }
                     } 
