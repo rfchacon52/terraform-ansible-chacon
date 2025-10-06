@@ -76,25 +76,6 @@ parameters {
                   }
              }
 
-        stage('Build and Push Docker image') {
-           when {
-             expression { params.CHOICE == "Deploy_no" }  
-           }
-             steps {
-                script {
-                    withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_TOKEN')]) {
-                        sh '''
-                             cd project
-                             echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
-                            docker build -t rfchacon717/chacon-image:latest .
-                             docker push rfchacon717/chacon-image:latest
-                           echo "Docker part"
-                        '''
-                      }
-                    } 
-               
-                  }
-             }
 
 
         stage('Build and Push Docker image') {
