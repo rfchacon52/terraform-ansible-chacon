@@ -1,9 +1,7 @@
 ---
 - name: Deploy and Configure NGINX on RHEL 9 (EC2)
-  hosts: nginx # Target host group from your Ansible inventory
-  become: yes               # Use sudo/root privileges for installation and service management
-  become_method: sudo      # 👈 Specifies the method (sudo is default)
-  become_user: root        # 👈 Specifies the user to become (root is default)
+  hosts: my_target_host 
+  become: yes    
   
   tasks:
     - name: 1. Install NGINX package using DNF
