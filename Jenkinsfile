@@ -100,10 +100,9 @@ parameters {
 
        stage('Deploy nginx using ansible') {
                when {
-                  expression { params.CHOICE == "Deploy_ASG" }
+                  expression { params.CHOICE == "Deploy_no" }
                  }
             steps {
-
                 sh '''
                 cd terraform-asg/ansible
                 ansible-playbook -i inventory deploy_nginx.yml --check 
