@@ -65,29 +65,29 @@ parameters {
 
         stage('Run Maven build') {
            when {
-             expression { params.CHOICE == "Deploy_ASG" }  
+             expression { params.CHOICE == "Deploy_no" }  
            }
              steps {
                 sh '''
                 echo "Running Maven build step"
-              //   cd project
-              //   mvn clean package
+                 cd project
+                mvn clean package
                 sh '''
                   }
              }
 
         stage('Build and Push Docker image') {
            when {
-             expression { params.CHOICE == "Deploy_ASG" }  
+             expression { params.CHOICE == "Deploy_no" }  
            }
              steps {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_TOKEN')]) {
                         sh '''
-                           //  cd project
-                           //  echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
-                           // docker build -t rfchacon717/chacon-image:latest .
-                           //  docker push rfchacon717/chacon-image:latest
+                             cd project
+                             echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
+                            docker build -t rfchacon717/chacon-image:latest .
+                             docker push rfchacon717/chacon-image:latest
                            echo "Docker part"
                         '''
                       }
@@ -99,16 +99,16 @@ parameters {
 
         stage('Build and Push Docker image') {
            when {
-             expression { params.CHOICE == "Deploy_ASG" }  
+             expression { params.CHOICE == "Deploy_no" }  
            }
              steps {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_TOKEN')]) {
                         sh '''
-                         //   cd project
-                         //   echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
-                         //   docker build -t rfchacon717/chacon-image:latest .
-                         //   docker push rfchacon717/chacon-image:latest
+                            cd project
+                            echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
+                            docker build -t rfchacon717/chacon-image:latest .
+                            docker push rfchacon717/chacon-image:latest
                          echo "Build part"
                         '''
                       }
@@ -129,7 +129,6 @@ parameters {
                 sh '''
             }
         }
-
 
         stage('TerraForm build/deploy K8 Infra') {
            when {
