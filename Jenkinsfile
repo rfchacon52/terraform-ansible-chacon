@@ -106,7 +106,7 @@ parameters {
 
                 sh '''
                 cd terraform-asg/ansible
-                ansible-playbook -i inventory deplooy_nginx.yml --check 
+                ansible-playbook -i inventory deploy_nginx.ym --check 
                 sh '''
             }
         }
