@@ -1,6 +1,6 @@
 ---
 - name: Install Nginx using privilege escalation
-  hosts: web_servers
+  hosts: nginx 
   become: true             # 👈 Enables privilege escalation for the entire play
   become_method: sudo      # 👈 Specifies the method (sudo is default)
   become_user: root        # 👈 Specifies the user to become (root is default)
