@@ -14,13 +14,3 @@
         name: nginx
         state: started     # Equivalent to 'systemctl start nginx'
         enabled: yes       # Equivalent to 'systemctl enable nginx'
-
-    - name: 3. Open HTTP (80) and HTTPS (443) ports in firewalld permanently
-      ansible.posix.firewalld:
-        service: "{{ item }}"
-        permanent: yes
-        state: enabled
-        immediate: yes     # Apply changes immediately (runtime configuration)
-      loop:
-        - http
-        - https
