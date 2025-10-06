@@ -1,5 +1,3 @@
-# create security group to allow ingoing ports
-# Create ALB Security Group
 resource "aws_security_group" "ec2_sg" {
   name        = var.ec2_security_group_name
   description = "Allow traffic to ec2"
@@ -31,9 +29,6 @@ resource "aws_security_group" "ec2_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name = ec2_security_group
-  }
 }
 
 
