@@ -1,8 +1,8 @@
 # create security group to allow ingoing ports
 # Create ALB Security Group
 resource "aws_security_group" "ec2_sg" {
-  name        = ec2_security_group 
-  description = "Allow traffic to ALB"
+  name        = var.ec2_security_group_name
+  description = "Allow traffic to ec2"
   vpc_id      = module.vpc.vpc_id
  # --- INGRESS (Inbound Rules) ---
   ingress {
