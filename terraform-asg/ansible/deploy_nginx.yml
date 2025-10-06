@@ -1,6 +1,6 @@
 ---
 - name: Deploy and Configure NGINX on RHEL 9 (EC2)
-  hosts: my_target_host 
+  hosts: nginx 
   become: yes    
   
   tasks:
