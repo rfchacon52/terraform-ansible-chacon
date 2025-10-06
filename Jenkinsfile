@@ -70,8 +70,8 @@ parameters {
              steps {
                 sh '''
                 echo "Running Maven build step"
-                cd project
-                mvn clean package
+               #  cd project
+              #  mvn clean package
                 sh '''
                   }
              }
