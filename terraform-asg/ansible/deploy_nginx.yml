@@ -1,26 +1,28 @@
 ---
-- name: Install Nginx using privilege escalation
-  hosts: nginx 
-  become: true             # 👈 Enables privilege escalation for the entire play
+- name: Deploy and Configure NGINX on RHEL 9 (EC2)
+  hosts: nginx # Target host group from your Ansible inventory
+  become: yes               # Use sudo/root privileges for installation and service management
   become_method: sudo      # 👈 Specifies the method (sudo is default)
   become_user: root        # 👈 Specifies the user to become (root is default)
   
   tasks:
-    - name: Ensure Nginx package is installed (requires root)
-      ansible.builtin.package:
+    - name: 1. Install NGINX package using DNF
+      ansible.builtin.dnf:
         name: nginx
         state: present
-    
-    - name: Ensure Nginx service is running (requires root)
-      ansible.builtin.service:
-        name: nginx
-        state: started
-        enabled: true
 
-    - name: Create a file as the current user (overrides become)
-      ansible.builtin.file:
-        path: /tmp/nginx_installed.txt
-        state: touch
-        owner: '{{ ansible_user }}' # Assuming ansible_user is defined in inventory
-        mode: '0644'
-      become: false          # 👈 Explicitly disables privilege escalation for this task
+    - name: 2. Enable and Start the NGINX service
+      ansible.builtin.systemd_service:
+        name: nginx
+        state: started     # Equivalent to 'systemctl start nginx'
+        enabled: yes       # Equivalent to 'systemctl enable nginx'
+
+    - name: 3. Open HTTP (80) and HTTPS (443) ports in firewalld permanently
+      ansible.posix.firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        state: enabled
+        immediate: yes     # Apply changes immediately (runtime configuration)
+      loop:
+        - http
+        - https
