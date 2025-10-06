@@ -17,35 +17,13 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
-variable "alb_security_group_name" {
-  description = "Name of the security group for the ALB"
+variable "ssh_key" {
+  description = "The key pair name"
   type        = string
-  default     = "alb-sg"
+  default     = "terraform-lab-key-pair"
 }
-
 variable "ec2_security_group_name" {
   description = "Name of the security group for the EC2 instances"
   type        = string
   default     = "ec2-sg"
 }
-
-variable "min_size" {
-  description = "Minimum number of EC2 instances in the Auto Scaling group"
-  type        = number
-  default     = 2
-}
-
-variable "max_size" {
-  description = "Maximum number of EC2 instances in the Auto Scaling group"
-  type        = number
-  default     = 4
-}
-
-variable "desired_capacity" {
-  description = "Desired number of EC2 instances in the Auto Scaling group"
-  type        = number
-  default     = 2
-}
-
-
-
