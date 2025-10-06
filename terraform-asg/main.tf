@@ -61,7 +61,7 @@ resource "aws_instance" "bastion" {
   # Must associate public IP to be accessible
   associate_public_ip_address = true
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
-
+  iam_instance_profile = aws_iam_instance_profile.bastion_instance_profile.name
   tags = {
     Name = "Bastion-Host"
   }

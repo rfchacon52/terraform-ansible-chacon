@@ -21,6 +21,7 @@ parameters {
   KUBE_CONFIG_PATH      = '~/.kube/config'
   JAVA_HOME             = '/usr/lib/jvm/java-17-openjdk-17.0.14.0.7-2.el9.x86_64/'
   MAVEN_HOME            = '/usr/share/maven' 
+  ANSIBLE_INVENTORY     = /etc/ansible/inventory
     }    
     options {
         // This is required if you want to clean before build
@@ -100,12 +101,12 @@ parameters {
 
        stage('Deploy nginx using ansible') {
                when {
-                  expression { params.CHOICE == "Deploy_no" }
+                  expression { params.CHOICE == "Deploy_ASG" }
                  }
             steps {
                 sh '''
                 cd terraform-asg/ansible
-                ansible-playbook -i inventory deploy_nginx.yml --check 
+                ansible-playbook deploy_nginx.yml --check 
                 sh '''
             }
         }
