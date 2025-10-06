@@ -21,7 +21,7 @@ parameters {
   KUBE_CONFIG_PATH      = '~/.kube/config'
   JAVA_HOME             = '/usr/lib/jvm/java-17-openjdk-17.0.14.0.7-2.el9.x86_64/'
   MAVEN_HOME            = '/usr/share/maven' 
-  ANSIBLE_INVENTORY     = /etc/ansible/inventory
+  ANSIBLE_INVENTORY     = '/etc/ansible/inventory'
     }    
     options {
         // This is required if you want to clean before build
