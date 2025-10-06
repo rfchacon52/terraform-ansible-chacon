@@ -11,8 +11,7 @@ resource "aws_instance" "appserver" {
   associate_public_ip_address = false 
 
   # CORRECTION 3: Correctly index the list. Assuming 'private_subnets' is a local list.
-  subnet_id = private_subnets[count.index]
-
+  subnet_id = module.vpc.private_subnets[count.index]
   root_block_device {
     volume_type         = "gp2"
     volume_size         = 20 # Volume size should be an integer
