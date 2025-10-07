@@ -85,7 +85,7 @@ def generate_ssh_config(ip_list):
 
 
     for index, ip in enumerate(ip_list):
-        host_alias = f"nginx-private-{index + 1}"
+        host_alias = f"nginxprivate{index + 1}"
         
         entry = [
             f"Host {host_alias}",
