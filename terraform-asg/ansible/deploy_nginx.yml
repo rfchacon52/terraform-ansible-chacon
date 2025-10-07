@@ -1,6 +1,6 @@
 ---
 - name: Install and Configure NGINX on Red Hat/CentOS EC2
-  hosts: nginx 
+  hosts: nginx-servers 
   become: true  # Use sudo/become for root privileges
 
   tasks:
