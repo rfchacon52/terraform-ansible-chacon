@@ -17,6 +17,12 @@
       notify:
         - Restart NGINX
 
+    - name: Ensure NGINX service is started and enabled at boot
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+
     - name: Copy custom index.html file to NGINX web root
       ansible.builtin.copy:
         src: files/index.html
@@ -26,11 +32,6 @@
       notify:
         - Restart NGINX
 
-    - name: Ensure NGINX service is started and enabled at boot
-      ansible.builtin.service:
-        name: nginx
-        state: started
-        enabled: true
         
   handlers:
     - name: Restart NGINX
