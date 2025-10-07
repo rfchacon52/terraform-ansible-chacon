@@ -14,7 +14,7 @@ FILE_A="bastion1_part"
 cp -f $FILE_A config
  
 MERGE1="cat $FILE_B >> config"
-BUILD_COMMAND="./generate_ssh_config.py"
+BUILD_COMMAND="generate_ssh_config.py"
 
 
 
