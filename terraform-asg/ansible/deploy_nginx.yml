@@ -1,16 +1,49 @@
 ---
-- name: Deploy and Configure NGINX on RHEL 9 (EC2)
+- name: Install and Configure NGINX on Red Hat/CentOS EC2
   hosts: nginx 
-  become: yes    
-  
+  become: true  # Use sudo/become for root privileges
+
   tasks:
-    - name: 1. Install NGINX package using DNF
-      ansible.builtin.dnf:
-        name: nginx
+    - name: Ensure EPEL repo is installed (NGINX is often found here)
+      ansible.builtin.yum:
+        name: epel-release
         state: present
 
-    - name: 2. Enable and Start the NGINX service
-      ansible.builtin.systemd_service:
+    - name: Install NGINX package
+      ansible.builtin.yum:
         name: nginx
-        state: started     # Equivalent to 'systemctl start nginx'
-        enabled: yes       # Equivalent to 'systemctl enable nginx'
+        state: latest
+      notify:
+        - Restart NGINX
+
+    - name: Copy custom index.html file to NGINX web root
+      ansible.builtin.copy:
+        src: files/index.html
+        # Standard web root for NGINX installed via yum/dnf on Red Hat-based systems
+        dest: /usr/share/nginx/html/index.html
+        mode: '0644'
+      notify:
+        - Restart NGINX
+
+    - name: Ensure NGINX service is started and enabled at boot
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+        
+    - name: Open HTTP (port 80) in the Firewall (if firewalld is running)
+      ansible.builtin.firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: true
+      ignore_errors: true # Ignore if firewalld service is not active
+
+  handlers:
+    - name: Restart NGINX
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded
+
+
+
