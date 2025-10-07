@@ -106,7 +106,7 @@ parameters {
             steps {
                 sh '''
                 cd terraform-asg/ansible
-                 sleep 30
+                 sleep 5
                 ./rebuild_ssh_config
                 ansible-playbook deploy_nginx.yml --check 
                 ansible-playbook deploy_nginx.yml  
