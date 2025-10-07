@@ -105,8 +105,15 @@ parameters {
                  }
             steps {
                 sh '''
+                
+                ./rebuild_ssh_config
+               
                 cd terraform-asg/ansible
                 ansible-playbook deploy_nginx.yml --check 
+                ansible-playbook deploy_nginx.yml  
+
+                
+
                 sh '''
             }
         }

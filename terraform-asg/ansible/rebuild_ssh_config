@@ -1,0 +1,46 @@
+#!/bin/bash 
+
+
+############################
+#
+# Rebuild config ssh 
+#
+############################
+
+
+FILE_B="/tmp/config_tmp"
+FILE_A="bastion1_part"
+
+cp -f $FILE_A config
+ 
+MERGE1="cat $FILE_B >> config"
+BUILD_COMMAND="./generate_ssh_config.py"
+
+
+
+
+echo "----------------------------------" 
+echo "Executing: [ $BUILD_COMMAND ]"
+echo "----------------------------------"
+eval "$BUILD_COMMAND"
+
+STATUS_CODE=$?
+
+if [ "$STATUS_CODE" -ne 0 ]; then
+    echo "========================================================="
+    echo "ERROR: Dynamic command failed!"
+    echo "Command: [ $BUILD_COMMAND ]"
+    echo "Exit Code: $STATUS_CODE"
+    echo "========================================================="
+    exit "$STATUS_CODE"
+else
+    echo "SUCCESS: Command completed with exit code 0."
+
+    eval "$MERGE1"
+    sudo cp -f config /var/lib/jenkins/.ssh/config
+    sudo chown jenkins /var/lib/jenkins/.ssh/config
+    sudo cp -f config /home/ec2-user/.ssh/config
+    sudo chown ec2-user /home/ec2-user/.ssh/config
+fi
+
+
