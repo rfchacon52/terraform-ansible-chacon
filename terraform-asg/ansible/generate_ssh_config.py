@@ -16,12 +16,12 @@ BASTION_HOST = 'bastion1'
 # Local path for the SSH configuration file
 SSH_CONFIG_PATH = os.path.expanduser('/tmp/config_tmp')
 IDENTITY_FILE_PATH = '~/.ssh/id_rsa' # Your private key file
+INVENTORY = '/tmp/inventory'
 
-def get_private_nginx_instances():
+def get_private_nginx_instances(region_to_query):
     """
     Finds all running EC2 instances with the specific tag and extracts their private IP.
     """
-    region_to_query = 'us-east-1'
     ec2 = boto3.client('ec2', region_name=region_to_query)
     
     try:
@@ -51,14 +51,16 @@ def get_private_nginx_instances():
             # The list should only include IPs that actually exist
             if private_ip:
                 instance_ips.append(private_ip)
-                
+
     return instance_ips
 
 def generate_ssh_config(ip_list):
     """
     Generates the SSH config file content based on the list of IPs.
     """
-    
+   
+    host_alias_list = []
+ 
     config_entries = [
         # Start with a warning that the file is dynamically generated
         "# --- START DYNAMIC NGINX CONFIG ---",
@@ -86,7 +88,9 @@ def generate_ssh_config(ip_list):
 
     for index, ip in enumerate(ip_list):
         host_alias = f"nginxprivate{index + 1}"
-        
+       
+        host_alias_list.append(host_alias)
+ 
         entry = [
             f"Host {host_alias}",
             f"  Hostname {ip}",
@@ -102,7 +106,18 @@ def generate_ssh_config(ip_list):
     with open(SSH_CONFIG_PATH, 'w') as f:
         # Filter out any blank lines that might result from concatenation
         f.write('\n'.join(line for line in config_entries if line.strip()))
-        
+       
+    try:
+        with open(INVENTORY, 'w') as f:
+            f.write(f"[nginxservers] \n") 
+            for item in host_alias_list:
+                # Write the item and append a newline character
+                f.write(f"{item}\n")
+        print(f"Successfully wrote {len(host_alias_list)} items to {INVENTORY}")
+
+    except IOError as e:
+        print(f"An error occurred: {e}")
+
     print(f"\n✅ Successfully updated SSH config: {SSH_CONFIG_PATH}")
     print(f"   Added {len(ip_list)} instance entries.")
 
@@ -110,7 +125,10 @@ def generate_ssh_config(ip_list):
      
 
 if __name__ == "__main__":
-    ip_addresses = get_private_nginx_instances()
+
+
+    region_to_query = 'us-east-1'
+    ip_addresses = get_private_nginx_instances(region_to_query)
     
     if ip_addresses:
         generate_ssh_config(ip_addresses)

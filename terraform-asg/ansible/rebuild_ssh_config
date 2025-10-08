@@ -41,6 +41,8 @@ else
     sudo chown jenkins /var/lib/jenkins/.ssh/config
     sudo cp -f config /home/ec2-user/.ssh/config
     sudo chown ec2-user /home/ec2-user/.ssh/config
+    echo "========================"
+    sudo cat /tmp/inventory
 fi
 
 
