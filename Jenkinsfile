@@ -108,6 +108,7 @@ parameters {
                 cd terraform-asg/ansible
                  sleep 5
                 ./rebuild_ssh_config
+                ssh -A bastion1
                 ansible-playbook deploy_nginx.yml  
                 sh '''
             }
