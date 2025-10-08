@@ -4,24 +4,20 @@
   become: true  # Use sudo/become for root privileges
 
   tasks:
-    - name: Enable NGINX extras on Amazon Linux 2
-      ansible.builtin.command: amazon-linux-extras install -y nginx1
-      args:
-        creates: /etc/yum.repos.d/amzn2-extras-nginx1.repo
-      when: ansible_facts['distribution'] == 'Amazon' and ansible_facts['distribution_major_version'] == '2'
-
     - name: Install NGINX package
       ansible.builtin.yum:
         name: nginx
         state: latest
       notify:
-        - Restart NGINX
+        - Reload NGINX
 
     - name: Ensure NGINX service is started and enabled at boot
       ansible.builtin.service:
         name: nginx
         state: started
         enabled: true
+      notify:
+        - Reload NGINX
 
     - name: Copy custom index.html file to NGINX web root
       ansible.builtin.copy:
@@ -30,11 +26,11 @@
         dest: /usr/share/nginx/html/index.html
         mode: '0644'
       notify:
-        - Restart NGINX
+        - Reload NGINX
 
         
   handlers:
-    - name: Restart NGINX
+    - name: Reload NGINX
       ansible.builtin.service:
         name: nginx
         state: reloaded
