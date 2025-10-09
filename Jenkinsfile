@@ -99,18 +99,22 @@ parameters {
                   }
              }
 
-       stage('Deploy nginx using ansible') {
+       stage('Ansible deploy nginx') {
                when {
                   expression { params.CHOICE == "Deploy_ASG" }
                  }
             steps {
                 sh '''
                 cd terraform-asg/ansible
-                 sleep 5
+                sleep 5
                 ./rebuild_ssh_config
-                ssh -A bastion1
+                sh '''
+               sshagent(credentials: ['630f6379-66ba-47ed-9bd7-6fef02688564']) {  
+                sh '''
+                cd terraform-asg/ansible
                 ansible-playbook deploy_nginx.yml  
                 sh '''
+              }
             }
         }
 
