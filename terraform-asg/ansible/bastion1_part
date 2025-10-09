@@ -1,7 +1,6 @@
 Host bastion1
-  Hostname 3.89.61.26 
+  Hostname 184.72.92.157 
   User ec2-user 
   # Assuming SSH key authentication is used for the bastions
-  ForwardAgent yes 
   IdentityFile ~/.ssh/id_rsa
 
