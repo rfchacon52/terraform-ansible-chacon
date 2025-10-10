@@ -22,26 +22,25 @@
  
     - name: Rename bastion1_part to config 
       ansible.builtin.shell: 'mv bastion1_part config'  
-    
 
-   - name: Copy config file to jenkins
-     ansible.builtin.copy:
-       src: config 
-       dest: /var/lib/jenkins/.ssh/config              
-       owner: jenkins
-       mode: '0755'
+    - name: Copy config file to jenkins
+      ansible.builtin.copy:
+        src: config 
+        dest: /var/lib/jenkins/.ssh/config              
+        owner: jenkins
+        mode: '0755'
 
-   - name: Copy config file to ec2-user 
-     ansible.builtin.copy:
-       src: config 
-       dest: /home/ec2-user/.ssh/config              
-       owner: ec2-user 
-       mode: '0755'
+    - name: Copy config file to ec2-user 
+      ansible.builtin.copy:
+        src: config 
+        dest: /home/ec2-user/.ssh/config              
+        owner: ec2-user 
+        mode: '0755'
 
-   - name: Copy inventory 
-     ansible.builtin.copy:
-       src: /tmp/inventory 
-       dest: /etc/ansible/inventory.ini              
-       owner: root 
-       mode: '0755'
+    - name: Copy inventory 
+      ansible.builtin.copy:
+        src: /tmp/inventory 
+        dest: /etc/ansible/inventory.ini              
+        owner: root 
+        mode: '0755'
 
