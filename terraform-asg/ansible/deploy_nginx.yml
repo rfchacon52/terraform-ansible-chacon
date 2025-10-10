@@ -4,6 +4,11 @@
   become: true  # Use sudo/become for root privileges
 
   tasks:
+
+
+
+
+
     - name: Install NGINX package
       ansible.builtin.yum:
         name: nginx
@@ -27,6 +32,21 @@
         mode: '0644'
       notify:
         - Reload NGINX
+
+    - name: 5. Ensure firewalld service is running
+      ansible.builtin.systemd_service:
+        name: firewalld
+        state: started
+        enabled: yes
+
+    - name: 6. Open HTTP (port 80) permanently in firewalld
+      ansible.posix.firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+        immediate: yes  # Reloads firewalld immediately
+
+
 
         
   handlers:

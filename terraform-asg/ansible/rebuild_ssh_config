@@ -1,12 +1,10 @@
 #!/bin/bash 
 
-
 ############################
 #
 # Rebuild config ssh 
 #
 ############################
-
 
 FILE_B="/tmp/config_tmp"
 FILE_A="bastion1_part"
@@ -16,15 +14,13 @@ cp -f $FILE_A config
 MERGE1="cat $FILE_B >> config"
 BUILD_COMMAND="./generate_ssh_config.py"
 
-
-
-
 echo "----------------------------------" 
 echo "Executing: [ $BUILD_COMMAND ]"
 echo "----------------------------------"
 eval "$BUILD_COMMAND"
 
 STATUS_CODE=$?
+
 
 if [ "$STATUS_CODE" -ne 0 ]; then
     echo "========================================================="
@@ -41,6 +37,7 @@ else
     sudo chown jenkins /var/lib/jenkins/.ssh/config
     sudo cp -f config /home/ec2-user/.ssh/config
     sudo chown ec2-user /home/ec2-user/.ssh/config
+    sudo cp /tmp/inventory /etc/ansible/inventory.ini    
     echo "========================"
     sudo cat /tmp/inventory
 fi

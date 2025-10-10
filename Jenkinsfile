@@ -107,7 +107,7 @@ parameters {
                 sh '''
                 cd terraform-asg/ansible
                 sleep 5
-                ./rebuild_ssh_config
+                ansible-playbook generate_ssh_config.yml  
                 sh '''
                sshagent(credentials: ['630f6379-66ba-47ed-9bd7-6fef02688564']) {  
                 sh '''
