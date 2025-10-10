@@ -3,7 +3,7 @@
   hosts: localhost         # Target the local machine
   connection: local        # Use a local connection type
   gather_facts: no         # No need to gather facts for this simple task
-
+  become: true
   tasks:
 
     - name: Run the script using the 'script' module
