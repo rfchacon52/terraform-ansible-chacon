@@ -1,5 +1,5 @@
 Host bastion1
-  Hostname 184.72.92.157 
+  Hostname 54.157.2.15   
   User ec2-user 
   # Assuming SSH key authentication is used for the bastions
   IdentityFile ~/.ssh/id_rsa
