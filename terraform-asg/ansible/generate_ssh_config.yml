@@ -8,6 +8,8 @@
 
     - name: Run the script using the 'script' module
       script: ./generate_ssh_config.py
+      delegate_to: localhost
+      become: true  #  This enables 'sudo' on the control no
       register: script_output
 
     - name: Display the script's output
