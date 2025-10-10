@@ -5,9 +5,6 @@
   gather_facts: no         # No need to gather facts for this simple task
 
   tasks:
-    - name: Ensure the script is executable (best practice)
-      # but it's often used when running a local task against remote hosts.
-      delegate_to: localhost
 
     - name: Run the script using the 'script' module
       script: ./generate_ssh_config.py
