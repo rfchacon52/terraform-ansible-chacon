@@ -22,5 +22,5 @@
       register: nginx_pid_line
 
     - name: Debug PID line
-      ansible.builtin.debug:
-      var: nginx_pid_line.stdout
+      debug:
+        msg: "{{ nginx_pid_line.stdout }}"
