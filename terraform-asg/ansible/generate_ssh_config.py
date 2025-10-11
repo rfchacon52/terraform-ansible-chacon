@@ -5,6 +5,13 @@ import boto3
 import os
 from botocore.exceptions import ClientError
 
+# More configs
+bastion1='3.89.4.207'
+ansible_user='ec2-user'
+ansible_ssh_common_args='-o ProxyJump=ec2-user@bastion1'
+ansible_ssh_private_key_file='~/.ssh/my-private-key.pem' 
+
+
 # --- Configuration ---
 # Target Tag for filtering EC2 instances
 TARGET_TAG_KEY = 'ec2_type'
@@ -14,7 +21,6 @@ TARGET_TAG_VALUE = 'nginx'
 BASTION_HOST = 'bastion1'
 
 # Local path for the SSH configuration file
-SSH_CONFIG_PATH = os.path.expanduser('/tmp/config_tmp')
 IDENTITY_FILE_PATH = '~/.ssh/id_rsa' # Your private key file
 INVENTORY = '/tmp/inventory'
 
@@ -58,66 +64,26 @@ def generate_ssh_config(ip_list):
     """
     Generates the SSH config file content based on the list of IPs.
     """
-   
-    host_alias_list = []
- 
-    config_entries = [
-        # Start with a warning that the file is dynamically generated
-        "# --- START DYNAMIC NGINX CONFIG ---",
-        "# Created by AWS Python script. Do not edit manually.",
-        f"# Bastion Host for ProxyJump: {BASTION_HOST}\n"
-    ]
-    
-    # Check if there are existing contents to preserve
-    # This block attempts to keep any custom config that isn't the dynamic block
-    
-    if os.path.exists(SSH_CONFIG_PATH):
-        with open(SSH_CONFIG_PATH, 'r') as f:
-            existing_content = f.read()
-            
-        # Find the start/end markers to avoid duplicating or mixing up content
-        start_marker = existing_content.find("# --- START DYNAMIC NGINX CONFIG ---")
-        
-        # If the dynamic block already exists, use content BEFORE the start marker
-        if start_marker != -1:
-             config_entries.insert(0, existing_content[:start_marker])
-        # Otherwise, keep the entire original file content
-        else:
-             config_entries.insert(0, existing_content)
-
-
-    for index, ip in enumerate(ip_list):
-        host_alias = f"nginxprivate{index + 1}"
-       
-        host_alias_list.append(host_alias)
- 
-        entry = [
-            f"Host {host_alias}",
-            f"  Hostname {ip}",
-            "  User ec2-user",
-            f"  IdentityFile {IDENTITY_FILE_PATH}",
-            f"  ProxyJump {BASTION_HOST}\n"
-        ]
-        config_entries.extend(entry)
-
-    config_entries.append("# --- END DYNAMIC NGINX CONFIG ---\n")
-
-    # Write the new configuration
-    with open(SSH_CONFIG_PATH, 'w') as f:
-        # Filter out any blank lines that might result from concatenation
-        f.write('\n'.join(line for line in config_entries if line.strip()))
        
     try:
         with open(INVENTORY, 'w') as f:
             f.write(f"[nginxservers] \n") 
-            for item in host_alias_list:
+
+            for index, ip in enumerate(ip_list):
+                host_alias = f"nginxprivate{index + 1}"
                 # Write the item and append a newline character
-                f.write(f"{item}\n")
-        print(f"Successfully wrote {len(host_alias_list)} items to {INVENTORY}")
+                f.write(f"{host_alias} ansible_host={ip} \n")
+
 
     except IOError as e:
         print(f"An error occurred: {e}")
 
+    f.write(f"[bastions] \n")
+    f.write(f"bastion1 ansible_host={beation1} \n")
+    f.write(f"[nginxservers:vars] \n")    
+    f.write(f"ansible_ssh_common_args={ansible_ssh_common_args} \n")    
+    f.write(f"ansible_user={ansible_user} \n")    
+    f.write(f"ansible_ssh_private_key_file={ansible_ssh_private_key_file} \n")    
     print(f"\n✅ Successfully updated SSH config: {SSH_CONFIG_PATH}")
     print(f"   Added {len(ip_list)} instance entries.")
 
