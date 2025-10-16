@@ -16,8 +16,6 @@ parameters {
  
  
  environment {
-//  TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
-//  TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
   KUBE_CONFIG_PATH      = '~/.kube/config'
   JAVA_HOME             = '/usr/lib/jvm/java-17-openjdk-17.0.14.0.7-2.el9.x86_64/'
   MAVEN_HOME            = '/usr/share/maven' 
@@ -121,6 +119,7 @@ parameters {
              expression { params.CHOICE == "Deploy_K8" }  
            }
              steps {
+                script {
              withCredentials([aws(credentialsId: 'b581cdbc-4526-4c75-bee9-8d082ae5383d', variable: 'AWS_CREDS')]) { 
                 sh '''
                 cd terraform
@@ -138,6 +137,7 @@ parameters {
                 sh '''
              }
             }
+          }
         }
 
         stage('Configure Kubectl, Deploy EKS apps') {
@@ -145,6 +145,7 @@ parameters {
              expression { params.CHOICE == "Deploy_K8" }  
            }
             steps {
+                script {
              withCredentials([aws(credentialsId: 'b581cdbc-4526-4c75-bee9-8d082ae5383d', variable: 'AWS_CREDS')]) { 
                 sh '''
                 cd terraform
@@ -158,6 +159,7 @@ parameters {
                 sh '''
               }
             }
+           }
         }
 
         stage('Terraform K8 Destroy') {
@@ -165,6 +167,7 @@ parameters {
              expression { params.CHOICE == "Destroy_K8" }  
            }
             steps {
+                script {
              withCredentials([aws(credentialsId: 'b581cdbc-4526-4c75-bee9-8d082ae5383d', variable: 'AWS_CREDS')]) { 
                 sh '''
                 cd terraform
@@ -177,7 +180,7 @@ parameters {
                 terraform apply -destroy -auto-approve -no-color
                 sh '''
               }
-            }
+            }}
         }
 
         stage('Terraform Deploy SFTP') {
@@ -227,6 +230,7 @@ parameters {
              expression { params.CHOICE == "Destroy_ASG" }  
            }
             steps {
+                script {
              withCredentials([aws(credentialsId: 'b581cdbc-4526-4c75-bee9-8d082ae5383d', variable: 'AWS_CREDS')]) { 
                 sh '''
                 cd terraform-asg
@@ -241,7 +245,7 @@ parameters {
                 sh '''
               }
             }
-
+        }
 }
 
 
@@ -250,6 +254,7 @@ parameters {
              expression { params.CHOICE == "Deploy_ALB" }  
            }
             steps {
+                script {
              withCredentials([aws(credentialsId: 'b581cdbc-4526-4c75-bee9-8d082ae5383d', variable: 'AWS_CREDS')]) { 
                 sh '''
                 cd terraform_ALB
@@ -266,7 +271,7 @@ parameters {
                 sh '''
                }
             }
-
+       }
 }
 
   stage('Terraform ALB Destroy') {
@@ -274,6 +279,7 @@ parameters {
              expression { params.CHOICE == "Destroy_ALB" }  
            }
             steps {
+                script {
              withCredentials([aws(credentialsId: 'b581cdbc-4526-4c75-bee9-8d082ae5383d', variable: 'AWS_CREDS')]) { 
                 sh '''
                 cd terraform_ALB
@@ -288,7 +294,7 @@ parameters {
                 sh '''
                }
             }
-  }
+          }}
 
     }
-
+}
