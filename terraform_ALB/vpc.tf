@@ -17,6 +17,6 @@ module "vpc" {
 
   tags = {
     Environment = "dev"
-    Project     = "ASG"
+    Project     = "ALB"
   }
 }

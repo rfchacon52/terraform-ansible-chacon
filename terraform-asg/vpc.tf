@@ -16,7 +16,6 @@ module "vpc" {
   enable_dns_support   = true
   create_igw              = true
   map_public_ip_on_launch = true
-  
 
   tags = {
     Environment = "dev"

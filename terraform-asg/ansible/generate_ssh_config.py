@@ -72,18 +72,18 @@ def generate_ssh_config(ip_list):
             for index, ip in enumerate(ip_list):
                 host_alias = f"nginxprivate{index + 1}"
                 # Write the item and append a newline character
-                f.write(f"{host_alias} ansible_host={ip} \n")
+                f.write(f"{host_alias}  \n")
 
 
     except IOError as e:
         print(f"An error occurred: {e}")
 
-    f.write(f"[bastions] \n")
-    f.write(f"bastion1 ansible_host={beation1} \n")
-    f.write(f"[nginxservers:vars] \n")    
-    f.write(f"ansible_ssh_common_args={ansible_ssh_common_args} \n")    
-    f.write(f"ansible_user={ansible_user} \n")    
-    f.write(f"ansible_ssh_private_key_file={ansible_ssh_private_key_file} \n")    
+ #   f.write(f"[bastions] \n")
+ #   f.write(f"bastion1 ansible_host={beation1} \n")
+ #   f.write(f"[nginxservers:vars] \n")    
+ #   f.write(f"ansible_ssh_common_args={ansible_ssh_common_args} \n")    
+    #f.write(f"ansible_user={ansible_user} \n")    
+ #   f.write(f"ansible_ssh_private_key_file={ansible_ssh_private_key_file} \n")    
     print(f"\n✅ Successfully updated SSH config: {SSH_CONFIG_PATH}")
     print(f"   Added {len(ip_list)} instance entries.")
 
