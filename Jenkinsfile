@@ -46,6 +46,7 @@ parameters {
            }
             steps {
                 
+                script {
              withCredentials([aws(credentialsId: 'b581cdbc-4526-4c75-bee9-8d082ae5383d', variable: 'AWS_CREDS')]) { 
                 sh '''
                 cd terraform-asg
@@ -62,7 +63,7 @@ parameters {
                 sh '''
              }
             }
-        }
+        }}
 
         stage('Run Maven build') {
            when {
@@ -294,7 +295,7 @@ parameters {
                 sh '''
                }
             }
-          }}
+          }
 
     }
 }
