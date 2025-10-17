@@ -16,6 +16,8 @@ parameters {
  
  
  environment {
+  TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
+  TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
   KUBE_CONFIG_PATH      = '~/.kube/config'
   JAVA_HOME             = '/usr/lib/jvm/java-17-openjdk-17.0.14.0.7-2.el9.x86_64/'
   MAVEN_HOME            = '/usr/share/maven' 
@@ -46,8 +48,6 @@ parameters {
            }
             steps {
                 
-                script {
-             withCredentials([aws(credentialsId: 'b581cdbc-4526-4c75-bee9-8d082ae5383d', variable: 'AWS_CREDS')]) { 
                 sh '''
                 cd terraform-asg
                 echo "Running terraform init"
@@ -61,9 +61,8 @@ parameters {
                 echo "Executing terraform apply"                 
                 terraform apply tfplan -no-color
                 sh '''
-             }
             }
-        }}
+        }
 
         stage('Run Maven build') {
            when {
@@ -109,6 +108,10 @@ parameters {
                 cd terraform-asg/ansible
                 sleep 5
                 ansible-playbook generate_ssh_config.yml  
+                sh '''
+               sshagent(credentials: ['630f6379-66ba-47ed-9bd7-6fef02688564']) {  
+                sh '''
+                cd terraform-asg/ansible
                 ansible-playbook deploy_nginx.yml  
                 sh '''
               }
@@ -120,8 +123,6 @@ parameters {
              expression { params.CHOICE == "Deploy_K8" }  
            }
              steps {
-                script {
-             withCredentials([aws(credentialsId: 'b581cdbc-4526-4c75-bee9-8d082ae5383d', variable: 'AWS_CREDS')]) { 
                 sh '''
                 cd terraform
                 export KUBE_CONFIG_PATH=~/.kube/config
@@ -136,9 +137,7 @@ parameters {
                 echo "Executing terraform apply"                 
                 terraform apply tfplan -no-color
                 sh '''
-             }
             }
-          }
         }
 
         stage('Configure Kubectl, Deploy EKS apps') {
@@ -146,8 +145,6 @@ parameters {
              expression { params.CHOICE == "Deploy_K8" }  
            }
             steps {
-                script {
-             withCredentials([aws(credentialsId: 'b581cdbc-4526-4c75-bee9-8d082ae5383d', variable: 'AWS_CREDS')]) { 
                 sh '''
                 cd terraform
                 export KUBE_CONFIG_PATH=~/.kube/config
@@ -158,9 +155,7 @@ parameters {
                 kubectl apply -f apps_deploy/service-loadbalancer.yaml
                 kubectl apply -f apps_deploy/ingress.yaml
                 sh '''
-              }
             }
-           }
         }
 
         stage('Terraform K8 Destroy') {
@@ -168,8 +163,6 @@ parameters {
              expression { params.CHOICE == "Destroy_K8" }  
            }
             steps {
-                script {
-             withCredentials([aws(credentialsId: 'b581cdbc-4526-4c75-bee9-8d082ae5383d', variable: 'AWS_CREDS')]) { 
                 sh '''
                 cd terraform
                ./cleanup-cluster.sh  
@@ -180,8 +173,7 @@ parameters {
                 echo "Executing Terraform K8 Destroy"
                 terraform apply -destroy -auto-approve -no-color
                 sh '''
-              }
-            }}
+            }
         }
 
         stage('Terraform Deploy SFTP') {
@@ -231,8 +223,6 @@ parameters {
              expression { params.CHOICE == "Destroy_ASG" }  
            }
             steps {
-                script {
-             withCredentials([aws(credentialsId: 'b581cdbc-4526-4c75-bee9-8d082ae5383d', variable: 'AWS_CREDS')]) { 
                 sh '''
                 cd terraform-asg
                 echo "Running terraform init"
@@ -244,9 +234,8 @@ parameters {
                 echo "Executing Terraform EC2 Destroy"
                 terraform apply -destroy -auto-approve -no-color
                 sh '''
-              }
             }
-        }
+
 }
 
 
@@ -255,8 +244,6 @@ parameters {
              expression { params.CHOICE == "Deploy_ALB" }  
            }
             steps {
-                script {
-             withCredentials([aws(credentialsId: 'b581cdbc-4526-4c75-bee9-8d082ae5383d', variable: 'AWS_CREDS')]) { 
                 sh '''
                 cd terraform_ALB
                 echo "Running terraform init"
@@ -270,9 +257,8 @@ parameters {
                 echo "Executing terraform apply"                 
                 terraform apply tfplan -no-color 
                 sh '''
-               }
             }
-       }
+
 }
 
   stage('Terraform ALB Destroy') {
@@ -280,8 +266,6 @@ parameters {
              expression { params.CHOICE == "Destroy_ALB" }  
            }
             steps {
-                script {
-             withCredentials([aws(credentialsId: 'b581cdbc-4526-4c75-bee9-8d082ae5383d', variable: 'AWS_CREDS')]) { 
                 sh '''
                 cd terraform_ALB
                 echo "Running terraform init"
@@ -293,9 +277,9 @@ parameters {
                 echo "Executing Terraform EC2 Destroy"
                 terraform apply -destroy -auto-approve -no-color
                 sh '''
-               }
             }
-          }
+  }
 
     }
+
 }
