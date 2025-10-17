@@ -108,13 +108,8 @@ parameters {
                 cd terraform-asg/ansible
                 sleep 5
                 ansible-playbook generate_ssh_config.yml  
-                sh '''
-               sshagent(credentials: ['630f6379-66ba-47ed-9bd7-6fef02688564']) {  
-                sh '''
-                cd terraform-asg/ansible
                 ansible-playbook deploy_nginx.yml  
                 sh '''
-              }
             }
         }
 
