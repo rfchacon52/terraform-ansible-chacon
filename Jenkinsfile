@@ -16,8 +16,10 @@ parameters {
  
  
  environment {
-//  TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
-//  TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
+  TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
+  TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
+  AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+  AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
   THE_BUTLER_SAY_SO     = credentials('Jenkins-aws-creds') 
   KUBE_CONFIG_PATH      = '~/.kube/config'
   JAVA_HOME             = '/usr/lib/jvm/java-17-openjdk-17.0.14.0.7-2.el9.x86_64/'
