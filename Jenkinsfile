@@ -16,8 +16,9 @@ parameters {
  
  
  environment {
-  TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
-  TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
+//  TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
+//  TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
+  THE_BUTLER_SAY_SO     = credentials('Jenkins-aws-creds') 
   KUBE_CONFIG_PATH      = '~/.kube/config'
   JAVA_HOME             = '/usr/lib/jvm/java-17-openjdk-17.0.14.0.7-2.el9.x86_64/'
   MAVEN_HOME            = '/usr/share/maven' 
@@ -49,6 +50,10 @@ parameters {
             steps {
                 
                 sh '''
+                echo "Test creds"
+                cd terraform-asg/ansible
+                ./check_if_stopped.sh
+                exit 0  
                 cd terraform-asg
                 echo "Running terraform init"
                 terraform init -no-color
@@ -71,12 +76,11 @@ parameters {
              steps {
                 sh '''
                 echo "Running Maven build step"
-                 cd project
+                cd project
                 mvn clean package
                 sh '''
                   }
              }
-
 
 
         stage('Build and Push Docker image') {
