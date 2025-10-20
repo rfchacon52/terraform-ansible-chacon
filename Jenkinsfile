@@ -79,7 +79,7 @@ parameters {
                 echo "Run Maven Clean, Verify and Sonar Check"
                 mvn clean verify sonar:sonar \
                 -Dsonar.host.url=http://18.119.144.3:9000 \
-                -Dsonar.token=sqa_561f1bf31481ddbe9f79b9e951f7d54cda3b8f4
+                -Dsonar.token=squ_f46748d5844bd4bd337c33225b99cf703179ce66
                 sh '''
                   }
              }
