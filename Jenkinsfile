@@ -84,6 +84,18 @@ parameters {
                   }
              }
 
+        stage('Run SonarQube code check') {
+           when {
+             expression { params.CHOICE == "Deploy_K8" }  
+           }
+             steps {
+                sh '''
+                cd realtime-project
+                echo "Running code check"
+                mv sonar:sonar  -Dsonar.host.url-http://18.119.144.3:9000 -Dsonar.login=sqa_561f1bf31481ddbe9f79b9e951f7d54cda3b8f47
+                sh '''
+                  }
+             }
 
         stage('Build and Push Docker image') {
            when {
