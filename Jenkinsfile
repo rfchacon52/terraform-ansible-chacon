@@ -73,10 +73,11 @@ parameters {
            }
              steps {
                 sh '''
+                cd realtime-project-demo 
+                ls -l 
                 export JAVA_HOME="/usr/lib/jvm/jre-17-openjdk"
                 export PATH="$JAVA_HOME/bin:$PATH"
                 echo "Running Maven build step"
-                cd realtime-project-demo 
                 mvn clean package
                 sh '''
                   }
