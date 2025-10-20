@@ -67,35 +67,23 @@ parameters {
             }
         }
 
-        stage('Run Maven build') {
+        stage('Run Maven Clean, Verify and Sonar Checks') {
            when {
              expression { params.CHOICE == "Deploy_K8" }  
            }
              steps {
                 sh '''
                 cd realtime-project
-                pwd 
-                ls -l 
                 export JAVA_HOME="/usr/lib/jvm/jre-17-openjdk"
                 export PATH="$JAVA_HOME/bin:$PATH"
-                echo "Running Maven build step"
-                mvn clean package
+                echo "Run Maven Clean, Verify and Sonar Check"
+                mvn clean verify sonar:sonar \
+                -Dsonar.host.url=http://18.119.144.3:9000 \
+                -Dsonar.login=sqa_561f1bf31481ddbe9f79b9e951f7d54cda3b8f4
                 sh '''
                   }
              }
 
-        stage('Run SonarQube code check') {
-           when {
-             expression { params.CHOICE == "Deploy_K8" }  
-           }
-             steps {
-                sh '''
-                cd realtime-project
-                echo "Running code check"
-                mvn sonar:sonar  -Dsonar.host.url-http://18.119.144.3:9000 -Dsonar.login=sqa_561f1bf31481ddbe9f79b9e951f7d54cda3b8f47
-                sh '''
-                  }
-             }
 
         stage('Build and Push Docker image') {
            when {
