@@ -22,7 +22,7 @@ parameters {
   AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
   THE_BUTLER_SAY_SO     = credentials('Jenkins-aws-creds') 
   KUBE_CONFIG_PATH      = '~/.kube/config'
-//  JAVA_HOME             = 'usr/lib/jvm/jre-17-openjdk'
+//  JAVA_HOME             = '/usr/lib/jvm/jre-17-openjdk'
   MAVEN_HOME            = '/usr/share/maven' 
   ANSIBLE_INVENTORY     = '/etc/ansible/inventory.ini'
     }    
@@ -73,9 +73,11 @@ parameters {
            }
              steps {
                 sh '''
+                export JAVA_HOME="/usr/lib/jvm/jre-17-openjdk"
+                export PATH="$JAVA_HOME/bin:$PATH"
                 echo "Running Maven build step"
                 cd realtime-project-demo 
-                ./mvnw clean package
+                mvn clean package
                 sh '''
                   }
              }
