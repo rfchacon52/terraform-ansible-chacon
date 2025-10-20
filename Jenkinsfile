@@ -69,12 +69,12 @@ parameters {
 
         stage('Run Maven build') {
            when {
-             expression { params.CHOICE == "Deploy_no" }  
+             expression { params.CHOICE == "Deploy_K8" }  
            }
              steps {
                 sh '''
                 echo "Running Maven build step"
-                cd project
+                cd realtime-project-demo 
                 mvn clean package
                 sh '''
                   }
@@ -116,7 +116,7 @@ parameters {
 
         stage('TerraForm build/deploy K8 Infra') {
            when {
-             expression { params.CHOICE == "Deploy_K8" }  
+             expression { params.CHOICE == "Deploy_K8_no" }  
            }
              steps {
                 sh '''
@@ -138,7 +138,7 @@ parameters {
 
         stage('Configure Kubectl, Deploy EKS apps') {
            when {
-             expression { params.CHOICE == "Deploy_K8" }  
+             expression { params.CHOICE == "Deploy_K8_no" }  
            }
             steps {
                 sh '''
