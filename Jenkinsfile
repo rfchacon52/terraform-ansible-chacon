@@ -22,7 +22,7 @@ parameters {
   AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
   THE_BUTLER_SAY_SO     = credentials('Jenkins-aws-creds') 
   KUBE_CONFIG_PATH      = '~/.kube/config'
-  JAVA_HOME             = '/usr/lib/jvm/java-17-openjdk-17.0.14.0.7-2.el9.x86_64/'
+  JAVA_HOME             = 'usr/lib/jvm/jre-17-openjdk'
   MAVEN_HOME            = '/usr/share/maven' 
   ANSIBLE_INVENTORY     = '/etc/ansible/inventory.ini'
     }    
