@@ -52,10 +52,6 @@ parameters {
             steps {
                 
                 sh '''
-                echo "Test creds"
-                cd terraform-asg/ansible
-                ./check_if_stopped.sh
-                exit 0  
                 cd terraform-asg
                 echo "Running terraform init"
                 terraform init -no-color
@@ -113,7 +109,6 @@ parameters {
                 sh '''
                 cd terraform-asg/ansible
                 sleep 5
-                ansible-playbook generate_ssh_config.yml  
                 ansible-playbook deploy_nginx.yml  
                 sh '''
             }

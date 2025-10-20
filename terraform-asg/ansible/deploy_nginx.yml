@@ -4,11 +4,6 @@
   become: true  # Use sudo/become for root privileges
 
   tasks:
-
-
-
-
-
     - name: Install NGINX package
       ansible.builtin.yum:
         name: nginx
