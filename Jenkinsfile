@@ -85,6 +85,22 @@ parameters {
              }
 
 
+        stage('Run Maven Deploy to Nexus ') {
+           when {
+             expression { params.CHOICE == "Deploy_K8" }  
+           }
+             steps {
+                sh '''
+                cd realtime-project
+                export JAVA_HOME="/usr/lib/jvm/jre-17-openjdk"
+                export PATH="$JAVA_HOME/bin:$PATH"
+                echo "Run Maven Deploy"
+                mvn deploy 
+                sh '''
+                  }
+             }
+
+
         stage('Build and Push Docker image') {
            when {
              expression { params.CHOICE == "Deploy_no" }  
