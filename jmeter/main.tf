@@ -65,9 +65,3 @@ resource "aws_instance" "Jmeter" {
     VPC  = "vpc-097140fda45fe3368"
   }
 }
-
-# (Optional) Output the public IP of the instance
-output "instance_public_ip" {
-  value       = aws_instance.jmeter.instance_public_ip
-  description = "The public IP address of the EC2 instance"
-}
