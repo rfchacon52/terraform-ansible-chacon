@@ -7,11 +7,18 @@ terraform {
       version = "~> 5.0" 
     }
   }
+  backend "s3" {
+    bucket         = "chacon-backend3"
+    key            = "terraform/state"
+    region         = "us-east-1"
+    se_lockfile   = true
+  }
 }
 
 provider "aws" {
   region = "us-east-2"
 }
+
 
 # Data source to fetch the latest Amazon Linux 2 AMI ID
 # This dynamically retrieves the most recent AMI provided by Amazon
