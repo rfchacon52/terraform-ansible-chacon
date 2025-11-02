@@ -39,7 +39,7 @@ data "aws_ami" "latest_amazon_linux_2" {
 }
 
 # Define the EC2 Instance resource
-resource "aws_instance" "t2_small_web" {
+resource "aws_instance" "Jmeter" {
   # Use the ID retrieved from the data source
   ami           = data.aws_ami.latest_amazon_linux_2.id 
   instance_type = "t2.small"
@@ -61,13 +61,13 @@ resource "aws_instance" "t2_small_web" {
   key_name = "jenkins" 
 
   tags = {
-    Name = "T2-Small-Instance-us-east-2"
+    Name = "Jmeter"
     VPC  = "vpc-097140fda45fe3368"
   }
 }
 
 # (Optional) Output the public IP of the instance
 output "instance_public_ip" {
-  value       = aws_instance.t2_small_web.public_ip
+  value       = aws_instance.jmeter.instance_public_ip
   description = "The public IP address of the EC2 instance"
 }
