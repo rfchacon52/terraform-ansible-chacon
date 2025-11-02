@@ -24,7 +24,7 @@ resource "aws_security_group" "jmeter_sg1" {
 # SG for the PRIVATE INSTANCES (Allows SSH ONLY from the Bastion)
 resource "aws_security_group" "jmeter_sg2" {
   name        = "jmeter-sg2"
-  vpc_id      = vpc-097140fda45fe3368
+  vpc_id      = "vpc-097140fda45fe3368"
   description = "Allow traffic on port 1099"
 
   # INGRESS: Allow SSH from the Bastion Security Group (Source = Bastion's SG ID)
