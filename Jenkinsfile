@@ -3,15 +3,17 @@ pipeline {
 agent any
 
 parameters {
-  choice choices: ['Deploy_ASG', 'Deploy_K8', 'Destroy_ASG', 'Destroy_K8', 'Destroy_SFTP', 'Deploy_SFTP', 'Deploy_ALB', 'Destroy_ALB'], description: '''Select:  
+  choice choices: ['Deploy_ASG', 'Deploy_K8', 'Destroy_ASG', 'Destroy_K8', 'Destroy_SFTP', 'Deploy_SFTP', 'Deploy_ALB', 'Destroy_ALB', "Deploy_JMETER" , "Destroy_JMETER"], description: '''Select:  
                1. Deploy_ASG
                2. Destroy_ASG  
                3. Deploy_K8  
                4. Destroy_K8 
                5. Deploy_ALB
                6. Destroy_ALB 
-               7. Destroy_SFTP 
-               8. Deploy_SFTP  ''', name: 'CHOICE'
+               7. Destroy_SFTP
+               8. Deploy_JMETER
+               9. Destroy_JMETER 
+              10. Deploy_SFTP  ''', name: 'CHOICE'
 }
  
  
@@ -44,6 +46,46 @@ parameters {
             }
 
         }
+
+  stage('Deploy Jmeter') {
+           when {
+             expression { params.CHOICE == "Deploy_JMETER" }  
+           }
+            steps {
+                sh '''
+                cd jmeter 
+                echo "Running terraform init"
+                terraform init -no-color
+                echo "Running terraform fmt -recursive"
+                terraform fmt -recursive
+                echo "Running terraform validate"
+                terraform validate -no-color
+                echo "Executing terraform plan"                 
+                terraform plan -out=tfplan -no-color
+                echo "Executing terraform apply"                 
+                terraform apply tfplan -no-color
+                sh '''
+            }
+        }
+
+
+  stage('Destroy Jmeter') {
+           when {
+             expression { params.CHOICE == "Destroy_JMETER" }  
+           }
+            steps {
+                sh '''
+                cd jmeter 
+                echo "Running terraform init"
+                terraform init -no-color
+                echo "Running terraform validate"
+                terraform  validate -no-color
+                echo "Executing Terraform Destroy"
+                terraform apply -destroy -auto-approve -no-color
+                sh '''
+            }
+        }
+
         
         stage('Terraform ASG Init & Plan & Apply') {
            when {
