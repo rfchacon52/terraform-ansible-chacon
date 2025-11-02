@@ -1,6 +1,6 @@
 resource "aws_security_group" "jmeter_sg1" {
   name        = "jmeter-sg1"
-  vpc_id      = vpc-097140fda45fe3368 
+  vpc_id      = "vpc-097140fda45fe3368" 
   description = "Allow SSH from the Internet "
 
   # INGRESS: Allow SSH from your workstation (REPLACE CIDR)
