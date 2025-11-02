@@ -58,7 +58,7 @@ resource "aws_instance" "t2_small_web" {
    associate_public_ip_address = true 
   
   # Optional: Add your key pair name for SSH access
-  key_name = "Jenkins" 
+  key_name = "jenkins" 
 
   tags = {
     Name = "T2-Small-Instance-us-east-2"
