@@ -11,7 +11,7 @@ terraform {
     bucket         = "chacon-backend3"
     key            = "terraform/state"
     region         = "us-east-1"
-    se_lockfile   = true
+    use_lockfile   = true
   }
 }
 
