@@ -68,6 +68,18 @@ parameters {
             }
         }
 
+stage('Deploy Ansible Jmeter app') {
+           when {
+             expression { params.CHOICE == "Deploy_JMETER" }
+           }
+            steps {
+                sh '''
+                cd jmeter 
+                ansible-playbook jmeter.yml  
+                sh '''
+            }
+        }
+
 
   stage('Destroy Jmeter') {
            when {
