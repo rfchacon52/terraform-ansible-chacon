@@ -18,11 +18,10 @@ parameters {
  
  
  environment {
-  TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
-  TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
+//  TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
+//  TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
   AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
   AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-  THE_BUTLER_SAY_SO     = credentials('Jenkins-aws-creds') 
   KUBE_CONFIG_PATH      = '~/.kube/config'
 //  JAVA_HOME             = '/usr/lib/jvm/jre-17-openjdk'
   MAVEN_HOME            = '/usr/share/maven' 
@@ -68,7 +67,7 @@ parameters {
             }
         }
 
-stage('Deploy Ansible Jmeter app') {
+  stage('Deploy Ansible Jmeter app') {
            when {
              expression { params.CHOICE == "Deploy_JMETER" }
            }
