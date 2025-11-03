@@ -15,30 +15,6 @@
         update_cache: yes
       when: ansible_distribution == 'Amazon'
 
-  - name: Import Corretto public key
-      ansible.builtin.shell: |
-        wget -O - https://apt.corretto.aws/corretto.key | sudo gpg --dearmor -o /usr/share/keyrings/corretto-keyring.gpg
-      args:
-        creates: /usr/share/keyrings/corretto-keyring.gpg
-
-    - name: Add Corretto repository
-      ansible.builtin.lineinfile:
-        path: /etc/apt/sources.list.d/corretto.list
-        line: "deb [signed-by=/usr/share/keyrings/corretto-keyring.gpg] https://apt.corretto.aws stable main"
-        create: yes
-        state: present
-
-    - name: Update apt cache
-      ansible.builtin.apt:
-        update_cache: yes
-
-    - name: Install Amazon Corretto 21 JDK
-      ansible.builtin.apt:
-        name: java-21-amazon-corretto-jdk
-        state: present
-
-
-
     - name: 3. Download Apache JMeter archive
       ansible.builtin.get_url:
         url: "{{ jmeter_download_url }}"
