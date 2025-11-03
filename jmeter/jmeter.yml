@@ -1,6 +1,6 @@
 ---
 - name: Setup Java 21 and JMeter on Amazon Linux
-  hosts: your_amazon_linux_hosts # Replace with your target host group
+  hosts: jmeter # Replace with your target host group
   become: yes
   vars:
     jmeter_version: 5.6.3 # Check Apache JMeter website for the latest version
