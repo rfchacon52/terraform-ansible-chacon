@@ -3,7 +3,7 @@
 # onto a remote EC2 node.
 
 - name: Deploy Docker Example Voting App (Vote)
-  hosts: ec2_node  # Change this to your group name defined in inventory
+  hosts: jmeter  # Change this to your group name defined in inventory
   gather_facts: yes
   become: yes      # Use elevated privileges for installation and Docker commands
 
