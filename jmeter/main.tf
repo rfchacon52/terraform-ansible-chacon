@@ -44,7 +44,7 @@ data "aws_ami" "latest_rhel" {
 # Define the EC2 Instance resource
 resource "aws_instance" "Jmeter" {
   # Use the ID retrieved from the data source
-  ami           = data.aws_ami.latest_amazon_linux_2.id 
+  ami           = data.aws_ami.latest_rhel.id
   instance_type = "t2.small"
   
   # Specify the existing subnet ID
