@@ -33,7 +33,6 @@
         name:
           - yum-utils
           - python3-pip
-          - openssl-devel
           - python3-devel
         state: present
       when: ansible_os_family == "RedHat"
