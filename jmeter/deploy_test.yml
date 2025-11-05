@@ -2,6 +2,44 @@
 - name: Setup Java 21 and JMeter on Amazon Linux
   hosts: jmeter # Replace with your target host group
   become: yes
+
+  vars:
+    docker_image_name: 'nginx' # Change this to your desired image (e.g., 'ubuntu', 'myrepo/myapp:latest')
+    docker_image_tag: 'latest'
+
+  tasks:
+    - name: 1. Ensure Docker is installed (Prerequisite)
+      ansible.builtin.package:
+        name: docker
+        state: present
+        update_cache: yes
+      # Note: Package name might be 'docker-ce' or 'docker.io' on some distributions.
+
+    - name: 2. Ensure Docker service is running and enabled at boot
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: 3. Pull the Docker Image
+      community.docker.docker_image:
+        name: "{{ docker_image_name }}"
+        tag: "{{ docker_image_tag }}"
+        source: pull # Explicitly pull the image
+        state: present
+      register: image_pull_result
+
+    - name: 4. Display the result of the image pull
+      ansible.builtin.debug:
+        msg: "Image {{ docker_image_name }}:{{ docker_image_tag }} successfully pulled."
+      when: image_pull_result.changed or image_pull_result.status.Untagged != 0
+
+
+
+
+
+
+
   vars:
     jmeter_version: 5.6.3 # Check Apache JMeter website for the latest version
     jmeter_download_url: "https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-{{ jmeter_version }}.tgz"
@@ -13,7 +51,6 @@
         name: '*'
         state: latest
         update_cache: yes
-      when: ansible_distribution == 'Amazon'
 
     - name: 3. Download Apache JMeter archive
       ansible.builtin.get_url:
