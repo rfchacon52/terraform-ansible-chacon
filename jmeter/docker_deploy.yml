@@ -1,6 +1,6 @@
 ---
 - name: Deploy Docker Application on RHEL/Amazon Linux EC2
-  hosts: docker # Replace with your inventory group name
+  hosts: ec2_node # Replace with your inventory group name
   become: yes # Needed for installing packages and managing services
 
   vars:
