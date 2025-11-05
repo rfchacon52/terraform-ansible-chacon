@@ -39,6 +39,7 @@ data "aws_ami" "latest_rhel" {
     values = ["x86_64"]
   }
 
+}
 
 # Define the EC2 Instance resource
 resource "aws_instance" "Jmeter" {
