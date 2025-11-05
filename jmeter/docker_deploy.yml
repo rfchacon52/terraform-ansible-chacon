@@ -1,0 +1,53 @@
+---
+- name: Deploy Docker Application on RHEL/Amazon Linux EC2
+  hosts: docker # Replace with your inventory group name
+  become: yes # Needed for installing packages and managing services
+
+  vars:
+    app_image: 'nginx'            # The Docker image to deploy (e.g., 'myrepo/myapp')
+    app_tag: 'latest'             # The specific tag of the image
+    container_name: 'web_app_nginx'
+    host_port: 80                 # Port on the EC2 host
+    container_port: 80            # Port the container listens on
+
+  tasks:
+    - name: 1. Install Docker and Dependencies (using dnf/yum for RHEL/AL)
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - docker
+        - python3-pip # Required for the 'community.docker' module dependencies
+        - python3-docker
+      # Note: On newer RHEL/AL, 'docker' is often the package name.
+
+    - name: 2. Install Docker Python dependencies via pip
+      ansible.builtin.pip:
+        name: docker
+        state: present
+        executable: pip3 # Use pip3 which corresponds to python3-pip
+
+    - name: 3. Ensure Docker service is started and enabled
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: 4. Pull the specified Docker image
+      community.docker.docker_image:
+        name: "{{ app_image }}"
+        tag: "{{ app_tag }}"
+        source: pull
+        state: present
+
+    - name: 5. Deploy and Run the Docker container
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        image: "{{ app_image }}:{{ app_tag }}"
+        state: started
+        ports:
+          - "{{ host_port }}:{{ container_port }}"
+        restart_policy: always
+        # Ensure that the old container is removed before creating the new one
+        # If you were performing an update, you'd use `state: started` with `recreate: yes`
+        # but for a first-time deployment, `state: started` is sufficient.

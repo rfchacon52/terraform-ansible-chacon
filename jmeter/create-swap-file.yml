@@ -1,0 +1,51 @@
+---
+- name: Configure 4GB Swap File on RHEL 9
+  hosts: docker # Target your RHEL 9 group/host here
+  become: yes # Required for all file system and system command tasks
+
+  vars:
+    swapfile_path: /swapfile
+    swapfile_size_gb: 4
+
+  tasks:
+    - name: 1. Check if the swap file already exists
+      ansible.builtin.stat:
+        path: "{{ swapfile_path }}"
+      register: swap_file_stat_result
+
+    - name: 2. Create the {{ swapfile_size_gb }}GB swap file using fallocate
+      ansible.builtin.command:
+        # fallocate is the modern, faster way to create pre-allocated files
+        cmd: "fallocate -l {{ swapfile_size_gb }}G {{ swapfile_path }}"
+      when: not swap_file_stat_result.stat.exists
+
+    - name: 3. Secure the swap file permissions (600)
+      ansible.builtin.file:
+        path: "{{ swapfile_path }}"
+        mode: '0600'
+      when: not swap_file_stat_result.stat.exists
+
+    - name: 4. Format the file as swap area
+      ansible.builtin.command:
+        cmd: "mkswap {{ swapfile_path }}"
+      when: not swap_file_stat_result.stat.exists
+
+    - name: 5. Ensure the swap entry is in /etc/fstab (makes it permanent)
+      ansible.builtin.mount:
+        name: "{{ swapfile_path }}"
+        src: "{{ swapfile_path }}"
+        fstype: swap
+        opts: defaults
+        state: present
+
+    - name: 6. Activate the swap file immediately (if not already active)
+      # Checks current swap status to maintain idempotence
+      ansible.builtin.command: swapon -s
+      register: current_swap_status
+      changed_when: "'{{ swapfile_path }}' not in current_swap_status.stdout"
+      notify: Activate Swap
+
+  handlers:
+    - name: Activate Swap
+      ansible.builtin.command:
+        cmd: "swapon {{ swapfile_path }}"

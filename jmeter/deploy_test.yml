@@ -7,31 +7,25 @@
     docker_image_name: 'nginx' # Change this to your desired image (e.g., 'ubuntu', 'myrepo/myapp:latest')
     docker_image_tag: 'latest'
 
-  tasks:
-    - name: 1. Ensure Docker is installed (Prerequisite)
-      ansible.builtin.package:
-        name: docker
-        state: present
-        update_cache: yes
-      # Note: Package name might be 'docker-ce' or 'docker.io' on some distributions.
+- name: 3. Pull the Docker Image
+  community.docker.docker_image:
+     name: "{{ docker_image_name }}"
+     tag: "{{ docker_image_tag }}"
+     source: pull # Explicitly pull the image
+     state: present
+     register: image_pull_result
+  
+- name: Enable docker.service
+  systemd:
+       name: docker.service
+       daemon_reload: true
+       enabled: true
 
-    - name: 2. Ensure Docker service is running and enabled at boot
-      ansible.builtin.service:
-        name: docker
-        state: started
-        enabled: yes
+- name: Ensure Docker service is running and enabled at boot
+  ansible.builtin.service:
+       name: docker
+       state: started
+       enabled: yes
 
-    - name: 3. Pull the Docker Image
-      community.docker.docker_image:
-        name: "{{ docker_image_name }}"
-        tag: "{{ docker_image_tag }}"
-        source: pull # Explicitly pull the image
-        state: present
-      register: image_pull_result
-
-    - name: 4. Display the result of the image pull
-      ansible.builtin.debug:
-        msg: "Image {{ docker_image_name }}:{{ docker_image_tag }} successfully pulled."
-      when: image_pull_result.changed or image_pull_result.status.Untagged != 0
 
 

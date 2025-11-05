@@ -10,7 +10,7 @@ terraform {
   backend "s3" {
     bucket         = "chacon-backend3"
     key            = "terraform/state"
-    region         = "us-east-1"
+    region         = "us-east-2"
     use_lockfile   = true
   }
 }
@@ -41,6 +41,7 @@ data "aws_ami" "latest_rhel" {
 
 }
 
+
 # Define the EC2 Instance resource
 resource "aws_instance" "Jmeter" {
   # Use the ID retrieved from the data source
@@ -67,4 +68,8 @@ resource "aws_instance" "Jmeter" {
     Name = "Jmeter"
     VPC  = "vpc-097140fda45fe3368"
   }
+
 }
+
+
+

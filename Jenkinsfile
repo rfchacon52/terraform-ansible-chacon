@@ -67,15 +67,22 @@ parameters {
             }
         }
 
-  stage('Deploy Voting App') {
+  stage('Deploy Docker App') {
            when {
              expression { params.CHOICE == "Deploy_JMETER" }
            }
             steps {
+              script {
+                withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_TOKEN')]) {
                 sh '''
-                cd jmeter 
-                ansible-playbook deploy_test.yml  
+                cd jmeter
+                echo "Creating swap 4gb swap file"
+                ansible-plybook create-swap-file.yml 
+                echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
+                ansible-playbook docker_deploy.yml 
                 sh '''
+               }
+             }
             }
         }
 
