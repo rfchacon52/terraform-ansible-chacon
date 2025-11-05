@@ -23,6 +23,7 @@
           - software-properties-common
           - python3-pip
           - libssl-dev
+          - python3-dev 
         state: present
         update_cache: yes
       when: ansible_os_family == "Debian"
@@ -32,6 +33,8 @@
         name:
           - yum-utils
           - python3-pip
+          - openssl-devel
+          - python3-devel
         state: present
       when: ansible_os_family == "RedHat"
 
