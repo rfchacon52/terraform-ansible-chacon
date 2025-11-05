@@ -46,7 +46,7 @@ parameters {
 
         }
 
-  stage('Deploy Voting App') {
+  stage('Deploy Voting App terraform') {
            when {
              expression { params.CHOICE == "Deploy_JMETER" }  
            }
