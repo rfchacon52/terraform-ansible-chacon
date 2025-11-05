@@ -42,6 +42,15 @@ data "aws_ami" "latest_rhel" {
 }
 
 
+resource "aws_eip" "my_elastic_ip" {
+  # Tags are optional but highly recommended for organization
+  tags = {
+    Name = "Jmeter-EIP"
+  }
+}
+
+
+
 # Define the EC2 Instance resource
 resource "aws_instance" "Jmeter" {
   # Use the ID retrieved from the data source
@@ -72,4 +81,10 @@ resource "aws_instance" "Jmeter" {
 }
 
 
-
+resource "aws_eip_association" "eip_assoc" {
+  # Get the ID of the EIP created in step 1
+  allocation_id = aws_eip.my_elastic_ip.id
+  
+  # Get the ID of the EC2 instance created in step 2
+  instance_id   = aws_instance.Jmeter.id
+}
