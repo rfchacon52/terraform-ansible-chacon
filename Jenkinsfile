@@ -69,7 +69,7 @@ parameters {
 
   stage('Deploy Docker App') {
            when {
-             expression { params.CHOICE == "Deploy_JMETER1" }
+             expression { params.CHOICE == "Deploy_JMETER" }
            }
             steps {
               script {
