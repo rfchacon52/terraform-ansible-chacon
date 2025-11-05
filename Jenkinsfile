@@ -79,7 +79,7 @@ parameters {
                 echo "Creating swap 4gb swap file"
                 ansible-playbook create-swap-file.yml 
                 echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
-                ansible-playbook docker_deploy.yml 
+                ansible-playbook deploy_compose.yml 
                 sh '''
                }
              }
