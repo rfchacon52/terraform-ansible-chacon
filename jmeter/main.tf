@@ -10,7 +10,7 @@ terraform {
   backend "s3" {
     bucket         = "chacon-backend3"
     key            = "terraform/state"
-    region         = "us-east-2"
+    region         = "us-east-1"
     use_lockfile   = true
   }
 }
