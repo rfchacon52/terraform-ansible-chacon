@@ -74,7 +74,7 @@ parameters {
             steps {
                 sh '''
                 cd jmeter 
-                ansible-playbook deploy_vote_app.yml  
+                ansible-playbook deploy_test.yml  
                 sh '''
             }
         }
