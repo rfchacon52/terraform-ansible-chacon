@@ -1,6 +1,6 @@
 ---
 - name: Install Podman and Docker Compose on RHEL 9
-  hosts: your_rhel_ec2_hosts # Specify your host group/alias here
+  hosts: ec2_node # Specify your host group/alias here
   become: yes # Required for dnf/pip installations and systemctl commands
 
   tasks:
