@@ -1,0 +1,56 @@
+---
+- name: Install Docker Engine and Docker Compose on RHEL/EC2
+  hosts: ec2_node 
+  become: yes # Required to install packages and manage services
+
+  tasks:
+    - name: 1. Install Yum Utilities and enable Docker repo
+      ansible.builtin.yum:
+        name: yum-utils
+        state: present
+    
+    - name: 2. Add the official Docker CE Repository
+      ansible.builtin.command:
+        cmd: "yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo"
+        creates: /etc/yum.repos.d/docker-ce.repo
+
+    - name: 3. Install Docker Engine, CLI, and Containerd
+      ansible.builtin.yum:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: latest
+
+    - name: 4. Ensure Docker service is started and enabled
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: 5. Install Python 3 and Pip (required for Docker Python libraries)
+      ansible.builtin.yum:
+        name: 
+          - python3
+          - python3-pip 
+        state: present
+
+    - name: 6. Install Python dependencies for Docker and Docker Compose
+      ansible.builtin.pip:
+        name: 
+          - docker
+          - docker-compose
+        state: present
+        executable: pip3 # Explicitly use pip3, common on RHEL 8/9
+        
+    - name: 7. Add 'ec2-user' (or remote user) to the 'docker' group
+      ansible.builtin.user:
+        name: "{{ ansible_user }}" # Uses the user Ansible connects as (e.g., ec2-user)
+        groups: docker
+        append: yes
+      register: user_group_status
+
+    - name: 8. Inform user about re-login requirement
+      ansible.builtin.debug:
+        msg: "The user '{{ ansible_user }}' has been added to the 'docker' group. You must log out and log back in (or run 'newgrp docker') for the changes to take effect and run 'docker' commands without 'sudo'."
+      when: user_group_status.changed
