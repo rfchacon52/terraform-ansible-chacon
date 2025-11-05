@@ -19,24 +19,26 @@ provider "aws" {
   region = "us-east-2"
 }
 
-
-# Data source to fetch the latest Amazon Linux 2 AMI ID
-# This dynamically retrieves the most recent AMI provided by Amazon
-data "aws_ami" "latest_amazon_linux_2" {
+data "aws_ami" "latest_rhel" {
   most_recent = true
-  owners      = ["amazon"]
+  owners      = ["309956199498"] # Official Red Hat Owner ID
 
   filter {
     name   = "name"
-    # Filter for Amazon Linux 2 (amzn2) HVM x86_64 GP2 image
-    values = ["amzn2-ami-hvm-*-x86_64-gp2"] 
+    # Targets the latest RHEL 9 (HVM, x86_64) image name pattern
+    values = ["RHEL-9*-x86_64-*"]
   }
 
   filter {
     name   = "virtualization-type"
     values = ["hvm"]
   }
-}
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+
 
 # Define the EC2 Instance resource
 resource "aws_instance" "Jmeter" {
