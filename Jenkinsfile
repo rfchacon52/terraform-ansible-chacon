@@ -46,7 +46,7 @@ parameters {
 
         }
 
-  stage('Deploy Jmeter') {
+  stage('Deploy Voting App') {
            when {
              expression { params.CHOICE == "Deploy_JMETER" }  
            }
@@ -67,14 +67,14 @@ parameters {
             }
         }
 
-  stage('Deploy Ansible Jmeter app') {
+  stage('Deploy Voting App') {
            when {
              expression { params.CHOICE == "Deploy_JMETER" }
            }
             steps {
                 sh '''
                 cd jmeter 
-                ansible-playbook jmeter.yml  
+                ansible-playbook deploy_vote_app.yml  
                 sh '''
             }
         }

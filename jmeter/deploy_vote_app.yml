@@ -1,0 +1,99 @@
+---
+# This playbook installs Docker and deploys the Example Voting App (Vote) container
+# onto a remote EC2 node.
+
+- name: Deploy Docker Example Voting App (Vote)
+  hosts: ec2_node  # Change this to your group name defined in inventory
+  gather_facts: yes
+  become: yes      # Use elevated privileges for installation and Docker commands
+
+  vars:
+    vote_container_name: voting_app_vote
+    vote_image: docker/example-voting-app-vote:latest
+    host_port: 80
+    container_port: 80
+
+  tasks:
+    - name: 01 - Install dependencies (for Debian/Ubuntu)
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: 01 - Install dependencies (for RedHat/CentOS)
+      ansible.builtin.yum:
+        name:
+          - yum-utils
+          - python3-pip
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: 02 - Add Docker GPG key (Debian/Ubuntu)
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: 02 - Add Docker repository (Debian/Ubuntu)
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: 03 - Install Docker (Debian/Ubuntu)
+      ansible.builtin.apt:
+        name: docker-ce
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: 03 - Install Docker (RedHat/CentOS)
+      ansible.builtin.yum:
+        name: docker
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: 04 - Start Docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
+
+    # The following step is CRITICAL for Ansible's Docker modules to work.
+    - name: 05 - Install Docker SDK for Python (docker-py)
+      ansible.builtin.pip:
+        name: docker
+        state: present
+
+    - name: 06 - Ensure current user can run docker commands without sudo (optional, but good practice)
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: 07 - Restart Docker to apply group changes
+      ansible.builtin.service:
+        name: docker
+        state: restarted
+      # Note: For group changes to take full effect on the user, you might need to
+      # re-run the playbook or SSH in again, but this helps the module run cleanly.
+
+    - name: 08 - Deploy the docker/example-voting-app-vote container
+      community.docker.docker_container:
+        name: "{{ vote_container_name }}"
+        image: "{{ vote_image }}"
+        state: started
+        restart_policy: always
+        ports:
+          - "{{ host_port }}:{{ container_port }}"
+        # Detach the container from the host network stack for security if needed,
+        # but for this example, we keep it simple.
+        # networks:
+        #   - name: my_voting_network # If you had a dedicated network
+

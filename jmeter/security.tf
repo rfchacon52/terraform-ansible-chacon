@@ -29,8 +29,8 @@ resource "aws_security_group" "jmeter_sg2" {
 
   # INGRESS: Allow SSH from the Bastion Security Group (Source = Bastion's SG ID)
   ingress {
-    from_port       = 1099 
-    to_port         = 1099
+    from_port       = 80 
+    to_port         = 80 
     protocol        = "tcp"
     security_groups = [aws_security_group.jmeter_sg1.id] # Source: Bastion SG
   }
