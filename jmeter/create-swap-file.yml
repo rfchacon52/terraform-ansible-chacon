@@ -1,6 +1,6 @@
 ---
 - name: Configure 4GB Swap File on RHEL 9
-  hosts: docker # Target your RHEL 9 group/host here
+  hosts: ec2_node # Target your RHEL 9 group/host here
   become: yes # Required for all file system and system command tasks
 
   vars:
