@@ -69,7 +69,7 @@ parameters {
 
   stage('Deploy Docker App') {
            when {
-             expression { params.CHOICE == "Deploy_JMETER" }
+             expression { params.CHOICE == "Deploy_JMETER1" }
            }
             steps {
               script {
@@ -77,7 +77,7 @@ parameters {
                 sh '''
                 cd jmeter
                 echo "Creating swap 4gb swap file"
-                ansible-plybook create-swap-file.yml 
+                ansible-playbook create-swap-file.yml 
                 echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
                 ansible-playbook docker_deploy.yml 
                 sh '''
