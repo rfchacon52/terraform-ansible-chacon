@@ -1,0 +1,52 @@
+---
+- name: Install Podman and Docker Compose on RHEL 9
+  hosts: your_rhel_ec2_hosts # Specify your host group/alias here
+  become: yes # Required for dnf/pip installations and systemctl commands
+
+  tasks:
+    - name: 1. Install Podman, Docker Compatibility Layer, and Pip
+      ansible.builtin.dnf:
+        name:
+          - podman
+          - podman-docker   # Provides the 'docker' command alias/symlink
+          - python3-pip
+          - python3-devel   # Often required for pip packages like 'docker'
+        state: present
+        update_cache: yes
+      tags: install_podman
+
+    - name: 2. Install Python dependencies (docker-compose and docker library)
+      ansible.builtin.pip:
+        name:
+          - docker-compose
+          - docker            # The Python library used by the 'docker' commands
+        state: present
+        executable: pip3
+      tags: install_compose
+
+    - name: 3. Add connecting user to the 'docker' group (for permissions)
+      # This uses the variable 'ansible_user' which holds the SSH login user name.
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+      register: user_group_status
+      tags: configure_user
+
+    - name: 4. Configure and Start Podman Socket (Crucial for Compose)
+      # This enables the 'docker-compatible' API socket that docker-compose connects to.
+      block:
+        - name: Enable systemd lingering for the user
+          ansible.builtin.command:
+            cmd: "loginctl enable-linger {{ ansible_user }}"
+          # Only run if user was just added to group (or first run)
+          when: user_group_status.changed or ansible_check_mode is not defined
+
+        - name: Ensure Podman socket service is enabled and running for the user
+          ansible.builtin.systemd:
+            name: podman.socket
+            state: started
+            enabled: yes
+            scope: user # Directs systemd to manage the user-level session
+          # This task will run only after the loginctl command is successful
+      tags: configure_socket
