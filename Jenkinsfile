@@ -46,13 +46,13 @@ parameters {
 
         }
 
-  stage('Deploy Voting App terraform') {
+  stage('Deploy Jenkins Server') {
            when {
              expression { params.CHOICE == "Deploy_JMETER" }  
            }
             steps {
                 sh '''
-                cd jmeter 
+                cd jenkins_server  
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
@@ -69,7 +69,7 @@ parameters {
 
   stage('Deploy Docker App') {
            when {
-             expression { params.CHOICE == "Deploy_JMETER" }
+             expression { params.CHOICE == "Deploy_JMETER1" }
            }
             steps {
               script {
@@ -89,7 +89,7 @@ parameters {
 
   stage('Destroy Jmeter') {
            when {
-             expression { params.CHOICE == "Destroy_JMETER" }  
+             expression { params.CHOICE == "Destroy_JMETER1" }  
            }
             steps {
                 sh '''

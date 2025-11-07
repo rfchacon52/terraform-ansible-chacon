@@ -1,0 +1,125 @@
+---
+- name: Deploy Full DevOps Stack (JDK21, Jenkins, Ansible, Terraform, Maven, Git, Podman) on RHEL 9
+  hosts: ec2_node # <-- Update this to your Inventory group name
+  become: yes # Required to install packages and manage services
+
+  vars:
+    terraform_version: "1.7.0"
+    jenkins_port: 8080
+
+  tasks:
+    - name: Install core DevOps tools and Java (Prerequisite Check)
+      ansible.builtin.dnf:
+        name: 
+          - dnf-plugins-core          # Needed for dnf config-manager
+          - git                       # Git for source control
+          - maven                     # Maven for Java build
+          - java-21-openjdk-devel     # Java JDK 21 (Prerequisite for Jenkins)
+          - ansible-core              # Installing Ansible (ansible-core is preferred on RHEL 9)
+        state: present
+        update_cache: yes
+        
+    # ----------------------------------------------------
+    # 1. Install Podman (Native containerization on RHEL)
+    # ----------------------------------------------------
+    - name: Ensure Podman is installed
+      ansible.builtin.dnf:
+        name: podman
+        state: present
+        
+    - name: Install Podman utilities (podman-compose)
+      block:
+        - name: Enable the CodeReady Linux Builder (CRB) repository
+          ansible.builtin.shell:
+            cmd: subscription-manager repos --enable=codeready-builder-for-rhel-9-x86_64-rpms
+          args:
+            creates: /etc/yum.repos.d/codeready-builder-for-rhel-9-x86_64-rpms.repo
+
+        - name: Install EPEL release package (Needed for podman-compose)
+          ansible.builtin.dnf:
+            name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+            state: present
+            
+        - name: Install podman-compose for Docker Compose compatibility
+          ansible.builtin.dnf:
+            name: podman-compose
+            state: present
+
+    # ----------------------------------------------------
+    # 2. Install Jenkins
+    # ----------------------------------------------------
+    - name: Add Jenkins repository key
+      ansible.builtin.rpm_key:
+        state: present
+        key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+    
+    - name: Add Jenkins repository
+      ansible.builtin.get_url:
+        url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+        dest: /etc/yum.repos.d/jenkins.repo
+        mode: '0644'
+
+    - name: Install Jenkins
+      ansible.builtin.dnf:
+        name: jenkins
+        state: present
+    
+    - name: Start and Enable Jenkins service
+      ansible.builtin.systemd_service:
+        name: jenkins
+        state: started
+        enabled: yes
+
+    # ----------------------------------------------------
+    # 3. Install Terraform (via HashiCorp's official RPM repository)
+    # ----------------------------------------------------
+    - name: Add HashiCorp GPG key
+      ansible.builtin.rpm_key:
+        state: present
+        key: https://rpm.releases.hashicorp.com/gpg
+    
+    - name: Add HashiCorp official repository
+      ansible.builtin.shell:
+        cmd: |
+          dnf config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+        args:
+          creates: /etc/yum.repos.d/hashicorp.repo
+
+    - name: Install Terraform specific version
+      ansible.builtin.dnf:
+        name: "terraform-{{ terraform_version }}"
+        state: present
+
+    # ----------------------------------------------------
+    # 4. Configure Firewall (Crucial for EC2 access)
+    # ----------------------------------------------------
+    # - name: Ensure firewalld is running and enabled
+    #    ansible.builtin.systemd_service:
+    #    name: firewalld
+    #    state: started
+    #    enabled: yes
+      
+    - name: Allow Jenkins (8080/tcp) through firewall
+      ansible.posix.firewalld:
+        port: "{{ jenkins_port }}/tcp"
+        permanent: yes
+        state: enabled
+        immediate: yes
+        
+    # ----------------------------------------------------
+    # 5. Post-Deployment Verification
+    # ----------------------------------------------------
+    - name: Verify initial Jenkins Admin Password
+      ansible.builtin.shell:
+        cmd: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: jenkins_password
+      changed_when: false
+      
+    - name: Display Initial Credentials and Access Info
+      ansible.builtin.debug:
+        msg: 
+          - " All DevOps tools successfully deployed!"
+          - "---"
+          - "Jenkins is running on port {{ jenkins_port }}. Access URL: http://YOUR_EC2_PUBLIC_IP:{{ jenkins_port }}"
+          - "The initial Jenkins admin password for the first login is: {{ jenkins_password.stdout }}"
+          - "Verification: Check 'java -version', 'mvn -version', 'terraform -version', 'ansible --version', and 'podman --version' on the EC2 instance."
