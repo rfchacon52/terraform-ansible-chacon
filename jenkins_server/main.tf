@@ -31,7 +31,7 @@ resource "aws_instance" "Jenkins" {
   ami           = data.aws_ami.latest_rhel.id
   instance_type = "t2.medium"
   # Specify the existing subnet ID
-  subnet_id = module.vpc.public_subnets[0]
+  subnet_id = module.vpc.public_subnet.ids[0]
   vpc_security_group_ids = [
     aws_security_group.jenkins_sg1.id,
     aws_security_group.jenkins_sg2.id
