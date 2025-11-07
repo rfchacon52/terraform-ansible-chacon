@@ -1,7 +1,7 @@
 # Latest version of the vpc module as of May 1, 2025
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "6.5" # Use the latest available version
+  version = "5.21.0" # Use the latest available version
 
   name = "Jenkins-VPC"
   cidr = "10.0.0.0/16"
