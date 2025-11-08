@@ -10,7 +10,7 @@ parameters {
  
  
  environment {
-   ANSIBLE_PRIVATE_KEY   = credentials('jenkins-pem')
+   ANSIBLE_PRIVATE_KEY   = credentials('Jenkins-pem')
    AWS_ACCESS_KEY_ID     = credentials('aws_access_key_id')
    AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
    MAVEN_HOME            = '/usr/share/maven' 
