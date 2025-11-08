@@ -6,7 +6,16 @@ terraform {
     }
 
   }
+
+   backend "s3" {
+     bucket         = "chacon-backend3"
+     key            = "terraform/state"
+     region         = "us-east-1"
+     use_lockfile   = true
+  }
+
 }
+
 
 # Configure the AWS Provider
 provider "aws" {
@@ -20,11 +29,3 @@ variable "cluster_version" {
   default = "1.33"
 }
 
-terraform {
-  backend "s3" {
-    bucket         = "chacon-backend"
-    key            = "terraform/state"
-    region         = "us-east-1"
-    dynamodb_table = "terraform-lock-table"
-  }
-}                           
