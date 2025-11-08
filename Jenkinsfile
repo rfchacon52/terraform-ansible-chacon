@@ -42,7 +42,7 @@ parameters {
            }
             steps {
                 sh '''
-                cd realtime-project  
+                cd realtime-project/terraform  
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"
