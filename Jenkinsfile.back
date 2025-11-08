@@ -3,19 +3,29 @@ pipeline {
 agent any
 
 parameters {
-  choice choices: [ "Deploy_automode" , "Destroy_automode"], description: '''Select:  
-               1. Deploy_automode
-               2. Destroy_automode  ''', name: 'CHOICE'
+  choice choices: ['Deploy_ASG', 'Deploy_K8', 'Destroy_ASG', 'Destroy_K8', 'Destroy_SFTP', 'Deploy_SFTP', 'Deploy_ALB', 'Destroy_ALB', "Deploy_JMETER" , "Destroy_JMETER"], description: '''Select:  
+               1. Deploy_ASG
+               2. Destroy_ASG  
+               3. Deploy_K8  
+               4. Destroy_K8 
+               5. Deploy_ALB
+               6. Destroy_ALB 
+               7. Destroy_SFTP
+               8. Deploy_JMETER
+               9. Destroy_JMETER 
+              10. Deploy_SFTP  ''', name: 'CHOICE'
 }
  
  
  environment {
-   ANSIBLE_PRIVATE_KEY   = credentials('jenkins_ssh')
-   AWS_ACCESS_KEY_ID     = credentials('aws_access_key_id')
-   AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
-   MAVEN_HOME            = '/usr/share/maven' 
-    // KUBE_CONFIG_PATH      = '~/.kube/config'
-    //  JAVA_HOME             = '/usr/lib/jvm/jre-17-openjdk'
+//  TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
+//  TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
+  AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+  AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+  KUBE_CONFIG_PATH      = '~/.kube/config'
+//  JAVA_HOME             = '/usr/lib/jvm/jre-17-openjdk'
+  MAVEN_HOME            = '/usr/share/maven' 
+  ANSIBLE_INVENTORY     = '/etc/ansible/inventory.ini'
     }    
     options {
         // This is required if you want to clean before build
@@ -36,13 +46,13 @@ parameters {
 
         }
 
-  stage('Deploy EKS Auto-mode') {
+  stage('Deploy Jenkins Server') {
            when {
-             expression { params.CHOICE == "Deploy_automode" }  
+             expression { params.CHOICE == "Deploy_JMETER" }  
            }
             steps {
                 sh '''
-                cd realtime-project  
+                cd jenkins_server  
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform fmt -recursive"

@@ -24,4 +24,19 @@ module "vpc" {
     "kubernetes.io/role/internal-elb" = 1
     "kubernetes.io/cluster/${var.cluster_name}"      = "owned"
   }
+
+
+output "vpc_id" {
+  description = "The ID of the VPC created by the module"
+  value       = module.vpc.vpc_id
+}
+
+output "private_subnets" {
+  description = "List of IDs of private subnets"
+  value       = module.vpc.private_subnets
+}
+
+
+
+
 }
