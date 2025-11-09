@@ -57,6 +57,24 @@ parameters {
               }
         }
 
+stage('Destroy EKS AUto-mode') {
+           when {
+             expression { params.CHOICE == "Destroy_automode" }  
+           }
+            steps {
+                sh '''
+                cd realtime-project/terraform
+                echo "Running terraform init"
+                terraform init -no-color
+                echo "Running terraform validate"
+                terraform  validate -no-color
+                echo "Executing Terraform K8 Destroy"
+                terraform apply -destroy -auto-approve -no-color
+                sh '''
+            }
+        }
+
+
   stage('Deploy Docker App') {
            when {
              expression { params.CHOICE == "Deploy_JMETER1" }
