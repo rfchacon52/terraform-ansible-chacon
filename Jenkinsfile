@@ -10,8 +10,6 @@ parameters {
  
  
  environment {
-   ANSIBLE_PRIVATE_KEY   = credentials('Jenkins-pem')
-   AWS_ACCESS_KEY_ID     = credentials('aws_access_key_id')
    AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
    MAVEN_HOME            = '/usr/share/maven' 
     // KUBE_CONFIG_PATH      = '~/.kube/config'
@@ -41,6 +39,7 @@ parameters {
              expression { params.CHOICE == "Deploy_automode" }  
            }
             steps {
+               withAWS(credentials: 'aws_creds', region: 'us-east-1') {
                 sh '''
                 cd realtime-project/terraform  
                 echo "Running terraform init"
@@ -54,6 +53,7 @@ parameters {
                 echo "Executing terraform apply"                 
                 terraform apply tfplan -no-color
                 sh '''
+              }
             }
         }
 
