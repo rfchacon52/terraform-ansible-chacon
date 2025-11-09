@@ -4,28 +4,23 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 6.0"
     }
-
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.23"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.12"
+    }
   }
-
-   backend "s3" {
+ backend "s3" {
      bucket         = "chacon-backend3"
      key            = "terraform/state"
      region         = "us-east-1"
      use_lockfile   = true
   }
-
 }
 
-
-# Configure the AWS Provider
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
 }
-
-variable "cluster_name" {
-  default = "EKS-DEV"
-}
-variable "cluster_version" {
-  default = "1.33"
-}
-
