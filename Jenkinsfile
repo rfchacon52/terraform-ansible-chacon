@@ -8,9 +8,8 @@ parameters {
                2. Destroy_automode  ''', name: 'CHOICE'
 }
  
- 
  environment {
-   AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
+   ANSIBLE_PRIVATE_KEY   = credentials('Jenkins-pem')
    MAVEN_HOME            = '/usr/share/maven' 
     // KUBE_CONFIG_PATH      = '~/.kube/config'
     //  JAVA_HOME             = '/usr/lib/jvm/jre-17-openjdk'
