@@ -10,6 +10,9 @@ parameters {
  
  environment {
    ANSIBLE_PRIVATE_KEY   = credentials('Jenkins-pem')
+   AWS_DEFAULT_REGION    = 'us-east-1'
+   THE_BUTLER_SAYS_SO  = credentials('aws_creds')
+   
    MAVEN_HOME            = '/usr/share/maven' 
     // KUBE_CONFIG_PATH      = '~/.kube/config'
     //  JAVA_HOME             = '/usr/lib/jvm/jre-17-openjdk'
@@ -38,7 +41,6 @@ parameters {
              expression { params.CHOICE == "Deploy_automode" }  
            }
             steps {
-               withAWS(credentials: 'aws_creds', region: 'us-east-1') {
                 sh '''
                 cd realtime-project/terraform  
                 echo "Running terraform init"
@@ -53,7 +55,6 @@ parameters {
                 terraform apply tfplan -no-color
                 sh '''
               }
-            }
         }
 
   stage('Deploy Docker App') {
