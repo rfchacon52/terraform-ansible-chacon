@@ -19,13 +19,3 @@ output "ingress_service_ip" {
   description = "The External IP address of the NGINX Ingress Controller Service (may be null for NLB CNAME)"
   value = one(kubernetes_service_v1.ingress_nginx.status[0].load_balancer[0].ingress[*].ip)
 }
-
-# The Kubernetes Service of the NGINX Ingress Controller needs to be referenced 
-resource "kubernetes_service_v1" "ingress_nginx" {
-  metadata {
-    name      = "ingress-nginx-controller"
-    namespace = "ingress-nginx"
-  }
-  # Data source or similar method must be used to link this to the Helm deployment.
-  # For simplicity, we reference the service created by the Helm chart directly.
-}
