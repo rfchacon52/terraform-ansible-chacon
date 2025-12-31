@@ -10,7 +10,7 @@ parameters {
  
  environment {
    AWS_DEFAULT_REGION    = 'us-east-1'
-   THE_BUTLER_SAYS_SO  = credentials('aws_creds')
+   THE_BUTLER_SAYS_SO  = credentials('aws-creds')
    
    MAVEN_HOME            = '/usr/share/maven' 
     // KUBE_CONFIG_PATH      = '~/.kube/config'
