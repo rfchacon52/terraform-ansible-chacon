@@ -45,157 +45,11 @@ parameters {
 
         }
 
-  stage('Deploy Jenkins Server') {
-           when {
-             expression { params.CHOICE == "Deploy_JMETER" }  
-           }
-            steps {
-                sh '''
-                cd jenkins_server  
-                echo "Running terraform init"
-                terraform init -no-color
-                echo "Running terraform fmt -recursive"
-                terraform fmt -recursive
-                echo "Running terraform validate"
-                terraform validate -no-color
-                echo "Executing terraform plan"                 
-                terraform plan -out=tfplan -no-color
-                echo "Executing terraform apply"                 
-                terraform apply tfplan -no-color
-                sh '''
-            }
-        }
-
-  stage('Deploy Docker App') {
-           when {
-             expression { params.CHOICE == "Deploy_JMETER1" }
-           }
-            steps {
-              script {
-                withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_TOKEN')]) {
-                sh '''
-                cd jmeter
-                echo "Creating swap 4gb swap file"
-                ansible-playbook create-swap-file.yml 
-                echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
-                ansible-playbook deploy_podman_compose.yml 
-                sh '''
-               }
-             }
-            }
-        }
-
-
-  stage('Destroy Jmeter') {
-           when {
-             expression { params.CHOICE == "Destroy_JMETER1" }  
-           }
-            steps {
-                sh '''
-                cd jmeter 
-                echo "Running terraform init"
-                terraform init -no-color
-                echo "Running terraform validate"
-                terraform  validate -no-color
-                echo "Executing Terraform Destroy"
-                terraform apply -destroy -auto-approve -no-color
-                sh '''
-            }
-        }
-
-        
-        stage('Terraform ASG Init & Plan & Apply') {
-           when {
-             expression { params.CHOICE == "Deploy_ASG" }  
-           }
-            steps {
-                
-                sh '''
-                cd terraform-asg
-                echo "Running terraform init"
-                terraform init -no-color
-                echo "Running terraform fmt -recursive"
-                terraform fmt -recursive
-                echo "Running terraform validate"
-                terraform validate -no-color
-                echo "Executing terraform plan"                 
-                terraform plan -out=tfplan -no-color
-                echo "Executing terraform apply"                 
-                terraform apply tfplan -no-color
-                sh '''
-            }
-        }
-
-        stage('Run Maven Clean, Verify and Sonar Checks') {
-           when {
-             expression { params.CHOICE == "Deploy_K8" }  
-           }
-             steps {
-                sh '''
-                cd realtime-project
-                export JAVA_HOME="/usr/lib/jvm/jre-17-openjdk"
-                export PATH="$JAVA_HOME/bin:$PATH"
-                echo "Run Maven Clean, Verify and Sonar Check"
-                mvn clean verify sonar:sonar \
-                -Dsonar.host.url=http://18.119.144.3:9000 \
-                -Dsonar.token=squ_f46748d5844bd4bd337c33225b99cf703179ce66
-                sh '''
-                  }
-             }
-
-
-        stage('Run Maven Deploy to Nexus ') {
-           when {
-             expression { params.CHOICE == "Deploy_K8" }  
-           }
-             steps {
-                sh '''
-                cd realtime-project
-                export JAVA_HOME="/usr/lib/jvm/jre-17-openjdk"
-                export PATH="$JAVA_HOME/bin:$PATH"
-                echo "Run Maven Deploy"
-                mvn deploy 
-                sh '''
-                  }
-             }
-
-
-        stage('Build and Push Docker image') {
-           when {
-             expression { params.CHOICE == "Deploy_no" }  
-           }
-             steps {
-                script {
-                    withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_TOKEN')]) {
-                        sh '''
-                            cd project
-                            echo "$DOCKER_TOKEN" | docker login -u "rfchacon717" --password-stdin
-                            docker build -t rfchacon717/chacon-image:latest .
-                            docker push rfchacon717/chacon-image:latest
-                         echo "Build part"
-                        '''
-                      }
-                    } 
-               
-                  }
-             }
-
-       stage('Ansible deploy nginx') {
-               when {
-                  expression { params.CHOICE == "Deploy_ASG" }
-                 }
-            steps {
-                sh '''
-                cd terraform-asg/ansible
-                sleep 5
-                ansible-playbook deploy_nginx.yml  
-                sh '''
-            }
         }
 
         stage('TerraForm build/deploy K8 Infra') {
            when {
-             expression { params.CHOICE == "Deploy_K8_no" }  
+             expression { params.CHOICE == "Deploy_K8" }  
            }
              steps {
                 sh '''
@@ -217,7 +71,7 @@ parameters {
 
         stage('Configure Kubectl, Deploy EKS apps') {
            when {
-             expression { params.CHOICE == "Deploy_K8_no" }  
+             expression { params.CHOICE == "Deploy_K8" }  
            }
             steps {
                 sh '''
