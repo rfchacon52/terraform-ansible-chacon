@@ -83,7 +83,7 @@ resource "aws_lb_listener" "alb" {
 # Create two EC2 instances in the private subnets.
 resource "aws_instance" "ec2" {
   count         = 2
-  ami           = "ami-0c15e602d3d6c6c4a" #  Replace with a valid AMI ID for your region.  This is an Ubuntu AMI.
+  ami           = "ami-0f70b01eb0d5c5caa" #  Replace with a valid AMI ID for your region.  This is an Ubuntu AMI.
   instance_type = "t2.micro"             #  Choose an appropriate instance type.
   subnet_id     = module.vpc.private_subnets[count.index] # Place in private subnets
   security_groups = [aws_security_group.ec2.id]

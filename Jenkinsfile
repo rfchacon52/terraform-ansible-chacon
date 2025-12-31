@@ -9,7 +9,6 @@ parameters {
 }
  
  environment {
-   ANSIBLE_PRIVATE_KEY   = credentials('Jenkins-pem')
    AWS_DEFAULT_REGION    = 'us-east-1'
    THE_BUTLER_SAYS_SO  = credentials('aws_creds')
    
