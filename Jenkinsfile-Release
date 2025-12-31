@@ -4,9 +4,8 @@ pipeline {
     environment {
         IMAGE_NAME = 'rfchacon717/jenkins-flask-app'
         IMAGE_TAG = "${IMAGE_NAME}:${env.GIT_COMMIT}"
+        THE_BUTLER_SAYS_SO  = credentials('aws-creds')
        //  KUBECONFIG = credentials('kubeconfig-credentials-id')
-        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
         GH_TOKEN = credentials('github-access-token')
         KUBE_CONFIG_PATH      = '~/.kube/config'
         JAVA_HOME             = '/usr/lib/jvm/java-17-openjdk-17.0.14.0.7-2.el9.x86_64/'
