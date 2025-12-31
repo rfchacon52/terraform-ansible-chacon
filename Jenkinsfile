@@ -45,7 +45,6 @@ parameters {
 
         }
 
-        }
 
         stage('TerraForm build/deploy K8 Infra') {
            when {
