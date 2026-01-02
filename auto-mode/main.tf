@@ -69,6 +69,7 @@ access_config {
   compute_config {
     enabled       = true
     node_pools    = ["general-purpose", "system"]
+     node_role_arn = aws_iam_role.node_role.arn
   }
 
   # 2. Storage Config (REQUIRED for Auto Mode)
