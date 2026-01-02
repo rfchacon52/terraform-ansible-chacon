@@ -1,28 +1,24 @@
-# -----------------------------------------------------------------------------
-# 1. Network (VPC)
-# -----------------------------------------------------------------------------
+
+# Use the community terraform-aws-modules/vpc/aws module for a standard VPC setup
 module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.0"
+  source = "terraform-aws-modules/vpc/aws"
+  version = "5.18.1"
 
-  name = "eks-auto-vpc-us-east-1"
+  name = "eks-auto-mode-vpc"
   cidr = "10.0.0.0/16"
-
-  # us-east-1 specific Availability Zones
-  azs             = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  azs = ["us-east-1a", "us-east-1b", "us-east-1c"]
   private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
-
+  public_subnets = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
   enable_nat_gateway = true
-  single_nat_gateway = true # Keeps costs down for demos; set to false for prod
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-  create_igw             = true
-  one_nat_gateway_per_az = false
+  single_nat_gateway = true
 
-  
+  # Tag subnets for EKS Auto Mode discovery
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = "1"
+    "karpenter.sh/discovery" = "eks-auto-cluster" # Cluster name below
+  }
   public_subnet_tags = {
-    "kubernetes.io/role/elb" = 1
+    "kubernetes.io/role/elb" = "1"
   }
 }
 
@@ -51,7 +47,7 @@ resource "aws_iam_role_policy_attachment" "cluster_policy" {
 resource "aws_eks_cluster" "cluster" {
   name = "eks-auto-cluster"
   role_arn = aws_iam_role.cluster.arn
-  version = "1.33" # EKS Auto Mode requires Kubernetes version 1.29 or higher
+  version = "1.32" # EKS Auto Mode requires Kubernetes version 1.29 or higher
 
   vpc_config {
     subnet_ids = module.vpc.private_subnets
