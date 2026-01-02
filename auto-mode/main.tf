@@ -82,4 +82,19 @@ access_config {
     }
   }
 
+
+# Display the command to set context manually
+output "configure_kubectl_command" {
+  description = "Run this command to configure your local kubectl context"
+  value       = "aws eks update-kubeconfig --region us-east-1 --name ${aws_eks_cluster.main.name}"
+}
+
+# Display Cluster Configuration Details
+output "cluster_endpoint" {
+  description = "The endpoint for your EKS Kubernetes API"
+  value       = aws_eks_cluster.main.endpoint
+}
+
+
+
 }
