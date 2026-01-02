@@ -55,9 +55,39 @@ resource "aws_eks_cluster" "cluster" {
     endpoint_public_access = true
   }
 
-  # Enable EKS Auto Mode
-  compute_config {
-    enabled = true
+access_config {
+    authentication_mode                         = "API"
+    bootstrap_cluster_creator_admin_permissions = true
   }
-}
 
+  # --- YOU MUST INCLUDE ALL 3 BLOCKS BELOW ---
+
+  # 1. Compute Config
+  compute_config {
+    enabled       = true
+    node_pools    = ["general-purpose", "system"]
+    node_role_arn = aws_iam_role.node_role.arn
+  }
+
+  # 2. Storage Config (REQUIRED for Auto Mode)
+  storage_config {
+    block_storage {
+      enabled = true
+    }
+  }
+
+  # 3. Network Config (REQUIRED for Auto Mode)
+  kubernetes_network_config {
+    elastic_load_balancing {
+      enabled = true
+    }
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.policy_cluster,
+    aws_iam_role_policy_attachment.policy_compute,
+    aws_iam_role_policy_attachment.policy_storage,
+    aws_iam_role_policy_attachment.policy_lb,
+    aws_iam_role_policy_attachment.policy_networking
+  ]
+}
