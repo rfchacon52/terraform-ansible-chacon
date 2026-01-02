@@ -3,26 +3,16 @@ pipeline {
 agent any
 
 parameters {
-  choice choices: ['Deploy_ASG', 'Deploy_K8', 'Destroy_ASG', 'Destroy_K8', 'Destroy_SFTP', 'Deploy_SFTP', 'Deploy_ALB', 'Destroy_ALB', "Deploy_JMETER" , "Destroy_JMETER"], description: '''Select:  
-               1. Deploy_ASG
-               2. Destroy_ASG  
-               3. Deploy_K8  
-               4. Destroy_K8 
-               5. Deploy_ALB
-               6. Destroy_ALB 
-               7. Destroy_SFTP
-               8. Deploy_JMETER
-               9. Destroy_JMETER 
-              10. Deploy_SFTP  ''', name: 'CHOICE'
+  choice choices: [ 'Deploy_K8', 'Destroy_K8'], description: '''Select:  
+               1. Deploy_K8  
+               2. Destroy_K8 
+              ''', name: 'CHOICE'
 }
  
  
  environment {
-//  TF_VAR_access_key     = credentials('AWS_ACCESS_KEY_ID') 
-//  TF_VAR_secret_key     = credentials('AWS_SECRET_ACCESS_KEY')  
   THE_BUTLER_SAYS_SO  = credentials('aws-creds')
   KUBE_CONFIG_PATH      = '~/.kube/config'
-//  JAVA_HOME             = '/usr/lib/jvm/jre-17-openjdk'
   MAVEN_HOME            = '/usr/share/maven' 
   ANSIBLE_INVENTORY     = '/etc/ansible/inventory.ini'
     }    
@@ -52,7 +42,7 @@ parameters {
            }
              steps {
                 sh '''
-                cd terraform
+                cd auto-mode 
                 export KUBE_CONFIG_PATH=~/.kube/config
                 echo "Running terraform init"
                 terraform init -no-color
@@ -70,7 +60,7 @@ parameters {
 
         stage('Configure Kubectl, Deploy EKS apps') {
            when {
-             expression { params.CHOICE == "Deploy_K8" }  
+             expression { params.CHOICE == "Deploy_K8_no" }  
            }
             steps {
                 sh '''
@@ -92,8 +82,7 @@ parameters {
            }
             steps {
                 sh '''
-                cd terraform
-               ./cleanup-cluster.sh  
+                cd auto-mode 
                 echo "Running terraform init"
                 terraform init -no-color
                 echo "Running terraform validate"
