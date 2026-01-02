@@ -123,7 +123,7 @@ resource "aws_eks_cluster" "main" {
   # 1. Compute: Automatically manage nodes
   compute_config {
     enabled       = true
-    node_pool     = ["general-purpose", "system"]
+    node_pools     = ["general-purpose", "system"]
     node_role_arn = aws_iam_role.node_role.arn
   }
 
