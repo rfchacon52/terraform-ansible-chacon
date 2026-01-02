@@ -61,11 +61,3 @@ resource "aws_eks_cluster" "cluster" {
   }
 }
 
-# Output the cluster name to configure kubectl
-output "configure_kubectl" {
-  value = "aws eks update-kubeconfig --name ${aws_eks_cluster.cluster.name} --region ${data.aws_region.current.name}"
-}
-
-# Data source for current AWS region
-data "aws_region" "current" {}
-
