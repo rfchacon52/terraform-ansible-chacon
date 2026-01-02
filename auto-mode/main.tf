@@ -82,11 +82,4 @@ access_config {
     }
   }
 
-  depends_on = [
-    aws_iam_role_policy_attachment.policy_cluster,
-    aws_iam_role_policy_attachment.policy_compute,
-    aws_iam_role_policy_attachment.policy_storage,
-    aws_iam_role_policy_attachment.policy_lb,
-    aws_iam_role_policy_attachment.policy_networking
-  ]
 }
