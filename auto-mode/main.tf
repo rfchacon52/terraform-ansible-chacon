@@ -81,7 +81,7 @@ access_config {
       enabled = true
     }
   }
-
+}
 
 # Display the command to set context manually
 output "configure_kubectl_command" {
@@ -95,6 +95,3 @@ output "cluster_endpoint" {
   value       = aws_eks_cluster.main.endpoint
 }
 
-
-
-}
