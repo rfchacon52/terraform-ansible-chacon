@@ -57,7 +57,7 @@ resource "aws_eks_cluster" "cluster" {
 
 access_config {
     authentication_mode                         = "API"
-    bootstrap_cluster_creator_admin_permissions = true
+    bootstrap_cluster_creator_admin_permissions = false 
   }
 
   # --- YOU MUST INCLUDE ALL 3 BLOCKS BELOW ---
