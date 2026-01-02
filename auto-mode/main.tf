@@ -49,6 +49,9 @@ resource "aws_eks_cluster" "cluster" {
   role_arn = aws_iam_role.cluster.arn
   version = "1.32" # EKS Auto Mode requires Kubernetes version 1.29 or higher
 
+bootstrap_self_managed_addons = false
+
+
   vpc_config {
     subnet_ids = module.vpc.private_subnets
     endpoint_private_access = true
