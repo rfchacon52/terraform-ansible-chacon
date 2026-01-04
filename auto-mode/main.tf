@@ -47,7 +47,7 @@ resource "aws_iam_role_policy_attachment" "cluster_policy" {
 resource "aws_eks_cluster" "cluster" {
   name = "eks-auto-cluster"
   role_arn = aws_iam_role.cluster.arn
-  version = "1.32" # EKS Auto Mode requires Kubernetes version 1.29 or higher
+  version = "1.33" # EKS Auto Mode requires Kubernetes version 1.29 or higher
 
 bootstrap_self_managed_addons = false
 
@@ -62,24 +62,6 @@ access_config {
     authentication_mode                         = "API"
     bootstrap_cluster_creator_admin_permissions = false 
   }
-
-# 2. Access Entry (The "Who")
-resource "aws_eks_access_entry" "my_admin_access" {
-  cluster_name  = aws_eks_cluster.main.name
-  principal_arn = "arn:aws:iam::767397937300:user/terraform"
-  type          = "STANDARD"
-}
-
-# 3. Policy Association (The "What Permissions") -> ADD THIS HERE
-resource "aws_eks_access_policy_association" "my_admin_policy" {
-  cluster_name  = aws_eks_cluster.main.name
-  principal_arn = aws_eks_access_entry.my_admin_access.principal_arn
-  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-
-  access_scope {
-    type       = "cluster"
-  }
-}
 
 
   # --- YOU MUST INCLUDE ALL 3 BLOCKS BELOW ---
