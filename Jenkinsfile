@@ -3,7 +3,7 @@ pipeline {
 agent any
 
 parameters {
-  choice choices: [ 'Deploy_K8', 'Destroy_K8' 'Deploy_Docker'], description: '''Select:  
+  choice choices: [ 'Deploy_K8', 'Destroy_K8', 'Deploy_Docker'], description: '''Select:  
                1. Deploy_K8  
                2. Destroy_K8 
                3. Deploy_Docker
