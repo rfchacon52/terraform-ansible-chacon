@@ -97,14 +97,11 @@ parameters {
             steps {
                 sh '''
                 cd auto-mode 
-
-                aws ecr get-login-password --region us-east-1 | \
-                podman login --username AWS --password-stdin 767397937300.dkr.ecr.us-east-1.amazonaws.com
+                aws ecr get-login-password --region us-east-1 |  podman login --username AWS --password-stdin 767397937300.dkr.ecr.us-east-1.amazonaws.com 
                 echo "Run podman build" 
                 podman build -t rails-app .
                 podman tag rails-app:latest 767397937300.dkr.ecr.us-east-1.amazonaws.com/rails-app:latest
                 podman push 767397937300.dkr.ecr.us-east-1.amazonaws.com/rails-app:latest
-                
                 sh '''
                }
              }
