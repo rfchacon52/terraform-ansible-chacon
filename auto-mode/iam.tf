@@ -38,14 +38,14 @@ resource "aws_iam_role_policy_attachment" "node_ecr" {
 
 # 3. Access Entry (The "Who")
 resource "aws_eks_access_entry" "my_admin_access" {
-  cluster_name  = aws_eks_cluster.main.name
+  cluster_name  = aws_eks_cluster.cluster.name
   principal_arn = "arn:aws:iam::767397937300:user/terraform"
   type          = "STANDARD"
 }
 
 # 4. Policy Association (The "What Permissions") -> ADD THIS HERE
 resource "aws_eks_access_policy_association" "my_admin_policy" {
-  cluster_name  = aws_eks_cluster.main.name
+  cluster_name  = aws_eks_cluster.cluster.name 
   principal_arn = aws_eks_access_entry.my_admin_access.principal_arn
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
 
