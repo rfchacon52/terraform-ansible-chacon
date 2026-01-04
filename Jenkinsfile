@@ -3,9 +3,10 @@ pipeline {
 agent any
 
 parameters {
-  choice choices: [ 'Deploy_K8', 'Destroy_K8'], description: '''Select:  
+  choice choices: [ 'Deploy_K8', 'Destroy_K8' 'Deploy_Docker'], description: '''Select:  
                1. Deploy_K8  
                2. Destroy_K8 
+               3. Deploy_Docker
               ''', name: 'CHOICE'
 }
  
@@ -88,6 +89,25 @@ parameters {
                 sh '''
             }
         }
+
+        stage('Deploy Docker App') {
+           when {
+             expression { params.CHOICE == "Deploy_Docker" }
+           }
+            steps {
+                sh '''
+                cd auto-mode 
+
+                aws ecr get-login-password --region us-east-1 | \
+                podman login --username AWS --password-stdin 767397937300.dkr.ecr.us-east-1.amazonaws.com
+                echo "Run podman build" 
+                podman build -t rails-app .
+                podman tag rails-app:latest 767397937300.dkr.ecr.us-east-1.amazonaws.com/rails-app:latest
+                podman push 767397937300.dkr.ecr.us-east-1.amazonaws.com/rails-app:latest
+                
+                sh '''
+               }
+             }
 
 
     }
