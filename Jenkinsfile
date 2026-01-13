@@ -63,7 +63,7 @@ parameters {
                 sh '''
                 cd terraform
                 export KUBE_CONFIG_PATH=~/.kube/config
-                aws eks update-kubeconfig --region us-east-1 --name eksblue 
+                aws eks update-kubeconfig --region us-east-1 --name eks-auto-clusterJ
                 echo "Executing Get all pods"
                 kubectl get all -A -o wide
                 kubectl apply -f apps_deploy/hello-kubernetes.yaml
